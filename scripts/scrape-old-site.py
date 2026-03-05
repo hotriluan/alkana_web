@@ -29,7 +29,7 @@ from openpyxl.styles import Font, PatternFill, Alignment
 
 # ── Config ────────────────────────────────────────────────────────────────────
 
-BASE_URL       = "https://www.alkana.vn"
+BASE_URL       = "https://alkana.vn"
 PRODUCT_PATHS  = ["/san-pham/", "/product/", "/products/"]
 REQUEST_DELAY  = 1.0   # seconds between requests
 REQUEST_TIMEOUT = 15   # seconds
@@ -78,15 +78,20 @@ log = logging.getLogger("alkana-scraper")
 
 # ── HTTP helper ───────────────────────────────────────────────────────────────
 
+# Suppress InsecureRequestWarning — old site SSL cert has hostname mismatch (www vs non-www)
+import urllib3
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+
 session = requests.Session()
 session.headers.update(HEADERS)
+session.verify = False  # SSL cert for alkana.vn doesn't cover www.alkana.vn
 
 
 def fetch(url: str) -> Optional[BeautifulSoup]:
     """Fetch URL and return BeautifulSoup, or None on error."""
     try:
         time.sleep(REQUEST_DELAY)
-        r = session.get(url, timeout=REQUEST_TIMEOUT, allow_redirects=True)
+        r = session.get(url, timeout=REQUEST_TIMEOUT, allow_redirects=True, verify=False)
         r.raise_for_status()
         return BeautifulSoup(r.text, "lxml")
     except requests.RequestException as e:
@@ -300,14 +305,84 @@ def export_to_excel(products: list[dict], output_path: str) -> None:
 
 # ── Main ──────────────────────────────────────────────────────────────────────
 
+def extract_from_db(db_host: str, db_user: str, db_pass: str, db_name: str) -> list[dict]:
+    """
+    Read products directly from a legacy MySQL/MariaDB database.
+    Used when the old website is offline but a DB dump is available.
+
+    Table assumptions (from alkanacoating_production.sql):
+      products: id, name, slug, thumbnail, excerpt, category_id, specs,
+                technical_specs, features, applications, meta_title, meta_description
+      categories: id, name, slug
+      product_images: id, product_id, image_path (optional — may not exist)
+    """
+    try:
+        import pymysql  # type: ignore
+    except ImportError:
+        log.error("pymysql not installed. Run: pip install pymysql")
+        return []
+
+    conn = pymysql.connect(host=db_host, user=db_user, password=db_pass,
+                           database=db_name, charset="utf8mb4",
+                           cursorclass=pymysql.cursors.DictCursor)
+    products = []
+    with conn:
+        with conn.cursor() as cur:
+            cur.execute("""
+                SELECT p.id, p.name, p.slug, p.thumbnail,
+                       p.excerpt, p.specs, p.technical_specs,
+                       p.features, p.applications,
+                       p.meta_title, p.meta_description,
+                       c.name AS category_name, c.slug AS category_slug
+                FROM products p
+                LEFT JOIN categories c ON c.id = p.category_id
+                WHERE p.is_active = 1
+                ORDER BY c.name, p.name
+            """)
+            rows = cur.fetchall()
+
+    for row in rows:
+        products.append({
+            "old_url":       f"https://alkana.vn/san-pham/{row['slug']}",
+            "title":         row["name"] or "",
+            "description":   row["excerpt"] or row["meta_description"] or "",
+            "sku":           "",   # not in old schema — team fills in
+            "image_url":     row["thumbnail"] or "",
+            "tds_url":       "",
+            "msds_url":      "",
+            "old_category":  row["category_name"] or "",
+        })
+
+    log.info("Extracted %d products from DB '%s'.", len(products), db_name)
+    return products
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description="Alkana old site product scraper")
-    parser.add_argument("--url",    default=BASE_URL,                   help="Base URL of old site")
-    parser.add_argument("--output", default="raw-alkana-products.xlsx", help="Output Excel filename")
-    parser.add_argument("--limit",  type=int, default=MAX_PRODUCTS,     help="Max products to scrape")
-    parser.add_argument("--dry-run", action="store_true",               help="Discover URLs only, no scraping")
+    parser.add_argument("--url",      default=BASE_URL,                   help="Base URL of old site")
+    parser.add_argument("--output",   default="raw-alkana-products.xlsx", help="Output Excel filename")
+    parser.add_argument("--limit",    type=int, default=MAX_PRODUCTS,     help="Max products to scrape (web mode)")
+    parser.add_argument("--dry-run",  action="store_true",                help="Discover URLs only, no scraping")
+    # DB mode — used when live site is offline but a DB dump is available
+    parser.add_argument("--from-db",      action="store_true",   help="Extract products from legacy MySQL DB instead of scraping")
+    parser.add_argument("--db-host",      default="localhost",   help="DB host (default: localhost)")
+    parser.add_argument("--db-user",      default="root",        help="DB user (default: root)")
+    parser.add_argument("--db-pass",      default="",            help="DB password (default: empty)")
+    parser.add_argument("--db-name",      default="alkanacoating_legacy", help="DB name (default: alkanacoating_legacy)")
     args = parser.parse_args()
 
+    # ── DB mode ──────────────────────────────────────────────────────────────
+    if args.from_db:
+        log.info("DB mode — reading from %s @ %s", args.db_name, args.db_host)
+        products = extract_from_db(args.db_host, args.db_user, args.db_pass, args.db_name)
+        if not products:
+            log.error("No products extracted. Check DB credentials and table structure.")
+            return
+        export_to_excel(products, args.output)
+        log.info("Done. Review %s and send to Alkana team for cleansing.", args.output)
+        return
+
+    # ── Web scrape mode ───────────────────────────────────────────────────────
     log.info("Alkana product scraper starting — target: %s", args.url)
 
     # Verify site is reachable
@@ -317,7 +392,7 @@ def main() -> None:
         log.info("Site reachable — HTTP %d", r.status_code)
     except requests.RequestException as e:
         log.error("Cannot reach %s: %s", args.url, e)
-        log.error("Tip: ask Alkana team for manual export from old CMS admin.")
+        log.error("Tip: old site may be offline — try --from-db mode with the production SQL dump.")
         return
 
     # Discover product URLs

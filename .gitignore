@@ -60,6 +60,8 @@ repomix-output.xml
 .serena/cache
 plans/**/*
 !plans/templates/*
+!plans/brainstorm/**
+!plans/260305-alkana-web-implementation/**
 screenshots/*
 docs/screenshots/*
 logs.txt

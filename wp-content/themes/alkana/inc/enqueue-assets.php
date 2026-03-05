@@ -11,6 +11,15 @@ defined( 'ABSPATH' ) || exit;
 add_action( 'wp_enqueue_scripts',    'alkana_enqueue_assets' );
 add_action( 'admin_enqueue_scripts', 'alkana_admin_enqueue_assets' );
 add_action( 'wp_enqueue_scripts',    'alkana_dequeue_bloat', 100 );
+add_action( 'wp_head',               'alkana_preconnect_fonts', 1 );
+
+/**
+ * Emit preconnect hints for Google Fonts before any enqueued styles.
+ */
+function alkana_preconnect_fonts(): void {
+	echo '<link rel="preconnect" href="https://fonts.googleapis.com">' . "\n";
+	echo '<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>' . "\n";
+}
 
 /**
  * Front-end: enqueue compiled Vite assets by reading dist/manifest.json.
@@ -40,6 +49,14 @@ function alkana_enqueue_assets(): void {
 			null
 		);
 	}
+
+	// Google Fonts (Montserrat + Inter) — depends on preconnect hints from wp_head
+	wp_enqueue_style(
+		'alkana-fonts',
+		'https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Inter:wght@400;500;600&display=swap',
+		[],
+		null
+	);
 
 	// JS
 	$js_key  = 'src/scripts/app.js';

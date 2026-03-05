@@ -26,6 +26,8 @@ function alkana_ajax_filter_products(): void {
 	$paint_system = array_map( 'sanitize_key', (array) ( $_POST['paint_system'] ?? [] ) );
 	$gloss_level  = array_map( 'sanitize_key', (array) ( $_POST['gloss_level']  ?? [] ) );
 	$is_featured  = (int) (bool) ( $_POST['is_featured'] ?? 0 );
+	$page         = max( 1, (int) ( $_POST['page'] ?? 1 ) );
+	$per_page     = 12;
 
 	$table = $wpdb->prefix . 'alkana_product_index';
 
@@ -34,10 +36,9 @@ function alkana_ajax_filter_products(): void {
 	$values = [];
 
 	if ( ! empty( $category ) ) {
-		$placeholders = implode( ',', array_fill( 0, count( $category ), '%s' ) );
-		$slug_likes   = alkana_build_find_in_set( 'category_slugs', $category );
-		$where[]      = '(' . implode( ' OR ', $slug_likes['clauses'] ) . ')';
-		$values       = array_merge( $values, $slug_likes['values'] );
+		$slug_likes = alkana_build_find_in_set( 'category_slugs', $category );
+		$where[]    = '(' . implode( ' OR ', $slug_likes['clauses'] ) . ')';
+		$values     = array_merge( $values, $slug_likes['values'] );
 	}
 
 	if ( ! empty( $surface ) ) {
@@ -62,19 +63,27 @@ function alkana_ajax_filter_products(): void {
 		$where[] = 'is_featured = 1';
 	}
 
-	$sql = "SELECT post_id FROM {$table}";
-	if ( ! empty( $where ) ) {
-		$sql .= ' WHERE ' . implode( ' AND ', $where );
-	}
-	$sql .= ' ORDER BY is_featured DESC, post_id DESC';
+	$where_sql = ! empty( $where ) ? 'WHERE ' . implode( ' AND ', $where ) : '';
 
+	// ── Total count (no LIMIT) ────────────────────────────────────────────────
+	$count_sql = "SELECT COUNT(*) FROM {$table} {$where_sql}";
 	if ( ! empty( $values ) ) {
 		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
-		$post_ids = $wpdb->get_col( $wpdb->prepare( $sql, $values ) );
+		$total = (int) $wpdb->get_var( $wpdb->prepare( $count_sql, $values ) );
 	} else {
 		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
-		$post_ids = $wpdb->get_col( $sql );
+		$total = (int) $wpdb->get_var( $count_sql );
 	}
+
+	$pages  = max( 1, (int) ceil( $total / $per_page ) );
+	$page   = min( $page, $pages );
+	$offset = ( $page - 1 ) * $per_page;
+
+	// ── Paginated post IDs ────────────────────────────────────────────────────
+	$data_sql = "SELECT post_id FROM {$table} {$where_sql} ORDER BY is_featured DESC, post_id DESC LIMIT %d OFFSET %d";
+	$paged_values = array_merge( $values, [ $per_page, $offset ] );
+	// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+	$post_ids = $wpdb->get_col( $wpdb->prepare( $data_sql, $paged_values ) );
 
 	// ── Render cards ─────────────────────────────────────────────────────────
 	ob_start();
@@ -94,12 +103,14 @@ function alkana_ajax_filter_products(): void {
 
 	$html = ob_get_clean();
 
-	// ── Return filter counts ──────────────────────────────────────────────────
-	$counts = alkana_get_filter_counts( $post_ids );
+	// ── Return filter counts from index table ─────────────────────────────────
+	$counts = alkana_get_filter_counts( $table, $where_sql, $values );
 
 	wp_send_json_success( [
 		'html'   => $html,
-		'total'  => count( $post_ids ),
+		'total'  => $total,
+		'page'   => $page,
+		'pages'  => $pages,
 		'counts' => $counts,
 	] );
 }
@@ -124,27 +135,54 @@ function alkana_build_find_in_set( string $column, array $slugs ): array {
 }
 
 /**
- * Count remaining options per taxonomy after current filter.
+ * Count available options per taxonomy for the current filter result set.
+ * Queries the index table directly — avoids wp_get_object_terms N+1 issue.
  *
- * @param int[] $post_ids Filtered post IDs.
- * @return array<string, array<string, int>>
+ * @param string   $table     Full table name (with prefix).
+ * @param string   $where_sql WHERE clause string (may be empty).
+ * @param array    $values    Prepared values for WHERE placeholders.
+ * @return array<string, array<string, int>>  { column_key: { slug: count } }
  */
-function alkana_get_filter_counts( array $post_ids ): array {
-	if ( empty( $post_ids ) ) {
-		return [];
-	}
+function alkana_get_filter_counts( string $table, string $where_sql, array $values ): array {
+	global $wpdb;
 
-	$counts     = [];
-	$taxonomies = [ 'product_category', 'surface_type', 'paint_system', 'gloss_level' ];
+	// Map: taxonomy → index table column name
+	$columns = [
+		'product_category' => 'category_slugs',
+		'surface_type'     => 'surface_slugs',
+		'paint_system'     => 'paint_system',
+		'gloss_level'      => 'gloss_level',
+	];
 
-	foreach ( $taxonomies as $taxonomy ) {
-		$terms = wp_get_object_terms( $post_ids, $taxonomy, [ 'fields' => 'slugs' ] );
+	$counts = [];
 
-		if ( is_wp_error( $terms ) ) {
-			continue;
+	foreach ( $columns as $taxonomy => $column ) {
+		// Append column non-empty condition to whatever WHERE clause we already have
+		if ( $where_sql ) {
+			$col_sql = "SELECT {$column} FROM {$table} {$where_sql} AND {$column} != '' AND {$column} IS NOT NULL";
+			$col_values = $values;
+		} else {
+			$col_sql    = "SELECT {$column} FROM {$table} WHERE {$column} != '' AND {$column} IS NOT NULL";
+			$col_values = [];
 		}
 
-		$slug_counts = array_count_values( $terms );
+		if ( ! empty( $col_values ) ) {
+			// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+			$rows = $wpdb->get_col( $wpdb->prepare( $col_sql, $col_values ) );
+		} else {
+			// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+			$rows = $wpdb->get_col( $col_sql );
+		}
+
+		$slug_counts = [];
+		foreach ( $rows as $row ) {
+			foreach ( explode( ',', (string) $row ) as $slug ) {
+				$slug = trim( $slug );
+				if ( '' === $slug ) continue;
+				$slug_counts[ $slug ] = ( $slug_counts[ $slug ] ?? 0 ) + 1;
+			}
+		}
+
 		$counts[ $taxonomy ] = $slug_counts;
 	}
 

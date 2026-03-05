@@ -101,11 +101,16 @@ function bindFilterControls() {
     document.querySelector('[data-filter-category]')
         ?.addEventListener('change', (e) => { state.category = e.target.value; onFilterChange(); });
 
-    // Pagination (delegated — grid is re-rendered each AJAX call)
-    grid?.addEventListener('click', (e) => {
-        const btn = e.target.closest('[data-page]');
-        if (btn) { state.page = parseInt(btn.dataset.page, 10); runFilter(); }
-    });
+    // Pagination — delegated to the pagination container
+    document.querySelector('[data-filter-pagination]')
+        ?.addEventListener('click', (e) => {
+            const btn = e.target.closest('[data-page]');
+            if (!btn) return;
+            state.page = parseInt(btn.dataset.page, 10);
+            runFilter();
+            // Scroll product area back into view
+            grid?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
 
     // Active tag remove
     document.querySelector('.active-tags')
@@ -142,15 +147,14 @@ async function runFilter() {
 
     try {
         const body = new URLSearchParams({
-            action:       'alkana_filter',
-            nonce:        AlkanaConfig.nonce,
-            page:         String(state.page),
+            action:      'alkana_filter_products',
+            nonce:       AlkanaConfig.nonce,
+            page:        String(state.page),
             paint_system: state.paint_system,
-            gloss:        state.gloss,
-            category:     state.category,
+            gloss_level: state.gloss,
         });
-        // Append surfaces array
-        state.surfaces.forEach((s) => body.append('surfaces[]', s));
+        state.surfaces.forEach((s) => body.append('surface[]', s));
+        state.category.split(',').filter(Boolean).forEach((c) => body.append('category[]', c));
 
         const res  = await fetch(AlkanaConfig.ajaxUrl, {
             method:  'POST',
@@ -162,6 +166,7 @@ async function runFilter() {
 
         grid.innerHTML = json.data.html;
         updateCounts(json.data.counts);
+        renderPagination(json.data.page, json.data.pages, json.data.total);
     } catch (err) {
         console.error('[Alkana Filter]', err);
     } finally {
@@ -173,19 +178,65 @@ async function runFilter() {
 
 function updateCounts(counts) {
     if (!counts) return;
-    // Surface counts
-    Object.entries(counts.surfaces ?? {}).forEach(([slug, count]) => {
+
+    // surface_type → data-count-surface
+    Object.entries(counts.surface_type ?? {}).forEach(([slug, count]) => {
         const el = document.querySelector(`[data-count-surface="${slug}"]`);
         if (el) {
-            el.textContent = String(count);
+            el.textContent = `(${count})`;
             el.closest('.filter-option')?.classList.toggle('is-disabled', count === 0);
         }
     });
-    // paint_systems
-    Object.entries(counts.paint_systems ?? {}).forEach(([slug, count]) => {
+
+    // paint_system → data-count-system
+    Object.entries(counts.paint_system ?? {}).forEach(([slug, count]) => {
         const el = document.querySelector(`[data-count-system="${slug}"]`);
-        if (el) el.textContent = String(count);
+        if (el) el.textContent = `(${count})`;
     });
+
+    // gloss_level → data-count-gloss
+    Object.entries(counts.gloss_level ?? {}).forEach(([slug, count]) => {
+        const el = document.querySelector(`[data-count-gloss="${slug}"]`);
+        if (el) el.textContent = `(${count})`;
+    });
+
+    // product_category → data-count-category
+    Object.entries(counts.product_category ?? {}).forEach(([slug, count]) => {
+        const el = document.querySelector(`[data-count-category="${slug}"]`);
+        if (el) el.textContent = `(${count})`;
+    });
+}
+
+function renderPagination(page, pages, total) {
+    const container = document.querySelector('[data-filter-pagination]');
+    if (!container) return;
+
+    if (!pages || pages <= 1) { container.innerHTML = ''; return; }
+
+    const btns = [];
+
+    // Prev
+    if (page > 1) {
+        btns.push(`<button class="pagination__btn" data-page="${page - 1}" aria-label="Previous page">&#8592; Prev</button>`);
+    }
+
+    // Page numbers (show up to 5 around current)
+    const start = Math.max(1, page - 2);
+    const end   = Math.min(pages, page + 2);
+    if (start > 1) btns.push(`<button class="pagination__btn" data-page="1">1</button>`);
+    if (start > 2) btns.push(`<span class="pagination__ellipsis">…</span>`);
+    for (let i = start; i <= end; i++) {
+        btns.push(`<button class="pagination__btn ${i === page ? 'is-active' : ''}" data-page="${i}" aria-current="${i === page ? 'page' : 'false'}">${i}</button>`);
+    }
+    if (end < pages - 1) btns.push(`<span class="pagination__ellipsis">…</span>`);
+    if (end < pages) btns.push(`<button class="pagination__btn" data-page="${pages}">${pages}</button>`);
+
+    // Next
+    if (page < pages) {
+        btns.push(`<button class="pagination__btn" data-page="${page + 1}" aria-label="Next page">Next &#8594;</button>`);
+    }
+
+    container.innerHTML = btns.join('');
 }
 
 function renderActiveTags() {

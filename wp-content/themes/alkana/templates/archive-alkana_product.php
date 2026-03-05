@@ -46,6 +46,11 @@ get_template_part( 'template-parts/header' );
 					}
 					?>
 				</div>
+
+				<nav class="filter-pagination flex flex-wrap justify-center gap-2 mt-8"
+				     data-filter-pagination
+				     aria-label="<?php esc_attr_e( 'Product pages', 'alkana' ); ?>">
+				</nav>
 			</div>
 
 		</div>

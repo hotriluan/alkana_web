@@ -51,13 +51,13 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 
 // ── Parse CLI args ────────────────────────────────────────────────────────────
+// WP-CLI eval-file injects $args (positional) and $assoc_args (flags) vars.
 
-$args    = WP_CLI::get_runner()->arguments ?? [];
-$extra   = WP_CLI::get_runner()->extra_args ?? [];
-$file    = $extra['file']    ?? __DIR__ . '/clean-alkana-products.xlsx';
-$dry_run = isset( $extra['dry-run'] );
-$limit   = (int) ( $extra['limit'] ?? 9999 );
-$skip    = (int) ( $extra['skip']  ?? 0 );
+$assoc_args = $assoc_args ?? [];
+$file    = $assoc_args['file']    ?? __DIR__ . '/clean-alkana-products.xlsx';
+$dry_run = isset( $assoc_args['dry-run'] ) || getenv( 'ALKANA_DRY_RUN' ) === '1';
+$limit   = (int) ( $assoc_args['limit'] ?? 9999 );
+$skip    = (int) ( $assoc_args['skip']  ?? 0 );
 
 if ( ! file_exists( $file ) ) {
 	WP_CLI::error( "File not found: {$file}\nExpected path: " . realpath( dirname( $file ) ) . '/' . basename( $file ) );
@@ -168,7 +168,12 @@ foreach ( $rows as $row ) {
 	if ( ! $dry_run ) {
 		foreach ( $acf_fields as $key => $value ) {
 			if ( '' !== $value ) {
-				update_field( $key, $value, $post_id );
+				// ACF update_field() if available, otherwise fall back to update_post_meta().
+				if ( function_exists( 'update_field' ) ) {
+					update_field( $key, $value, $post_id );
+				} else {
+					update_post_meta( $post_id, $key, $value );
+				}
 			}
 		}
 	}
@@ -219,7 +224,11 @@ foreach ( $rows as $row ) {
 			$tds_id = alkana_sideload_media( $tds_url, $post_id, "{$title} TDS" );
 			if ( $tds_id ) {
 				$tds_file = wp_get_attachment_url( $tds_id );
-				update_field( '_alkana_tds', [ 'ID' => $tds_id, 'url' => $tds_file ], $post_id );
+				if ( function_exists( 'update_field' ) ) {
+					update_field( '_alkana_tds', [ 'ID' => $tds_id, 'url' => $tds_file ], $post_id );
+				} else {
+					update_post_meta( $post_id, '_alkana_tds', $tds_file );
+				}
 			}
 		}
 
@@ -227,12 +236,18 @@ foreach ( $rows as $row ) {
 			$msds_id = alkana_sideload_media( $msds_url, $post_id, "{$title} MSDS" );
 			if ( $msds_id ) {
 				$msds_file = wp_get_attachment_url( $msds_id );
-				update_field( '_alkana_msds', [ 'ID' => $msds_id, 'url' => $msds_file ], $post_id );
+				if ( function_exists( 'update_field' ) ) {
+					update_field( '_alkana_msds', [ 'ID' => $msds_id, 'url' => $msds_file ], $post_id );
+				} else {
+					update_post_meta( $post_id, '_alkana_msds', $msds_file );
+				}
 			}
 		}
 
 		// ── Trigger denormalized index sync ──────────────────────────────────
-		do_action( 'acf/save_post', $post_id );
+		if ( function_exists( 'acf_save_post' ) ) {
+			do_action( 'acf/save_post', $post_id );
+		}
 	}
 
 	$action = $dry_run ? 'DRY' : ( $is_update ? 'updated' : 'created' );

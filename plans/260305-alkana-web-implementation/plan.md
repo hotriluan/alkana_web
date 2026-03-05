@@ -22,7 +22,8 @@ Mat Bao cPanel
     ├── wp_alkana_product_index table (denormalized, indexed — fast filter SQL)
     ├── Custom AJAX endpoint → direct SQL query (bypass WP_Query)
     └── MySQL 8.0
-Cloudflare CDN + WAF + Image Polish (WebP)
+Cloudflare CDN + WAF (Free tier — Polish: OFF)
+QUIC.cloud Free Tier + LSCache (WebP image optimization)
 LiteSpeed Cache (full-page + object cache)
 ```
 
@@ -30,7 +31,7 @@ LiteSpeed Cache (full-page + object cache)
 
 | # | Phase | Status | Weeks | Priority |
 |---|---|---|---|---|
-| 00 | [Environment Setup](phase-00-env-setup.md) | ⏳ pending | Pre-W1 | Critical |
+| 00 | [Environment Setup](phase-00-env-setup.md) | ✅ complete | Pre-W1 | Critical |
 | 01 | [Database Schema & CPT/ACF](phase-01-database-schema.md) | ⏳ pending | W1–W2 | Critical |
 | 02 | [Custom Theme + Vite Pipeline](phase-02-custom-theme-vite.md) | ⏳ pending | W3–W4 | Critical |
 | 03 | [AJAX Faceted Filter](phase-03-ajax-faceted-filter.md) | ⏳ pending | W3–W4 | Critical |

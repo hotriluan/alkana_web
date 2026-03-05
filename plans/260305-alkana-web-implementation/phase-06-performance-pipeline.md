@@ -16,7 +16,7 @@
 
 ## Key Insights
 - Performance testing MUST use real product data and images — dummy data gives false lighthouse scores.
-- Cloudflare Image Polish handles WebP conversion at CDN edge — no server ImageMagick needed.
+- **[UPDATED 2026-03-05]** Cloudflare Polish deprecated (no Pro budget). WebP generation handled by **QUIC.cloud** (free tier) via LSCache plugin — no ImageMagick WebP support needed on Mat Bao server.
 - LiteSpeed Page Cache: exclude AJAX endpoints from cache; cache all static pages.
 - Font loading: preconnect to Google Fonts, `font-display: swap` — prevents FOIT.
 - Deferred JS: Vite already handles this with `type="module"` bundles (deferred by spec).
@@ -26,7 +26,7 @@
 ## Requirements
 
 ### Functional
-- All images automatically output as WebP (via Cloudflare Polish).
+- All images automatically output as WebP (via QUIC.cloud + LSCache Image Optimization — free tier).
 - Hero banner image has `fetchpriority="high"` + `<link rel="preload">` in `<head>`.
 - All below-fold images have `loading="lazy"`.
 - CSS and JS from Vite are minified (handled by Vite build by default).
@@ -47,7 +47,7 @@
 | Layer | Implementation | Target |
 |---|---|---|
 | CSS/JS | Vite single bundle (minified + gzip) | < 50KB gzip each |
-| Images | Cloudflare Image Polish (WebP auto-convert) | < 200KB/image |
+| Images | QUIC.cloud + LSCache Image Optm (WebP auto-convert, free tier) | < 200KB/image |
 | Fonts | `<link rel="preconnect">` + `font-display: swap` | TTFB fonts < 100ms |
 | Hero LCP | `fetchpriority="high"` + `<link rel="preload">` | LCP < 1.5s |
 | Below-fold | `loading="lazy"` on all `<img>` | Reduces initial payload |
@@ -105,7 +105,7 @@ add_action('wp_head', function() {
 ```
 
 ### LiteSpeed Cache Configuration
-Settings to configure in LSCache plugin:
+Settings to configure in LSCache plugin (`wp-admin/admin.php?page=litespeed-cache`):
 ```
 Cache > General:
   ✅ Enable LiteSpeed Cache
@@ -121,13 +121,31 @@ Optimize:
   ✅ Minify JS: NO (Vite handles this — avoid double-minification conflicts)
   ✅ HTTP/2 Push: YES (for Vite CSS)
   ✅ Browser Cache: YES (max-age: 31536000 for versioned assets)
-
-Image Optimize:
-  ✅ WebP Replacement: YES (as fallback if Cloudflare Polish unavailable)
-  ✅ Lazy Load Images: YES
 ```
 
-### Cloudflare Settings
+### QUIC.cloud Image Optimization (PRIMARY WebP pipeline)
+Configure at `wp-admin/admin.php?page=litespeed-img_optm`:
+```
+General Settings:
+  ✅ Generate QUIC.cloud Domain Key (link free account at quic.cloud)
+
+Image Optimization:
+  ✅ Auto Request Cron: ON  (sends newly uploaded images to QUIC.cloud in background)
+  ✅ Create WebP Versions: ON  (generates .webp file variants server-side)
+  ✅ Image WebP Replacement: ON  (replaces .jpg/.png with .webp in HTML for supported browsers)
+  ✅ Optimize Original Images: ON  (compress originals — lossless or lossy)
+  ✅ Lazy Load Images: ON
+
+Workflow:
+  Upload image → WP Media Library
+  → LSCache Auto Request Cron sends to QUIC.cloud
+  → QUIC.cloud returns compressed + WebP variants
+  → LSCache stores .webp files alongside originals
+  → HTML output: <img src="image.webp"> for browsers that support WebP
+```
+> Note: QUIC.cloud free tier includes image optimization credits. Monitor usage if catalog > 500 images.
+
+### Cloudflare Settings (Free Tier)
 ```
 Speed > Optimization:
   ✅ Auto Minify: CSS (backup), HTML
@@ -136,8 +154,7 @@ Speed > Optimization:
   ✅ Early Hints: ON
 
 Images:
-  ✅ Polish: Lossless (requires Cloudflare Pro $20/mo — confirm with client)
-  - Alternative: "Lossy" for bigger size reductions
+  ❌ Polish: OFF  (Free tier — disabled. WebP handled by QUIC.cloud instead)
 
 Caching:
   Browser Cache TTL: 4 hours (HTML)
@@ -168,10 +185,12 @@ add_action('wp_enqueue_scripts', function() {
 3. **Implement Hero LCP preload** in `wp_head` hook.
 4. **Implement `srcset`** on all product card + single product images.
 5. **Implement `loading="lazy"`** on all below-fold images/iframes.
-6. **Install + configure LiteSpeed Cache** on staging.
-7. **Configure Cloudflare** — Polish, Brotli, caching rules, WAF.
+6. **Install + configure LiteSpeed Cache** on staging (Cache + Optimize settings).
+7. **Setup QUIC.cloud:** Generate Domain Key in LSCache General Settings → link free QUIC.cloud account → enable Auto Request Cron + Create WebP Versions + Image WebP Replacement + Optimize Original Images.
+8. **Upload test product image** → verify QUIC.cloud returns compressed WebP variant → inspect frontend HTML confirms `.webp` served.
+9-orig. **Configure Cloudflare (Free Tier)** — Brotli ON, Auto Minify HTML/CSS, WAF Medium, Polish explicitly OFF.
 8. **Run PageSpeed on staging** with real product data. Baseline measurement.
-9. **Iterate:** Address each flagged issue in PageSpeed report.
+10. **Iterate:** Address each flagged issue in PageSpeed report.
    - Third-party JS (Google Analytics, Zalo widget): defer/async.
    - CLS issues: add `width` + `height` attributes on all images.
    - Any render-blocking CSS: inline critical CSS for above-fold.
@@ -188,8 +207,14 @@ add_action('wp_enqueue_scripts', function() {
 - [ ] srcset on all product images (wp_get_attachment_image)
 - [ ] loading="lazy" on all below-fold images
 - [ ] width + height attributes on all images (prevent CLS)
-- [ ] Install + configure LiteSpeed Cache on staging
-- [ ] Configure Cloudflare (Polish, Brotli, caching, WAF)
+- [ ] Install + configure LiteSpeed Cache on staging (Cache + Optimize tabs)
+- [ ] Generate QUIC.cloud Domain Key in LSCache General settings
+- [ ] Enable LSCache "Auto Request Cron" for background image optimization
+- [ ] Enable LSCache "Create WebP Versions" and "Image WebP Replacement"
+- [ ] Enable LSCache "Optimize Original Images"
+- [ ] Upload test product image → verify QUIC.cloud returns compressed WebP variant
+- [ ] Verify WebP replacement on frontend (browser DevTools Network: confirm `.webp` served)
+- [ ] Configure Cloudflare Free Tier (Brotli ON, Caching rules, WAF Medium) — confirm Polish is OFF
 - [ ] Baseline PageSpeed measurement (mobile + desktop)
 - [ ] Fix all PageSpeed flagged issues
 - [ ] AJAX filter performance test with 200+ products
@@ -212,7 +237,9 @@ add_action('wp_enqueue_scripts', function() {
 ## Risk Assessment
 | Risk | Probability | Mitigation |
 |---|---|---|
-| Cloudflare Polish requires Pro plan | Medium | Confirm billing with client before Phase 06 begins |
+| ~~Cloudflare Polish requires Pro plan~~ | ~~Resolved~~ | **DEPRECATED** — pivot to QUIC.cloud free tier ✅ |
+| QUIC.cloud free tier credit exhausted | Low | Monitor credit usage; credits reset monthly. Batch-optimize large imports |
+| QUIC.cloud returns error for some images | Low | Check LSCache Image Optimization log; re-request failed images manually |
 | PageSpeed stuck at 75–80 despite optimizations | Low | Inline critical CSS for above-fold (< 14KB inline) |
 | AJAX filter slow with 500+ products | Low | Verify index table query plan with EXPLAIN; add composite index |
 | LiteSpeed Cache interferes with AJAX filter | Medium | Explicitly exclude `/wp-admin/admin-ajax.php` from cache |

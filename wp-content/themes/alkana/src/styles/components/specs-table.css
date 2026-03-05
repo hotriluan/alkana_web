@@ -1,0 +1,37 @@
+/**
+ * Product specification table — auto-hides empty rows (handled in PHP template)
+ */
+.specs-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9375rem;
+}
+.specs-table th,
+.specs-table td {
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid var(--color-border);
+    text-align: left;
+    vertical-align: top;
+}
+.specs-table th {
+    width: 40%;
+    font-weight: 500;
+    color: var(--color-text-muted);
+    background-color: var(--color-bg-light);
+}
+.specs-table td { color: var(--color-text); }
+.specs-table tr:last-child th,
+.specs-table tr:last-child td { border-bottom: none; }
+
+/* Mobile: convert to card-list style */
+@media (max-width: 640px) {
+    .specs-table, .specs-table thead, .specs-table tbody,
+    .specs-table th, .specs-table td, .specs-table tr { display: block; }
+    .specs-table th {
+        width: 100%;
+        border-bottom: none;
+        padding-bottom: 0.25rem;
+    }
+    .specs-table td { padding-top: 0.25rem; background: none; }
+    .specs-table tr { margin-bottom: 1rem; background: var(--color-bg-light); border-radius: var(--radius-card); overflow: hidden; padding: 0.75rem; }
+}

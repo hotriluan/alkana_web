@@ -1,0 +1,44 @@
+/**
+ * Alkana Theme — CSS Custom Properties (Brand Tokens)
+ * Source of truth for all colors, typography, and spacing.
+ * Used by Tailwind extend + raw CSS components.
+ */
+:root {
+    /* Brand colors — extracted from Alkana logo */
+    --color-primary:     #E8611A;   /* Alkana orange */
+    --color-primary-dark:#C4501A;
+    --color-secondary:   #1A3A5C;   /* Navy blue */
+    --color-text:        #1A1A1A;   /* Dark charcoal */
+    --color-text-muted:  #666666;
+    --color-bg:          #FFFFFF;
+    --color-bg-light:    #F5F5F5;
+    --color-border:      #E0E0E0;
+    --color-success:     #2E7D32;
+    --color-error:       #C62828;
+
+    /* Typography */
+    --font-heading: 'Montserrat', sans-serif;
+    --font-body:    'Inter', sans-serif;
+    --font-size-base: 16px;
+    --line-height-body: 1.6;
+
+    /* Spacing */
+    --radius-btn:   5px;
+    --radius-card:  8px;
+    --radius-input: 4px;
+
+    /* Shadows */
+    --shadow-card:       0 2px 8px rgba(0, 0, 0, 0.08);
+    --shadow-card-hover: 0 6px 20px rgba(0, 0, 0, 0.12);
+    --shadow-modal:      0 16px 48px rgba(0, 0, 0, 0.24);
+
+    /* Layout */
+    --container-max: 1280px;
+    --container-pad: 1.5rem;
+
+    /* Z-index scale */
+    --z-sticky-cta:    100;
+    --z-bottom-sheet:  200;
+    --z-nav:           300;
+    --z-modal:         400;
+}

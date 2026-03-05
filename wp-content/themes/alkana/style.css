@@ -1,0 +1,14 @@
+/*
+Theme Name:  Alkana Coating
+Theme URI:   https://alkana.vn
+Author:      Alkana Dev Team
+Author URI:  https://alkana.vn
+Description: Custom Industrial Modern theme for Alkana Coating B2B/B2C catalog website. Built with Tailwind CSS + Vite. Zero page builders, zero bloat.
+Version:     1.0.0
+Requires at least: 6.0
+Requires PHP: 8.1
+License:     Proprietary
+Text Domain: alkana
+
+/* DO NOT add CSS here — all styles compiled via Vite (src/styles/app.css → dist/app.[hash].css) */
+*/

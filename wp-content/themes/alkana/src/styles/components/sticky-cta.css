@@ -1,0 +1,44 @@
+/**
+ * Sticky mobile CTA bar — fixed to bottom edge on mobile.
+ * tel / Zalo / Get Quote buttons.
+ */
+.sticky-cta {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: var(--z-sticky-cta);
+    background: var(--color-bg);
+    border-top: 1px solid var(--color-border);
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    padding: 0.625rem 1rem;
+    box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.sticky-cta__item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+    text-decoration: none;
+    color: var(--color-text);
+    font-size: 0.75rem;
+    font-weight: 500;
+    flex: 1;
+    text-align: center;
+}
+.sticky-cta__item svg,
+.sticky-cta__item .icon { width: 24px; height: 24px; }
+.sticky-cta__item--primary { color: var(--color-primary); }
+.sticky-cta__item--zalo    { color: #0068FF; }
+
+/* Add bottom padding to body so content isn't hidden under CTA bar */
+body.has-sticky-cta { padding-bottom: 72px; }
+
+/* Hide on desktop — desktop has header CTAs */
+@media (min-width: 1024px) {
+    .sticky-cta { display: none; }
+    body.has-sticky-cta { padding-bottom: 0; }
+}

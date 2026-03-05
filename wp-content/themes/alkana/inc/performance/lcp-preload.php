@@ -27,7 +27,16 @@ function alkana_hero_lcp_preload(): void {
 		return;
 	}
 
-	$hero_image = get_field( 'hero_image' );
+	// ACF get_field() if available, otherwise fall back to post meta (attachment ID).
+	if ( function_exists( 'get_field' ) ) {
+		$hero_image = get_field( 'hero_image' );
+	} else {
+		$attach_id = (int) get_post_meta( get_the_ID(), 'hero_image', true );
+		$hero_image = $attach_id ? [
+			'ID'  => $attach_id,
+			'url' => wp_get_attachment_url( $attach_id ),
+		] : null;
+	}
 
 	if ( ! $hero_image || empty( $hero_image['url'] ) ) {
 		return;

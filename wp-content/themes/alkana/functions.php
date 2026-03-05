@@ -10,6 +10,9 @@ define('ALKANA_VERSION', '1.0.0');
 define('ALKANA_DIR', get_template_directory());
 define('ALKANA_URI', get_template_directory_uri());
 
+// ── ACF compatibility shim (no-op when ACF plugin is active) ─────────────────
+require_once ALKANA_DIR . '/inc/compat/acf-shim.php';
+
 // ── Core modules (always loaded) ──────────────────────────────────────────────
 require_once ALKANA_DIR . '/inc/theme-setup.php';
 require_once ALKANA_DIR . '/inc/enqueue-assets.php';

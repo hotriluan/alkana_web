@@ -1,0 +1,138 @@
+{
+    "key": "group_alkana_identification",
+    "title": "Alkana \u2014 Identification",
+    "fields": [
+        {
+            "key": "field_alkana_sku",
+            "label": "SKU",
+            "name": "_alkana_sku",
+            "aria-label": "",
+            "type": "text",
+            "instructions": "Unique product code (e.g. ALK-WC-001)",
+            "required": 1,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "maxlength": 50,
+            "placeholder": "ALK-XX-000",
+            "prepend": "",
+            "append": ""
+        },
+        {
+            "key": "field_alkana_commercial_name",
+            "label": "Commercial Name (VI)",
+            "name": "_alkana_name",
+            "aria-label": "",
+            "type": "text",
+            "instructions": "Vietnamese product name shown to customers",
+            "required": 1,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "maxlength": 200,
+            "placeholder": "",
+            "prepend": "",
+            "append": ""
+        },
+        {
+            "key": "field_alkana_short_desc",
+            "label": "Short Description",
+            "name": "_alkana_short_desc",
+            "aria-label": "",
+            "type": "textarea",
+            "instructions": "1-2 sentences for product card display (max 200 chars)",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "maxlength": 200,
+            "rows": 3,
+            "placeholder": "",
+            "new_lines": "br"
+        },
+        {
+            "key": "field_alkana_is_featured",
+            "label": "Featured Product",
+            "name": "is_featured",
+            "aria-label": "",
+            "type": "true_false",
+            "instructions": "Show on homepage featured section and filter badge",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "message": "Mark as featured product",
+            "default_value": 0,
+            "ui": 1,
+            "ui_on_text": "Yes",
+            "ui_off_text": "No"
+        },
+        {
+            "key": "field_alkana_hero_image",
+            "label": "Hero Image",
+            "name": "hero_image",
+            "aria-label": "",
+            "type": "image",
+            "instructions": "Product hero image (min 960\u00d7540px). Used on detail page.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            },
+            "return_format": "array",
+            "library": "all",
+            "min_width": 480,
+            "min_height": 240,
+            "min_size": "",
+            "max_width": "",
+            "max_height": "",
+            "max_size": 5,
+            "mime_types": "jpg,jpeg,png,webp"
+        }
+    ],
+    "location": [
+        [
+            {
+                "param": "post_type",
+                "operator": "==",
+                "value": "alkana_product"
+            }
+        ]
+    ],
+    "menu_order": 0,
+    "position": "normal",
+    "style": "default",
+    "label_placement": "top",
+    "instruction_placement": "label",
+    "hide_on_screen": [
+        "slug",
+        "author",
+        "format",
+        "page_attributes",
+        "featured_image",
+        "categories",
+        "tags",
+        "send-trackbacks"
+    ],
+    "active": true,
+    "description": "Core product identification fields",
+    "show_in_rest": 0,
+    "modified": 1741168800
+}

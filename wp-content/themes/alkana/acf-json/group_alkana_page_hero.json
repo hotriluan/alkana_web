@@ -1,0 +1,133 @@
+{
+    "key": "group_alkana_page_hero",
+    "title": "Alkana \u2014 Page Hero Banner",
+    "fields": [
+        {
+            "key": "field_alkana_hero_bg_image",
+            "label": "Hero Background Image",
+            "name": "hero_image",
+            "aria-label": "",
+            "type": "image",
+            "instructions": "Full-width hero background (min 1440\u00d7600px). WebP preferred.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "return_format": "array",
+            "library": "all",
+            "min_width": 960,
+            "min_height": 400,
+            "min_size": "",
+            "max_width": "",
+            "max_height": "",
+            "max_size": 10,
+            "mime_types": "jpg,jpeg,png,webp"
+        },
+        {
+            "key": "field_alkana_hero_heading",
+            "label": "Hero Heading",
+            "name": "hero_title",
+            "aria-label": "",
+            "type": "text",
+            "instructions": "Override page title in hero. Leave blank to use page title.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "maxlength": 120,
+            "placeholder": "",
+            "prepend": "",
+            "append": ""
+        },
+        {
+            "key": "field_alkana_hero_subtitle",
+            "label": "Hero Subtitle",
+            "name": "hero_subtitle",
+            "aria-label": "",
+            "type": "textarea",
+            "instructions": "Short tagline under heading",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "maxlength": 200,
+            "rows": 2,
+            "placeholder": "",
+            "new_lines": "br"
+        },
+        {
+            "key": "field_alkana_hero_cta_label",
+            "label": "CTA Button Label",
+            "name": "hero_cta_label",
+            "aria-label": "",
+            "type": "text",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "Kh\u00e1m ph\u00e1 s\u1ea3n ph\u1ea9m",
+            "maxlength": 60,
+            "placeholder": "",
+            "prepend": "",
+            "append": ""
+        },
+        {
+            "key": "field_alkana_hero_cta_url",
+            "label": "CTA Button URL",
+            "name": "hero_cta_url",
+            "aria-label": "",
+            "type": "url",
+            "instructions": "Leave blank to link to products archive",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "placeholder": ""
+        }
+    ],
+    "location": [
+        [
+            {
+                "param": "post_type",
+                "operator": "==",
+                "value": "page"
+            }
+        ],
+        [
+            {
+                "param": "post_type",
+                "operator": "==",
+                "value": "alkana_product"
+            }
+        ]
+    ],
+    "menu_order": 0,
+    "position": "side",
+    "style": "default",
+    "label_placement": "top",
+    "instruction_placement": "label",
+    "hide_on_screen": "",
+    "active": true,
+    "description": "Hero banner fields for pages and product detail",
+    "show_in_rest": 0,
+    "modified": 1741168800
+}

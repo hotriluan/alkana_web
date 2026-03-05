@@ -1,0 +1,163 @@
+{
+    "key": "group_alkana_product_variants",
+    "title": "Alkana \u2014 Color Variants & Packaging",
+    "fields": [
+        {
+            "key": "field_alkana_variants",
+            "label": "Color Variants",
+            "name": "_alkana_variants",
+            "aria-label": "",
+            "type": "repeater",
+            "instructions": "Add one row per color variant. Leave empty if product has no color options.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "layout": "block",
+            "min": 0,
+            "max": 50,
+            "collapsed": "field_alkana_variant_color_name",
+            "button_label": "Add Color Variant",
+            "sub_fields": [
+                {
+                    "key": "field_alkana_variant_color_name",
+                    "label": "Color Name",
+                    "name": "color_name",
+                    "aria-label": "",
+                    "type": "text",
+                    "instructions": "e.g. Pure White, Ivory, Cream",
+                    "required": 1,
+                    "conditional_logic": 0,
+                    "wrapper": {
+                        "width": "40",
+                        "class": "",
+                        "id": ""
+                    },
+                    "default_value": "",
+                    "maxlength": 100,
+                    "placeholder": "Color name",
+                    "prepend": "",
+                    "append": "",
+                    "parent_repeater": "field_alkana_variants"
+                },
+                {
+                    "key": "field_alkana_variant_hex",
+                    "label": "Hex Color",
+                    "name": "hex_code",
+                    "aria-label": "",
+                    "type": "color_picker",
+                    "instructions": "Approximate color for UI swatch display",
+                    "required": 0,
+                    "conditional_logic": 0,
+                    "wrapper": {
+                        "width": "20",
+                        "class": "",
+                        "id": ""
+                    },
+                    "default_value": "#FFFFFF",
+                    "enable_opacity": 0,
+                    "return_format": "string",
+                    "parent_repeater": "field_alkana_variants"
+                },
+                {
+                    "key": "field_alkana_variant_gloss",
+                    "label": "Gloss Level",
+                    "name": "gloss_level",
+                    "aria-label": "",
+                    "type": "select",
+                    "instructions": "",
+                    "required": 0,
+                    "conditional_logic": 0,
+                    "wrapper": {
+                        "width": "20",
+                        "class": "",
+                        "id": ""
+                    },
+                    "choices": {
+                        "matte": "Matte",
+                        "satin": "Satin",
+                        "semi-gloss": "Semi-Gloss",
+                        "gloss": "Gloss",
+                        "high-gloss": "High Gloss"
+                    },
+                    "default_value": "",
+                    "allow_null": 1,
+                    "multiple": 0,
+                    "ui": 1,
+                    "ajax": 0,
+                    "return_format": "value",
+                    "placeholder": "Select\u2026",
+                    "parent_repeater": "field_alkana_variants"
+                },
+                {
+                    "key": "field_alkana_variant_packaging",
+                    "label": "Packaging Sizes",
+                    "name": "packaging_sizes",
+                    "aria-label": "",
+                    "type": "text",
+                    "instructions": "Comma-separated sizes, e.g. 1L, 5L, 18L",
+                    "required": 0,
+                    "conditional_logic": 0,
+                    "wrapper": {
+                        "width": "20",
+                        "class": "",
+                        "id": ""
+                    },
+                    "default_value": "",
+                    "maxlength": 100,
+                    "placeholder": "1L, 5L, 18L",
+                    "prepend": "",
+                    "append": "",
+                    "parent_repeater": "field_alkana_variants"
+                },
+                {
+                    "key": "field_alkana_variant_image",
+                    "label": "Variant Image",
+                    "name": "variant_image",
+                    "aria-label": "",
+                    "type": "image",
+                    "instructions": "Optional: color swatch or tin image",
+                    "required": 0,
+                    "conditional_logic": 0,
+                    "wrapper": {
+                        "width": "",
+                        "class": "",
+                        "id": ""
+                    },
+                    "return_format": "id",
+                    "library": "all",
+                    "min_width": "",
+                    "min_height": "",
+                    "min_size": "",
+                    "max_width": "",
+                    "max_height": "",
+                    "max_size": 2,
+                    "mime_types": "jpg,jpeg,png,webp",
+                    "parent_repeater": "field_alkana_variants"
+                }
+            ]
+        }
+    ],
+    "location": [
+        [
+            {
+                "param": "post_type",
+                "operator": "==",
+                "value": "alkana_product"
+            }
+        ]
+    ],
+    "menu_order": 2,
+    "position": "normal",
+    "style": "default",
+    "label_placement": "top",
+    "instruction_placement": "label",
+    "hide_on_screen": "",
+    "active": true,
+    "description": "Color variants + packaging sizes (ACF Repeater — requires ACF Pro)",
+    "show_in_rest": 0,
+    "modified": 1741168800
+}

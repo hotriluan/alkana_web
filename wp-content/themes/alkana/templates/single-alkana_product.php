@@ -51,7 +51,7 @@ get_template_part( 'template-parts/header' );
 						<?php esc_html_e( 'Request Quote', 'alkana' ); ?>
 					</a>
 					<?php
-					$tds_file = get_field( 'tds_file' );
+					$tds_file = get_field( '_alkana_tds' );
 					if ( $tds_file ) :
 					?>
 						<a href="<?php echo esc_url( $tds_file['url'] ); ?>"

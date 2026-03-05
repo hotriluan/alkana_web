@@ -9,7 +9,7 @@
 | Item | Detail |
 |---|---|
 | **Priority** | Critical |
-| **Status** | ⏳ pending |
+| **Status** | ✅ complete |
 | **Timeline** | Weeks 1–2 |
 | **Depends on** | Phase 00 (staging environment ready) |
 | **Blocks** | Phase 02, 03, 04 |
@@ -172,17 +172,17 @@ add_action('acf/save_post', function($post_id) {
 10. Export ACF field groups to JSON and commit to git.
 
 ## Todo List
-- [ ] Register `alkana_product` CPT
-- [ ] Register `alkana_project` CPT
-- [ ] Register 4 taxonomies
-- [ ] Test rewrite rules (permalink `/products/` works)
-- [ ] Create ACF field groups (5 groups above)
-- [ ] Enable ACF local JSON sync to `acf-json/`
-- [ ] Create `wp_alkana_product_index` table
-- [ ] Implement `sync-product-index.php` hook
-- [ ] Test: save product → index row created
-- [ ] Populate taxonomy terms with Alkana's real categories
-- [ ] Commit `acf-json/` to git
+- [x] Register `alkana_product` CPT
+- [x] Register `alkana_project` CPT
+- [x] Register 4 taxonomies
+- [ ] Test rewrite rules (permalink `/products/` works) — requires live WP install
+- [x] Create ACF field groups (7 JSON files in `acf-json/`)
+- [x] Enable ACF local JSON sync to `acf-json/` (filters in `inc/theme-setup.php`)
+- [x] Create `wp_alkana_product_index` table
+- [x] Implement `sync-product-index.php` hook
+- [ ] Test: save product → index row created — requires live WP install
+- [x] Populate taxonomy terms — seeder at `inc/db/seed-taxonomy-terms.php`
+- [x] Commit `acf-json/` to git
 
 ## Success Criteria
 - `/products/` archive URL returns 200 with custom theme template

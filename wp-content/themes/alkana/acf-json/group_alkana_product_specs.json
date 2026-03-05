@@ -1,0 +1,259 @@
+{
+    "key": "group_alkana_product_specs",
+    "title": "Alkana \u2014 Technical Specifications",
+    "fields": [
+        {
+            "key": "field_alkana_coverage",
+            "label": "Theoretical Coverage",
+            "name": "_alkana_coverage",
+            "aria-label": "",
+            "type": "text",
+            "instructions": "e.g. 8\u201310 m\u00b2/L",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "maxlength": 50,
+            "placeholder": "8\u201310 m\u00b2/L",
+            "prepend": "",
+            "append": ""
+        },
+        {
+            "key": "field_alkana_mix_ratio",
+            "label": "Mixing Ratio",
+            "name": "_alkana_mix_ratio",
+            "aria-label": "",
+            "type": "text",
+            "instructions": "e.g. 4:1 (base:hardener) or \u201cReady to use\u201d",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "maxlength": 100,
+            "placeholder": "4:1",
+            "prepend": "",
+            "append": ""
+        },
+        {
+            "key": "field_alkana_thinner",
+            "label": "Compatible Thinner",
+            "name": "_alkana_thinner",
+            "aria-label": "",
+            "type": "text",
+            "instructions": "e.g. Alkana Thinner No.5 or Water",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "maxlength": 100,
+            "placeholder": "",
+            "prepend": "",
+            "append": ""
+        },
+        {
+            "key": "field_alkana_paint_system_layer",
+            "label": "Paint System Layer",
+            "name": "_alkana_layer",
+            "aria-label": "",
+            "type": "select",
+            "instructions": "Which layer in the paint system",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            },
+            "choices": {
+                "primer": "Primer",
+                "intermediate": "Intermediate Coat",
+                "topcoat": "Top Coat",
+                "sealer": "Sealer",
+                "filler": "Filler / Putty"
+            },
+            "default_value": "",
+            "allow_null": 1,
+            "multiple": 0,
+            "ui": 1,
+            "ajax": 0,
+            "return_format": "value",
+            "placeholder": "Select layer\u2026"
+        },
+        {
+            "key": "field_alkana_dry_touch",
+            "label": "Touch Dry Time",
+            "name": "_alkana_dry_touch",
+            "aria-label": "",
+            "type": "text",
+            "instructions": "e.g. 30 min @ 25\u00b0C",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "33",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "maxlength": 60,
+            "placeholder": "30 min",
+            "prepend": "",
+            "append": ""
+        },
+        {
+            "key": "field_alkana_dry_hard",
+            "label": "Hard Dry Time",
+            "name": "_alkana_dry_hard",
+            "aria-label": "",
+            "type": "text",
+            "instructions": "e.g. 2 hrs @ 25\u00b0C",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "33",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "maxlength": 60,
+            "placeholder": "2 hrs",
+            "prepend": "",
+            "append": ""
+        },
+        {
+            "key": "field_alkana_dry_recoat",
+            "label": "Recoat Time",
+            "name": "_alkana_dry_recoat",
+            "aria-label": "",
+            "type": "text",
+            "instructions": "e.g. 4\u20166 hrs",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "33",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "maxlength": 60,
+            "placeholder": "4\u20166 hrs",
+            "prepend": "",
+            "append": ""
+        },
+        {
+            "key": "field_alkana_product_specs",
+            "label": "Additional Specifications",
+            "name": "product_specs",
+            "aria-label": "",
+            "type": "repeater",
+            "instructions": "Extra spec rows shown in the specs table on product detail page",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "layout": "table",
+            "min": 0,
+            "max": 20,
+            "collapsed": "",
+            "button_label": "Add Specification Row",
+            "sub_fields": [
+                {
+                    "key": "field_alkana_spec_label",
+                    "label": "Property",
+                    "name": "spec_label",
+                    "aria-label": "",
+                    "type": "text",
+                    "instructions": "",
+                    "required": 1,
+                    "conditional_logic": 0,
+                    "wrapper": {
+                        "width": "40",
+                        "class": "",
+                        "id": ""
+                    },
+                    "default_value": "",
+                    "maxlength": 100,
+                    "placeholder": "e.g. VOC Content",
+                    "prepend": "",
+                    "append": "",
+                    "parent_repeater": "field_alkana_product_specs"
+                },
+                {
+                    "key": "field_alkana_spec_value",
+                    "label": "Value",
+                    "name": "spec_value",
+                    "aria-label": "",
+                    "type": "text",
+                    "instructions": "",
+                    "required": 1,
+                    "conditional_logic": 0,
+                    "wrapper": {
+                        "width": "40",
+                        "class": "",
+                        "id": ""
+                    },
+                    "default_value": "",
+                    "maxlength": 200,
+                    "placeholder": "e.g. < 50 g/L",
+                    "prepend": "",
+                    "append": "",
+                    "parent_repeater": "field_alkana_product_specs"
+                },
+                {
+                    "key": "field_alkana_spec_unit",
+                    "label": "Unit (optional)",
+                    "name": "spec_unit",
+                    "aria-label": "",
+                    "type": "text",
+                    "instructions": "",
+                    "required": 0,
+                    "conditional_logic": 0,
+                    "wrapper": {
+                        "width": "20",
+                        "class": "",
+                        "id": ""
+                    },
+                    "default_value": "",
+                    "maxlength": 30,
+                    "placeholder": "g/L",
+                    "prepend": "",
+                    "append": "",
+                    "parent_repeater": "field_alkana_product_specs"
+                }
+            ]
+        }
+    ],
+    "location": [
+        [
+            {
+                "param": "post_type",
+                "operator": "==",
+                "value": "alkana_product"
+            }
+        ]
+    ],
+    "menu_order": 1,
+    "position": "normal",
+    "style": "default",
+    "label_placement": "top",
+    "instruction_placement": "label",
+    "hide_on_screen": "",
+    "active": true,
+    "description": "Technical specifications shown in product detail specs table",
+    "show_in_rest": 0,
+    "modified": 1741168800
+}

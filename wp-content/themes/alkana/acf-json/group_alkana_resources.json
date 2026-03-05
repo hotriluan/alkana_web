@@ -1,0 +1,146 @@
+{
+    "key": "group_alkana_resources",
+    "title": "Alkana \u2014 Resources & Documents",
+    "fields": [
+        {
+            "key": "field_alkana_tds",
+            "label": "TDS (Technical Data Sheet)",
+            "name": "_alkana_tds",
+            "aria-label": "",
+            "type": "file",
+            "instructions": "PDF only. Displayed as download button on product page.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            },
+            "return_format": "array",
+            "library": "all",
+            "min_size": "",
+            "max_size": 20,
+            "mime_types": "pdf"
+        },
+        {
+            "key": "field_alkana_msds",
+            "label": "MSDS / SDS (Safety Data Sheet)",
+            "name": "_alkana_msds",
+            "aria-label": "",
+            "type": "file",
+            "instructions": "PDF only. Safety data sheet.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            },
+            "return_format": "array",
+            "library": "all",
+            "min_size": "",
+            "max_size": 20,
+            "mime_types": "pdf"
+        },
+        {
+            "key": "field_alkana_certifications",
+            "label": "Certifications",
+            "name": "_alkana_certs",
+            "aria-label": "",
+            "type": "repeater",
+            "instructions": "Attach certification documents (PDF or image)",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "layout": "table",
+            "min": 0,
+            "max": 10,
+            "collapsed": "",
+            "button_label": "Add Certification",
+            "sub_fields": [
+                {
+                    "key": "field_alkana_cert_name",
+                    "label": "Certificate Name",
+                    "name": "cert_name",
+                    "aria-label": "",
+                    "type": "text",
+                    "instructions": "",
+                    "required": 1,
+                    "conditional_logic": 0,
+                    "wrapper": {
+                        "width": "40",
+                        "class": "",
+                        "id": ""
+                    },
+                    "default_value": "",
+                    "maxlength": 100,
+                    "placeholder": "e.g. ISO 9001:2015",
+                    "prepend": "",
+                    "append": "",
+                    "parent_repeater": "field_alkana_certifications"
+                },
+                {
+                    "key": "field_alkana_cert_file",
+                    "label": "Certificate File",
+                    "name": "cert_file",
+                    "aria-label": "",
+                    "type": "file",
+                    "instructions": "",
+                    "required": 0,
+                    "conditional_logic": 0,
+                    "wrapper": {
+                        "width": "60",
+                        "class": "",
+                        "id": ""
+                    },
+                    "return_format": "array",
+                    "library": "all",
+                    "min_size": "",
+                    "max_size": 10,
+                    "mime_types": "pdf,jpg,jpeg,png",
+                    "parent_repeater": "field_alkana_certifications"
+                }
+            ]
+        },
+        {
+            "key": "field_alkana_video_url",
+            "label": "Product Video URL",
+            "name": "_alkana_video",
+            "aria-label": "",
+            "type": "url",
+            "instructions": "YouTube or Vimeo URL (optional)",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "placeholder": "https://youtube.com/watch?v=..."
+        }
+    ],
+    "location": [
+        [
+            {
+                "param": "post_type",
+                "operator": "==",
+                "value": "alkana_product"
+            }
+        ]
+    ],
+    "menu_order": 3,
+    "position": "normal",
+    "style": "default",
+    "label_placement": "top",
+    "instruction_placement": "label",
+    "hide_on_screen": "",
+    "active": true,
+    "description": "TDS, MSDS, certifications and video resources",
+    "show_in_rest": 0,
+    "modified": 1741168800
+}

@@ -1,0 +1,82 @@
+{
+    "key": "group_alkana_relations",
+    "title": "Alkana \u2014 Relations",
+    "fields": [
+        {
+            "key": "field_alkana_crosssell",
+            "label": "Cross-sell Products",
+            "name": "_alkana_crosssell",
+            "aria-label": "",
+            "type": "relationship",
+            "instructions": "Select products to recommend alongside this product (e.g., primer + topcoat pairing)",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            },
+            "post_type": [
+                "alkana_product"
+            ],
+            "taxonomy": "",
+            "filters": [
+                "search",
+                "taxonomy"
+            ],
+            "return_format": "id",
+            "min": 0,
+            "max": 6,
+            "elements": [
+                "featured_image"
+            ]
+        },
+        {
+            "key": "field_alkana_related_projects",
+            "label": "Featured in Projects",
+            "name": "_alkana_projects",
+            "aria-label": "",
+            "type": "relationship",
+            "instructions": "Link projects that used this product (shown on product detail page)",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            },
+            "post_type": [
+                "alkana_project"
+            ],
+            "taxonomy": "",
+            "filters": [
+                "search"
+            ],
+            "return_format": "id",
+            "min": 0,
+            "max": 4,
+            "elements": [
+                "featured_image"
+            ]
+        }
+    ],
+    "location": [
+        [
+            {
+                "param": "post_type",
+                "operator": "==",
+                "value": "alkana_product"
+            }
+        ]
+    ],
+    "menu_order": 4,
+    "position": "side",
+    "style": "default",
+    "label_placement": "top",
+    "instruction_placement": "label",
+    "hide_on_screen": "",
+    "active": true,
+    "description": "Cross-sell products and related project references",
+    "show_in_rest": 0,
+    "modified": 1741168800
+}

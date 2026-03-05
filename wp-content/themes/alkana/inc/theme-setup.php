@@ -40,3 +40,24 @@ function alkana_theme_setup(): void {
 	// Team / person portrait
 	add_image_size( 'alkana-portrait', 300, 300, true );
 }
+
+// ── ACF Local JSON ────────────────────────────────────────────────────────────
+
+/**
+ * Tell ACF where to save field group JSON files.
+ * Enables version-controlling ACF schema in git.
+ */
+add_filter( 'acf/settings/save_json', static function (): string {
+	return get_template_directory() . '/acf-json';
+} );
+
+/**
+ * Tell ACF where to load field group JSON files from.
+ *
+ * @param string[] $paths Existing load paths.
+ * @return string[]
+ */
+add_filter( 'acf/settings/load_json', static function ( array $paths ): array {
+	$paths[] = get_template_directory() . '/acf-json';
+	return $paths;
+} );

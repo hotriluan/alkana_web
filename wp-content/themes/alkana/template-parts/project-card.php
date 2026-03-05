@@ -17,9 +17,12 @@ $year     = get_field( 'project_year', $post_id );
 
 	<a href="<?php the_permalink(); ?>" class="project-card__image-link block overflow-hidden aspect-[3/2]">
 		<?php if ( has_post_thumbnail() ) : ?>
-			<?php the_post_thumbnail( 'alkana-project-card', [
-				'class' => 'project-card__img w-full h-full object-cover transition-transform duration-300 group-hover:scale-105',
-				'alt'   => get_the_title(),
+			<?php echo wp_get_attachment_image( get_post_thumbnail_id(), 'alkana-project-card', false, [
+				'class'   => 'project-card__img w-full h-full object-cover transition-transform duration-300 group-hover:scale-105',
+				'alt'     => get_the_title(),
+				'loading' => 'lazy',
+				'decoding' => 'async',
+				'sizes'   => '(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw',
 			] ); ?>
 		<?php else : ?>
 			<div class="project-card__img-placeholder w-full h-full bg-gray-100 flex items-center justify-center">

@@ -37,8 +37,8 @@ LiteSpeed Cache (full-page + object cache)
 | 03 | [AJAX Faceted Filter](phase-03-ajax-faceted-filter.md) | ✅ complete | W3–W4 | Critical |
 | 04 | [Admin UI & RBAC](phase-04-admin-ui-rbac.md) | ✅ complete | W4–W5 | High |
 | 05 | [Data Migration & SEO](phase-05-data-migration-seo.md) | 🔄 scripts ready | W1→W5 | Critical |
-| 06 | [Performance Pipeline](phase-06-performance-pipeline.md) | ⏳ pending | W6–W7 | High |
-| 07 | [Deployment & Handover](phase-07-deployment.md) | ⏳ pending | W8 | Critical |
+| 06 | [Performance Pipeline](phase-06-performance-pipeline.md) | 🔄 code done, LSCache/QUIC.cloud config pending on staging | W6–W7 | High |
+| 07 | [Deployment & Handover](phase-07-deployment.md) | 🔄 handover docs ready, deployment pending | W8 | Critical |
 
 ## Key Dependencies
 

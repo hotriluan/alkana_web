@@ -28,6 +28,9 @@ require_once ALKANA_DIR . '/inc/hooks/sync-product-index.php';
 // ── AJAX endpoints ─────────────────────────────────────────────────────────────
 require_once ALKANA_DIR . '/inc/ajax/filter-handler.php';
 
+// ── Performance ────────────────────────────────────────────────────────────────
+require_once ALKANA_DIR . '/inc/performance/lcp-preload.php';
+
 // ── Admin (only in admin context) ──────────────────────────────────────────────
 if (is_admin()) {
     require_once ALKANA_DIR . '/inc/admin/roles.php';

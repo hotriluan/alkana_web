@@ -100,6 +100,9 @@ function alkana_dequeue_bloat(): void {
 	// Dequeue Gutenberg global styles
 	wp_dequeue_style( 'global-styles' );
 
+	// Remove classic-theme-styles (Twenty Twenty-One compat shim — not needed with Tailwind)
+	wp_dequeue_style( 'classic-theme-styles' );
+
 	// Remove jQuery from front-end (all JS is vanilla)
 	wp_dequeue_script( 'jquery' );
 	wp_deregister_script( 'jquery' );

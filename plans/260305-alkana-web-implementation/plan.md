@@ -35,8 +35,8 @@ LiteSpeed Cache (full-page + object cache)
 | 01 | [Database Schema & CPT/ACF](phase-01-database-schema.md) | ✅ complete | W1–W2 | Critical |
 | 02 | [Custom Theme + Vite Pipeline](phase-02-custom-theme-vite.md) | ✅ complete | W3–W4 | Critical |
 | 03 | [AJAX Faceted Filter](phase-03-ajax-faceted-filter.md) | ✅ complete | W3–W4 | Critical |
-| 04 | [Admin UI & RBAC](phase-04-admin-ui-rbac.md) | ⏳ pending | W4–W5 | High |
-| 05 | [Data Migration & SEO](phase-05-data-migration-seo.md) | ⏳ pending | W1→W5 | Critical |
+| 04 | [Admin UI & RBAC](phase-04-admin-ui-rbac.md) | ✅ complete | W4–W5 | High |
+| 05 | [Data Migration & SEO](phase-05-data-migration-seo.md) | 🔄 scripts ready | W1→W5 | Critical |
 | 06 | [Performance Pipeline](phase-06-performance-pipeline.md) | ⏳ pending | W6–W7 | High |
 | 07 | [Deployment & Handover](phase-07-deployment.md) | ⏳ pending | W8 | Critical |
 

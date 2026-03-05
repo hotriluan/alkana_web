@@ -1,0 +1,7 @@
+# robots.txt — STAGING (staging.alkana.vn)
+# Block ALL crawlers on staging environment.
+# Deploy this file to the staging web root BEFORE launch.
+# REPLACE with robots.txt (production) when going live.
+
+User-agent: *
+Disallow: /

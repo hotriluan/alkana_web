@@ -1,0 +1,19 @@
+# robots.txt — PRODUCTION (alkana.vn)
+# Deploy this file to the web root on the live server.
+# DO NOT deploy staging-robots.txt to production.
+
+User-agent: *
+Allow: /
+Disallow: /wp-admin/
+Disallow: /wp-login.php
+Disallow: /wp-content/plugins/
+Disallow: /wp-content/themes/alkana/node_modules/
+Disallow: /wp-content/themes/alkana/src/
+Disallow: /wp-content/themes/alkana/scripts/
+Disallow: /xmlrpc.php
+
+# Allow search engines to crawl wp-content/uploads (images, PDFs)
+Allow: /wp-content/uploads/
+
+# Sitemap
+Sitemap: https://alkana.vn/sitemap.xml

@@ -1,0 +1,10 @@
+old_url,new_url,status,notes
+https://www.alkana.vn/san-pham/,https://alkana.vn/products/,301,Product archive
+https://www.alkana.vn/cong-trinh/,https://alkana.vn/projects/,301,Project archive
+https://www.alkana.vn/tin-tuc/,https://alkana.vn/news/,301,News archive
+https://www.alkana.vn/lien-he/,https://alkana.vn/contact/,301,Contact page
+https://www.alkana.vn/gioi-thieu/,https://alkana.vn/about/,301,About page
+https://www.alkana.vn/giai-phap/,https://alkana.vn/solutions/,301,Solutions page
+https://www.alkana.vn/tai-nguyen/,https://alkana.vn/resources/,301,Resources / TDS center
+https://www.alkana.vn/tuyen-dung/,https://alkana.vn/careers/,301,Careers page
+https://www.alkana.vn/,https://alkana.vn/,200,Homepage (no redirect needed)

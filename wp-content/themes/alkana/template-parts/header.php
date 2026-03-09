@@ -14,9 +14,8 @@
 	<?php esc_html_e( 'Skip to content', 'alkana' ); ?>
 </a>
 
-<header class="site-header sticky top-0 z-[--z-header] bg-white shadow-sm" id="site-header">
-	<div class="container mx-auto px-4">
-		<div class="header-inner flex items-center justify-between h-16">
+<header class="site-header sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-gray-100 shadow-sm transition-all" id="site-header">
+	<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-20">
 
 			<?php // ── Logo ──────────────────────────────────────────────────────── ?>
 			<a href="<?php echo esc_url( home_url( '/' ) ); ?>" class="site-logo flex items-center gap-2" rel="home">
@@ -25,17 +24,17 @@
 				if ( $logo_id ) {
 					echo wp_get_attachment_image( $logo_id, [ 160, 48 ], false, [ 'class' => 'site-logo__img h-10 w-auto' ] );
 				} else {
-					echo '<span class="font-heading font-bold text-xl text-[--color-secondary]">' . esc_html( get_bloginfo( 'name' ) ) . '</span>';
+					echo '<span class="text-2xl font-extrabold text-[#1A3A5C] tracking-tight">' . esc_html( get_bloginfo( 'name' ) ) . '</span>';
 				}
 				?>
 			</a>
 
 			<?php // ── Desktop Nav ───────────────────────────────────────────────── ?>
-			<nav class="site-nav hidden lg:flex items-center gap-6" aria-label="<?php esc_attr_e( 'Primary', 'alkana' ); ?>">
+			<nav class="site-nav hidden md:flex items-center gap-6" aria-label="<?php esc_attr_e( 'Primary', 'alkana' ); ?>">
 				<?php
 				wp_nav_menu( [
 					'theme_location' => 'primary',
-					'menu_class'     => 'nav-menu flex items-center gap-6',
+					'menu_class'     => 'nav-menu flex items-center space-x-8',
 					'container'      => false,
 					'depth'          => 2,
 					'fallback_cb'    => false,
@@ -55,7 +54,6 @@
 				<span class="block w-5 h-0.5 bg-[--color-secondary]"></span>
 			</button>
 
-		</div>
 	</div>
 
 	<?php // ── Mobile Nav Drawer ─────────────────────────────────────────────── ?>

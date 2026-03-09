@@ -23,7 +23,7 @@ $hero_cta_url   = get_field( 'hero_cta_url' )   ?: get_post_type_archive_link( '
 $img_id = $hero_image['ID'] ?? 0;
 ?>
 
-<section class="hero-banner relative flex items-center justify-center min-h-[480px] lg:min-h-[600px] bg-[--color-secondary] text-white overflow-hidden">
+<section class="hero-banner relative w-full min-h-[70vh] flex items-center justify-center overflow-hidden bg-gray-900">
 
 	<?php if ( $hero_image ) : ?>
 		<?php
@@ -35,7 +35,7 @@ $img_id = $hero_image['ID'] ?? 0;
 		 */
 		if ( $img_id ) {
 			echo wp_get_attachment_image( $img_id, 'full', false, [
-				'class'          => 'hero-banner__bg absolute inset-0 w-full h-full object-cover',
+				'class'          => 'hero-banner__bg absolute inset-0 w-full h-full object-cover z-0',
 				'alt'            => '',          // decorative — content covered by <h1>
 				'fetchpriority'  => 'high',
 				'loading'        => 'eager',
@@ -45,28 +45,28 @@ $img_id = $hero_image['ID'] ?? 0;
 		} else {
 			// Fallback: ACF returned array but no ID (external URL edge case)
 			printf(
-				'<img class="hero-banner__bg absolute inset-0 w-full h-full object-cover" src="%s" alt="" fetchpriority="high" loading="eager" decoding="async" width="1920" height="800">',
+				'<img class="hero-banner__bg absolute inset-0 w-full h-full object-cover z-0" src="%s" alt="" fetchpriority="high" loading="eager" decoding="async" width="1920" height="800">',
 				esc_url( $hero_image['url'] )
 			);
 		}
 		?>
-		<div class="hero-banner__overlay absolute inset-0 bg-black/50" aria-hidden="true"></div>
+		<div class="hero-banner__overlay absolute inset-0 bg-black/60 z-10" aria-hidden="true"></div>
 	<?php endif; ?>
 
-	<div class="hero-banner__content relative z-10 text-center px-4 max-w-3xl mx-auto">
+	<div class="hero-banner__content relative z-20 text-center px-4 max-w-4xl mx-auto">
 
-		<h1 class="hero-banner__title text-4xl lg:text-5xl font-heading font-bold leading-tight mb-4">
+		<h1 class="hero-banner__title text-4xl md:text-6xl font-extrabold text-white tracking-tight mb-6 leading-tight">
 			<?php echo wp_kses_post( $hero_title ); ?>
 		</h1>
 
 		<?php if ( $hero_sub ) : ?>
-			<p class="hero-banner__subtitle text-lg lg:text-xl text-white/80 mb-8">
+			<p class="hero-banner__subtitle text-lg md:text-xl text-gray-200 mb-10">
 				<?php echo wp_kses_post( $hero_sub ); ?>
 			</p>
 		<?php endif; ?>
 
 		<?php if ( $hero_cta_url ) : ?>
-			<a href="<?php echo esc_url( $hero_cta_url ); ?>" class="btn btn--primary btn--lg">
+			<a href="<?php echo esc_url( $hero_cta_url ); ?>" class="inline-block bg-[#E8611A] text-white px-8 py-4 rounded-md font-bold hover:bg-orange-600 transition-all duration-300 shadow-lg hover:shadow-orange-500/30 hover:-translate-y-1">
 				<?php echo esc_html( $hero_cta_label ); ?>
 			</a>
 		<?php endif; ?>

@@ -21,12 +21,12 @@ get_header();
 	<?php get_template_part( 'template-parts/hero-banner' ); ?>
 
 	<?php // ── Featured Products ──────────────────────────────────────────────── ?>
-	<section class="section section--products py-16 bg-gray-50">
-		<div class="container mx-auto px-4">
-			<h2 class="section__title text-2xl font-heading font-bold text-[--color-secondary] mb-8">
+	<section class="section section--products py-20 bg-gray-50">
+		<div class="max-w-7xl mx-auto px-4">
+			<h2 class="section__title text-3xl md:text-4xl font-extrabold text-center text-[#1A3A5C] mb-12">
 				<?php esc_html_e( 'Featured Products', 'alkana' ); ?>
 			</h2>
-			<div class="product-grid grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6" id="product-grid">
+			<div class="product-grid grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8" id="product-grid">
 				<?php
 				$featured_query = new WP_Query( [
 					'post_type'      => 'alkana_product',
@@ -70,9 +70,9 @@ get_header();
 	</section>
 
 	<?php // ── Recent Projects ────────────────────────────────────────────────── ?>
-	<section class="section section--projects py-16">
-		<div class="container mx-auto px-4">
-			<h2 class="section__title text-2xl font-heading font-bold text-[--color-secondary] mb-8">
+	<section class="section section--projects py-20 bg-white">
+		<div class="max-w-7xl mx-auto px-4">
+			<h2 class="section__title text-3xl md:text-4xl font-extrabold text-center text-[#1A3A5C] mb-12">
 				<?php esc_html_e( 'Recent Projects', 'alkana' ); ?>
 			</h2>
 			<div class="project-grid grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">

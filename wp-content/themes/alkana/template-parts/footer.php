@@ -1,7 +1,7 @@
-<footer class="site-footer bg-[--color-secondary] text-white pt-12 pb-6 mt-16">
-	<div class="container mx-auto px-4">
+<footer class="site-footer bg-[#1A3A5C] text-white pt-16 pb-8 border-t-4 border-[#E8611A]">
+	<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
-		<div class="footer-grid grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
+		<div class="footer-grid grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
 
 			<?php // ── Brand column ──────────────────────────────────────────────── ?>
 			<div class="footer-brand">
@@ -22,7 +22,7 @@
 				<?php
 				wp_nav_menu( [
 					'theme_location' => 'footer',
-					'menu_class'     => 'flex flex-col gap-2 text-sm text-gray-300',
+					'menu_class'     => 'flex flex-col gap-2',
 					'container'      => false,
 					'fallback_cb'    => false,
 				] );
@@ -45,7 +45,7 @@
 
 		</div>
 
-		<div class="footer-bottom border-t border-white/20 pt-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 text-xs text-gray-400">
+		<div class="footer-bottom border-t border-white/20 pt-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 text-sm text-gray-300">
 			<p>
 				&copy; <?php echo esc_html( gmdate( 'Y' ) ); ?>
 				<?php echo esc_html( get_bloginfo( 'name' ) ); ?>.

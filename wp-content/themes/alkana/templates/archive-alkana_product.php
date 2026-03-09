@@ -17,7 +17,7 @@ get_template_part( 'template-parts/header' );
 		<div class="archive-products lg:flex lg:gap-8">
 
 			<?php // ── Filter Sidebar ─────────────────────────────────────────── ?>
-			<aside class="filter-sidebar lg:w-64 shrink-0" id="filter-sidebar">
+			<aside class="filter-sidebar hidden lg:block w-1/4 sticky top-24 self-start max-h-[calc(100vh-6rem)] overflow-y-auto pr-4 custom-scrollbar shrink-0" id="filter-sidebar">
 				<?php get_template_part( 'template-parts/product-filter-panel' ); ?>
 			</aside>
 

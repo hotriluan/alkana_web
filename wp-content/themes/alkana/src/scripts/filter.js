@@ -261,7 +261,34 @@ function renderActiveTags() {
     container.innerHTML = tags.join('');
 }
 
+// ── Accordion ────────────────────────────────────────────────────────────────
+
+function initAccordions() {
+    document.querySelectorAll('[data-accordion-trigger]').forEach((trigger) => {
+        // Start open — content visible
+        const content = trigger.nextElementSibling;
+        if (!content || !content.hasAttribute('data-accordion-content')) return;
+
+        trigger.setAttribute('aria-expanded', 'true');
+
+        trigger.addEventListener('click', () => {
+            const isOpen = trigger.getAttribute('aria-expanded') === 'true';
+            const icon   = trigger.querySelector('[data-accordion-icon]');
+
+            if (isOpen) {
+                content.classList.add('hidden');
+                trigger.setAttribute('aria-expanded', 'false');
+                if (icon) icon.textContent = '+';
+            } else {
+                content.classList.remove('hidden');
+                trigger.setAttribute('aria-expanded', 'true');
+                if (icon) icon.textContent = '−';
+            }
+        });
+    });
+}
+
 // ── Boot ──────────────────────────────────────────────────────────────────────
-document.addEventListener('DOMContentLoaded', init);
+document.addEventListener('DOMContentLoaded', () => { init(); initAccordions(); });
 // Also run if WP loaded script in <head> with defer
-if (document.readyState !== 'loading') init();
+if (document.readyState !== 'loading') { init(); initAccordions(); }

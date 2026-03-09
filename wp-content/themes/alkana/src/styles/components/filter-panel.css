@@ -1,7 +1,13 @@
 /**
  * Product filter panel — filter options, counts, active tags.
  */
-.filter-panel { display: flex; flex-direction: column; gap: 1.25rem; }
+.filter-panel { display: flex; flex-direction: column; }
+
+/* Sticky sidebar thin scrollbar */
+.custom-scrollbar { scrollbar-width: thin; scrollbar-color: #E8611A #f1f5f9; }
+.custom-scrollbar::-webkit-scrollbar { width: 4px; }
+.custom-scrollbar::-webkit-scrollbar-track { background: #f1f5f9; border-radius: 2px; }
+.custom-scrollbar::-webkit-scrollbar-thumb { background: #E8611A; border-radius: 2px; }
 
 .filter-group__title {
     font-family: var(--font-heading);

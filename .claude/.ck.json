@@ -70,7 +70,9 @@
           "node $HOME/.claude/hooks/descriptive-name.cjs",
           "node $HOME/.claude/hooks/scout-block.cjs",
           "node $HOME/.claude/hooks/privacy-block.cjs",
-          "node $HOME/.claude/hooks/post-edit-simplify-reminder.cjs"
+          "node $HOME/.claude/hooks/post-edit-simplify-reminder.cjs",
+          "node $HOME/.claude/hooks/session-state.cjs",
+          "node $HOME/.claude/hooks/plan-format-kanban.cjs"
         ],
         "mcpServers": []
       }

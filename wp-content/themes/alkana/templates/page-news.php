@@ -84,7 +84,7 @@ $news_query = new WP_Query( [
 							</p>
 
 							<a href="<?php the_permalink(); ?>"
-							   class="btn btn-outline btn-sm mt-auto self-start">
+							   class="btn btn--outline btn--sm mt-auto self-start">
 								<?php esc_html_e( 'Read more', 'alkana' ); ?>
 							</a>
 						</div>

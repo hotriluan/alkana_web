@@ -36,8 +36,8 @@ function alkana_sync_product_index( $post_id ): void {
 	$paint_system   = alkana_get_term_slugs( (int) $post_id, 'paint_system' );
 	$gloss_level    = alkana_get_term_slugs( (int) $post_id, 'gloss_level' );
 
-	// ACF field: is_featured checkbox
-	$is_featured = (int) (bool) get_field( 'is_featured', (int) $post_id );
+	// ACF field: is_featured checkbox (fallback to _alkana_featured post meta)
+	$is_featured = (int) (bool) ( get_field( 'is_featured', (int) $post_id ) ?: get_post_meta( (int) $post_id, '_alkana_featured', true ) );
 
 	$wpdb->replace(
 		$wpdb->prefix . 'alkana_product_index',

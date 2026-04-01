@@ -20,7 +20,8 @@ $hero_sub       = get_field( 'hero_subtitle' );
 $hero_cta_label = get_field( 'hero_cta_label' ) ?: __( 'Explore Products', 'alkana' );
 $hero_cta_url   = get_field( 'hero_cta_url' )   ?: get_post_type_archive_link( 'alkana_product' );
 
-$img_id = $hero_image['ID'] ?? 0;
+// ACF returns array {'ID','url',…}; shim/post_meta returns plain attachment ID.
+$img_id = is_array( $hero_image ) ? ( $hero_image['ID'] ?? 0 ) : (int) $hero_image;
 ?>
 
 <section class="hero-banner relative w-full min-h-[70vh] flex items-center justify-center overflow-hidden bg-gray-900">
@@ -44,13 +45,16 @@ $img_id = $hero_image['ID'] ?? 0;
 			] );
 		} else {
 			// Fallback: ACF returned array but no ID (external URL edge case)
-			printf(
-				'<img class="hero-banner__bg absolute inset-0 w-full h-full object-cover z-0" src="%s" alt="" fetchpriority="high" loading="eager" decoding="async" width="1920" height="800">',
-				esc_url( $hero_image['url'] )
-			);
+			$fallback_url = is_array( $hero_image ) ? ( $hero_image['url'] ?? '' ) : wp_get_attachment_url( (int) $hero_image );
+			if ( $fallback_url ) {
+				printf(
+					'<img class="hero-banner__bg absolute inset-0 w-full h-full object-cover z-0" src="%s" alt="" fetchpriority="high" loading="eager" decoding="async" width="1920" height="800">',
+					esc_url( $fallback_url )
+				);
+			}
 		}
 		?>
-		<div class="hero-banner__overlay absolute inset-0 bg-black/60 z-10" aria-hidden="true"></div>
+		<div class="hero-banner__overlay absolute inset-0 bg-gradient-to-r from-black/50 via-black/30 to-black/20 z-10" aria-hidden="true"></div>
 	<?php endif; ?>
 
 	<div class="hero-banner__content relative z-20 text-center px-4 max-w-4xl mx-auto">

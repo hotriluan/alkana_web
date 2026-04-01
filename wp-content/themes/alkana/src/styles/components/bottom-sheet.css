@@ -64,15 +64,10 @@
 }
 .bottom-sheet__footer .btn { flex: 1; }
 
-/* Desktop: hide bottom sheet chrome, show as sidebar */
+/* Desktop: hide bottom sheet entirely — sidebar handles desktop filtering */
 @media (min-width: 1024px) {
     .bottom-sheet-overlay { display: none !important; }
     .bottom-sheet {
-        position: static;
-        height: auto;
-        transform: none;
-        border-radius: var(--radius-card);
-        box-shadow: var(--shadow-card);
+        display: none !important;
     }
-    .bottom-sheet__handle { display: none; }
 }

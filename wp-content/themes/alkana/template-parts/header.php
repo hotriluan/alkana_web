@@ -42,17 +42,23 @@
 				?>
 			</nav>
 
-			<?php // ── Mobile Hamburger ──────────────────────────────────────────── ?>
-			<button
-				class="nav-toggle lg:hidden flex flex-col gap-1 p-2"
-				id="nav-toggle"
-				aria-label="<?php esc_attr_e( 'Open menu', 'alkana' ); ?>"
-				aria-expanded="false"
-				aria-controls="nav-drawer">
-				<span class="block w-5 h-0.5 bg-[--color-secondary]"></span>
-				<span class="block w-5 h-0.5 bg-[--color-secondary]"></span>
-				<span class="block w-5 h-0.5 bg-[--color-secondary]"></span>
-			</button>
+			<?php // ── Search & Mobile Menu ──────────────────────────────────────── ?>
+			<div class="flex items-center gap-2">
+				<button class="search-toggle p-2 text-[--color-secondary] hover:text-[--color-primary] transition-colors" id="search-toggle" aria-label="<?php esc_attr_e( 'Search', 'alkana' ); ?>">
+					<svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+				</button>
+
+				<button
+					class="nav-toggle lg:hidden flex flex-col gap-1 p-2"
+					id="nav-toggle"
+					aria-label="<?php esc_attr_e( 'Open menu', 'alkana' ); ?>"
+					aria-expanded="false"
+					aria-controls="nav-drawer">
+					<span class="block w-5 h-0.5 bg-[--color-secondary]"></span>
+					<span class="block w-5 h-0.5 bg-[--color-secondary]"></span>
+					<span class="block w-5 h-0.5 bg-[--color-secondary]"></span>
+				</button>
+			</div>
 
 	</div>
 
@@ -76,5 +82,7 @@
 			?>
 		</div>
 	</div>
+
+	<?php get_template_part( 'template-parts/search-modal' ); ?>
 
 </header>

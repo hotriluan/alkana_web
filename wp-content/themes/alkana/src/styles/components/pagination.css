@@ -1,0 +1,30 @@
+/**
+ * Pagination brand styling
+ * Matches Alkana brand colors and design system.
+ */
+
+.alkana-pagination {
+	@apply flex justify-center mt-12;
+}
+
+.alkana-pagination .nav-links {
+	@apply flex items-center gap-2;
+}
+
+.alkana-pagination .page-numbers {
+	@apply w-10 h-10 flex items-center justify-center rounded-lg text-sm font-medium transition-colors;
+	@apply text-gray-600 hover:bg-gray-100 hover:text-[--color-primary];
+}
+
+.alkana-pagination .page-numbers.current {
+	@apply bg-[--color-primary] text-white;
+}
+
+.alkana-pagination .page-numbers.dots {
+	@apply hover:bg-transparent cursor-default;
+}
+
+.alkana-pagination .prev.page-numbers,
+.alkana-pagination .next.page-numbers {
+	@apply w-auto px-4 font-semibold;
+}

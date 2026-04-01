@@ -12,6 +12,8 @@
 |------|--------------|
 | Add new product | Post > Products > Add New |
 | Add new project | Post > Projects > Add New |
+| Add new job posting | Post > Jobs > Add New |
+| Manage applications | Post > Applications |
 | Update homepage banners | Pages > Front Page > Edit |
 | Clear website cache | LiteSpeed Cache > Toolbox > Purge All |
 | Manage categories | Products > Product Categories |
@@ -93,7 +95,80 @@ If you forget your password:
 
 ---
 
-## 5. How to Update Homepage Banners / Hero Section
+## 5. How to Add a New Job Posting
+
+**Time required:** ~5 minutes per posting  
+**Role required:** Editor or higher
+
+### Steps
+
+1. Go to WP Admin → **Jobs → Add New**
+2. **Title:** Enter job title (e.g. `Quality Control Engineer`)
+3. **Content area:** Add detailed job description, responsibilities, requirements
+4. **Featured Image (optional):** Upload a department/team photo if desired
+5. **ACF fields (expand below content editor):**
+   - **Department:** Select or type department name (e.g. `Production`, `Sales`, `R&D`)
+   - **Location:** Job location (e.g. `Tây Ninh`, `HCMC`)
+   - **Experience Required:** (e.g. `3+ years`)
+   - **Salary Range (optional):** (e.g. `$1200 - $1800`)
+   - **Benefits (Repeater):** Add rows for each benefit (e.g. Health insurance, Lunch allowance, etc.)
+   - **Required Skills (Repeater):** Add rows for required skills
+6. **Publish:** Click "Publish"
+7. The job automatically appears on the **Careers page** with "Apply Now" button
+8. Clear cache: LiteSpeed Cache → Toolbox → Purge All
+
+> **Note:** Once published, the job detail page becomes accessible and applicants can apply.
+
+---
+
+## 6. How to View and Manage Job Applications
+
+**Role required:** Editor or higher
+
+### View All Applications
+
+1. Go to WP Admin → **Applications**
+2. You see a table with:
+   - **Status** (New, In Review, Shortlisted, Rejected, Hired) — shown as colored badges
+   - **Position** — which job they applied for
+   - **Email** — applicant email
+   - **Submitted** — application date
+3. **Filter by Status:** Click dropdown filters above the table to view only new, pending, or resolved applications
+4. **Sort:** Click "Submitted" header to sort by most recent first
+
+### View Applicant Details
+
+1. Click the applicant's **Email** (or row) to open application detail page
+2. You will see:
+   - **Name, Email, Phone** — contact information
+   - **Position Applied For** — the job they're applying for
+   - **CV File** — downloadable link to their uploaded resume
+   - **Application Date** — submission timestamp
+   - **Status** — dropdown to change status (New → In Review → Shortlisted → Rejected → Hired)
+
+### Change Application Status
+
+1. Open an application detail page
+2. In the **Status** dropdown (right sidebar or below CV), select new status:
+   - **New** — received but not reviewed
+   - **In Review** — under consideration
+   - **Shortlisted** — interviewing/further evaluation
+   - **Rejected** — not moving forward
+   - **Hired** — application accepted
+3. Click **Update** to save status change
+4. *(Optional)* Send applicant an email notifying them of status change (manual email via your email client)
+
+### Download CV / Applicant Files
+
+1. Open application detail page
+2. Look for **CV File** section
+3. Click the **Download** link to save the resume to your computer
+
+> **Security Note:** Only Editors and Administrators can access applications. CVs are only visible to logged-in admin users.
+
+---
+
+## 7. How to Update Homepage Banners / Hero Section
 
 1. Go to **Pages → Front Page → Edit** (or hover over the page title and click Edit)
 2. Scroll down to the ACF field group **"Hero Section"**:
@@ -107,7 +182,7 @@ If you forget your password:
 
 ---
 
-## 6. How to Add / Edit Taxonomy Terms
+## 8. How to Add / Edit Taxonomy Terms
 
 **Product Categories, Surface Types, Paint Systems, Gloss Levels** are shared taxonomy terms used for filtering.
 
@@ -118,7 +193,7 @@ If you forget your password:
 
 ---
 
-## 7. How to Clear the Cache
+## 9. How to Clear the Cache
 
 After major content updates (new products, page edits):
 
@@ -132,7 +207,7 @@ Or: Look for the "LiteSpeed Cache" toolbar icon at top of any front-end page →
 
 ---
 
-## 8. User Roles
+## 10. User Roles
 
 | Role | Permissions |
 |------|------------|
@@ -147,7 +222,7 @@ To add a team member:
 
 ---
 
-## 9. Hosting & Infrastructure Access
+## 11. Hosting & Infrastructure Access
 
 > **Note:** Credentials are provided separately via a secure channel (1Password / LastPass / direct handover). Do not store passwords in this document.
 
@@ -161,7 +236,7 @@ To add a team member:
 
 ---
 
-## 10. How to Submit / Check Google Search Console
+## 12. How to Submit / Check Google Search Console
 
 1. Log in at `https://search.google.com/search-console`
 2. Select `alkana.vn` property
@@ -171,7 +246,7 @@ To add a team member:
 
 ---
 
-## 11. Troubleshooting Common Issues
+## 13. Troubleshooting Common Issues
 
 ### Website shows old content after update
 → Clear cache: LiteSpeed Cache → Toolbox → Purge All
@@ -190,7 +265,7 @@ To add a team member:
 
 ---
 
-## 12. Emergency Contacts
+## 14. Emergency Contacts
 
 | Name | Role | Contact |
 |------|------|---------|
@@ -200,11 +275,11 @@ To add a team member:
 
 ---
 
-## 13. Post-Launch Phase 2 (Weeks 9–10)
+## 15. Post-Launch Phase 2 (Weeks 9–10)
 
 Features scheduled for Phase 2:
-- **Blog / News** — Article listing and full posts
+- **Blog / News** — Article listing and full posts *(COMPLETED)*
 - **Resources Center** — TDS/MSDS download hub with product search
-- **Careers** — Job listing page with application form
+- **Careers** — Job listing page with application form *(COMPLETED)*
 
 These will be deployed by the development team without requiring DNS changes or downtime.

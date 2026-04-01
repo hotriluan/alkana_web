@@ -41,14 +41,11 @@ get_template_part( 'template-parts/header' );
 		</div>
 
 		<?php
-		// Pagination
-		$big = 999999999;
-		echo wp_kses_post( paginate_links( [
-			'base'    => str_replace( $big, '%#%', esc_url( get_pagenum_link( $big ) ) ),
-			'format'  => '?paged=%#%',
-			'current' => max( 1, get_query_var( 'paged' ) ),
-			'total'   => $project_query->max_num_pages,
-		] ) );
+		// Store query for pagination
+		global $wp_query;
+		$wp_query = $project_query;
+		get_template_part( 'template-parts/pagination' );
+		wp_reset_postdata();
 		?>
 
 	</div>

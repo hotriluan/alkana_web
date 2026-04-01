@@ -1,0 +1,30 @@
+/**
+ * Search Modal Styles
+ *
+ * @package Alkana
+ */
+
+/* Search modal backdrop */
+#search-modal {
+	z-index: 9999;
+}
+
+/* Search results styling */
+#search-results {
+	max-height: 60vh;
+	overflow-y: auto;
+}
+
+/* Loading spinner animation */
+#search-loading {
+	animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+	from {
+		transform: rotate(0deg);
+	}
+	to {
+		transform: rotate(360deg);
+	}
+}

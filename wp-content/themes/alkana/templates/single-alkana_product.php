@@ -13,6 +13,10 @@ get_template_part( 'template-parts/header' );
 <main id="main-content" class="site-main">
 <?php if ( have_posts() ) : while ( have_posts() ) : the_post(); ?>
 
+	<div class="container mx-auto px-4">
+		<?php get_template_part( 'template-parts/breadcrumb' ); ?>
+	</div>
+
 <?php
 $post_id  = get_the_ID();
 $sku      = get_field( '_alkana_sku',      $post_id );
@@ -27,12 +31,14 @@ $thumb_id = get_post_thumbnail_id( $post_id );
 // Decide which tabs to show
 $has_specs    = $specs || get_field( '_alkana_coverage', $post_id ) || get_field( '_alkana_mix_ratio', $post_id );
 $has_variants = ! empty( $variants );
-$has_resources = $tds || $msds || ! empty( $certs ) || $video;
+$has_resources = $tds || $msds || ! empty( $certs );
+$has_video    = ! empty( $video );
 
 $tabs = [];
 if ( $has_specs )    $tabs[] = [ 'id' => 'specs',     'label' => __( 'Specifications', 'alkana' ) ];
 if ( $has_variants ) $tabs[] = [ 'id' => 'variants',  'label' => __( 'Variants',        'alkana' ) ];
 if ( $has_resources ) $tabs[] = [ 'id' => 'resources', 'label' => __( 'Resources',       'alkana' ) ];
+if ( $has_video )    $tabs[] = [ 'id' => 'video',     'label' => __( 'Video',           'alkana' ) ];
 if ( get_the_content() ) $tabs[] = [ 'id' => 'details', 'label' => __( 'Details',          'alkana' ) ];
 ?>
 
@@ -85,13 +91,13 @@ if ( get_the_content() ) $tabs[] = [ 'id' => 'details', 'label' => __( 'Details'
 
 				<?php // ── Quick-access CTA row ────────────────────────────────── ?>
 				<div class="product-detail__cta flex flex-wrap gap-3 mt-4">
-					<a href="<?php echo esc_url( get_permalink( get_page_by_path( 'contact' ) ) ); ?>"
-					   class="btn btn-primary">
+					<a href="<?php echo esc_url( alkana_get_contact_url() ); ?>"
+					   class="btn btn--primary">
 						<?php esc_html_e( 'Request Quote', 'alkana' ); ?>
 					</a>
 					<?php if ( $tds ) : ?>
 						<a href="<?php echo esc_url( $tds['url'] ); ?>"
-						   class="btn btn-outline"
+						   class="btn btn--outline"
 						   download
 						   target="_blank"
 						   rel="noopener noreferrer">
@@ -126,14 +132,22 @@ if ( get_the_content() ) $tabs[] = [ 'id' => 'details', 'label' => __( 'Details'
 			     <?php echo $tabs[0]['id'] !== 'specs' ? 'hidden' : ''; ?>>
 				<?php get_template_part( 'template-parts/product-specs-table' ); ?>
 
-				<?php if ( $specs ) : ?>
+				<?php if ( ! $specs ) :
+					// Fallback: render individual meta fields as specs table.
+					$meta_specs = [
+						__( 'Coverage', 'alkana' )     => get_field( '_alkana_coverage',   $post_id ),
+						__( 'Mix Ratio', 'alkana' )    => get_field( '_alkana_mix_ratio',  $post_id ),
+						__( 'Thinner', 'alkana' )      => get_field( '_alkana_thinner',    $post_id ),
+						__( 'Layers', 'alkana' )       => get_field( '_alkana_layer',      $post_id ),
+						__( 'Dry Touch', 'alkana' )    => get_field( '_alkana_dry_touch',  $post_id ),
+						__( 'Dry Hard', 'alkana' )     => get_field( '_alkana_dry_hard',   $post_id ),
+						__( 'Recoat Time', 'alkana' )  => get_field( '_alkana_dry_recoat', $post_id ),
+					];
+					$meta_specs = array_filter( $meta_specs );
+					if ( $meta_specs ) : ?>
 					<table class="specs-table mt-6 w-full text-sm border-collapse">
 						<tbody>
-							<?php foreach ( $specs as $row ) :
-								$label = $row['spec_label'] ?? '';
-								$value = $row['spec_value'] ?? '';
-								if ( '' === trim( (string) $value ) ) continue;
-							?>
+							<?php foreach ( $meta_specs as $label => $value ) : ?>
 								<tr class="specs-table__row border-b border-gray-100">
 									<th class="specs-table__label py-2 pr-4 text-left text-gray-500 font-normal w-2/5">
 										<?php echo esc_html( $label ); ?>
@@ -145,6 +159,7 @@ if ( get_the_content() ) $tabs[] = [ 'id' => 'details', 'label' => __( 'Details'
 							<?php endforeach; ?>
 						</tbody>
 					</table>
+					<?php endif; ?>
 				<?php endif; ?>
 			</div>
 
@@ -199,7 +214,7 @@ if ( get_the_content() ) $tabs[] = [ 'id' => 'details', 'label' => __( 'Details'
 								<p class="text-xs text-gray-400"><?php echo esc_html( $tds['filename'] ?? 'PDF' ); ?></p>
 							</div>
 							<a href="<?php echo esc_url( $tds['url'] ); ?>"
-							   class="btn btn-primary btn-sm"
+							   class="btn btn--primary btn--sm"
 							   download target="_blank" rel="noopener noreferrer">
 								<?php esc_html_e( 'Download', 'alkana' ); ?>
 							</a>
@@ -214,7 +229,7 @@ if ( get_the_content() ) $tabs[] = [ 'id' => 'details', 'label' => __( 'Details'
 								<p class="text-xs text-gray-400"><?php echo esc_html( $msds['filename'] ?? 'PDF' ); ?></p>
 							</div>
 							<a href="<?php echo esc_url( $msds['url'] ); ?>"
-							   class="btn btn-outline btn-sm"
+							   class="btn btn--outline btn--sm"
 							   download target="_blank" rel="noopener noreferrer">
 								<?php esc_html_e( 'Download', 'alkana' ); ?>
 							</a>
@@ -233,28 +248,38 @@ if ( get_the_content() ) $tabs[] = [ 'id' => 'details', 'label' => __( 'Details'
 								<p class="font-medium text-sm"><?php echo esc_html( $cert_label ); ?></p>
 							</div>
 							<a href="<?php echo esc_url( $cert_file['url'] ); ?>"
-							   class="btn btn-outline btn-sm"
+							   class="btn btn--outline btn--sm"
 							   download target="_blank" rel="noopener noreferrer">
 								<?php esc_html_e( 'Download', 'alkana' ); ?>
 							</a>
 						</li>
 					<?php endforeach; endif; ?>
-
-					<?php if ( $video ) : ?>
-						<li class="resource-item mt-4">
-							<div class="aspect-video rounded-xl overflow-hidden">
-								<iframe
-									src="<?php echo esc_url( $video ); ?>"
-									class="w-full h-full"
-									frameborder="0"
-									allowfullscreen
-									loading="lazy"
-									title="<?php echo esc_attr( get_the_title() . ' ' . __( 'video', 'alkana' ) ); ?>">
-								</iframe>
-							</div>
-						</li>
-					<?php endif; ?>
 				</ul>
+			</div>
+			<?php endif; ?>
+
+			<?php // ── Video tab ─────────────────────────────────────────────── ?>
+			<?php if ( $has_video ) :
+				// Convert YouTube URLs to embed format
+				$video_embed = $video;
+				if ( strpos( $video, 'youtube.com' ) !== false || strpos( $video, 'youtu.be' ) !== false ) {
+					$video_embed = str_replace( 'watch?v=', 'embed/', $video );
+					$video_embed = str_replace( 'youtu.be/', 'youtube.com/embed/', $video_embed );
+				}
+			?>
+			<div id="tab-video" class="product-tab-panel pt-8" role="tabpanel"
+			     <?php echo $tabs[0]['id'] !== 'video' ? 'hidden' : ''; ?>>
+				<div class="aspect-video rounded-lg overflow-hidden">
+					<iframe
+						src="<?php echo esc_url( $video_embed ); ?>"
+						class="w-full h-full"
+						frameborder="0"
+						allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+						allowfullscreen
+						loading="lazy"
+						title="<?php echo esc_attr( get_the_title() . ' ' . __( 'video', 'alkana' ) ); ?>">
+					</iframe>
+				</div>
 			</div>
 			<?php endif; ?>
 
@@ -273,7 +298,16 @@ if ( get_the_content() ) $tabs[] = [ 'id' => 'details', 'label' => __( 'Details'
 
 	</div>
 
+	<?php // ── Share buttons ───────────────────────────────────────────────── ?>
+	<div class="container mx-auto px-4 mt-8">
+		<?php get_template_part( 'template-parts/share-buttons' ); ?>
+	</div>
+
 <?php endwhile; endif; ?>
+
+	<?php // ── Related products ─────────────────────────────────────────────── ?>
+	<?php get_template_part( 'template-parts/related-products' ); ?>
+
 </main>
 
 <?php get_template_part( 'template-parts/sticky-cta-mobile' ); ?>

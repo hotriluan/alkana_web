@@ -17,13 +17,14 @@
 const DEBOUNCE_MS = 300;
 let debounceTimer = null;
 
-/** Current filter state */
+/** Current filter state — all groups are arrays (multi-checkbox OR logic) */
 const state = {
-    surfaces:     [],   // array of surface slugs (OR within group)
-    paint_system: '',
-    gloss:        '',
-    category:     '',
-    page:         1,
+    surface:  [],   // array of surface type slugs
+    system:   [],   // array of paint system slugs
+    gloss:    [],   // array of gloss level slugs
+    category: [],   // array of category slugs
+    featured: false,
+    page:     1,
 };
 
 const grid = document.getElementById('product-grid');
@@ -42,40 +43,49 @@ function init() {
 // ── State ─────────────────────────────────────────────────────────────────────
 
 function hasActiveFilters() {
-    return state.surfaces.length > 0 ||
-           state.paint_system ||
-           state.gloss ||
-           state.category;
+    return state.surface.length > 0 ||
+           state.system.length > 0 ||
+           state.gloss.length > 0 ||
+           state.category.length > 0 ||
+           state.featured;
 }
 
 function readStateFromURL() {
     const p = new URLSearchParams(window.location.search);
-    state.surfaces     = p.get('surfaces')?.split(',').filter(Boolean) ?? [];
-    state.paint_system = p.get('system')   ?? '';
-    state.gloss        = p.get('gloss')    ?? '';
-    state.category     = p.get('cat')      ?? '';
-    state.page         = parseInt(p.get('page') ?? '1', 10) || 1;
+    state.surface  = p.get('surface')?.split(',').filter(Boolean)  ?? [];
+    state.system   = p.get('system')?.split(',').filter(Boolean)   ?? [];
+    state.gloss    = p.get('gloss')?.split(',').filter(Boolean)    ?? [];
+    state.category = p.get('cat')?.split(',').filter(Boolean)      ?? [];
+    state.featured = p.get('featured') === '1';
+    state.page     = parseInt(p.get('page') ?? '1', 10) || 1;
 }
 
 function syncControlsToState() {
-    // Sync checkboxes/radios to match URL state
+    // Sync all checkboxes to match URL state (both desktop + mobile panels)
     document.querySelectorAll('[data-filter-surface]').forEach((el) => {
-        el.checked = state.surfaces.includes(el.value);
+        el.checked = state.surface.includes(el.value);
     });
-    const sysEl   = document.querySelector('[data-filter-system]');
-    const glossEl = document.querySelector('[data-filter-gloss]');
-    const catEl   = document.querySelector('[data-filter-category]');
-    if (sysEl)   sysEl.value   = state.paint_system;
-    if (glossEl) glossEl.value = state.gloss;
-    if (catEl)   catEl.value   = state.category;
+    document.querySelectorAll('[data-filter-system]').forEach((el) => {
+        el.checked = state.system.includes(el.value);
+    });
+    document.querySelectorAll('[data-filter-gloss]').forEach((el) => {
+        el.checked = state.gloss.includes(el.value);
+    });
+    document.querySelectorAll('[data-filter-category]').forEach((el) => {
+        el.checked = state.category.includes(el.value);
+    });
+    document.querySelectorAll('[data-filter-featured]').forEach((el) => {
+        el.checked = state.featured;
+    });
 }
 
 function updateURL() {
     const p = new URLSearchParams();
-    if (state.surfaces.length)  p.set('surfaces', state.surfaces.join(','));
-    if (state.paint_system)     p.set('system',   state.paint_system);
-    if (state.gloss)            p.set('gloss',    state.gloss);
-    if (state.category)         p.set('cat',      state.category);
+    if (state.surface.length)   p.set('surface',  state.surface.join(','));
+    if (state.system.length)    p.set('system',   state.system.join(','));
+    if (state.gloss.length)     p.set('gloss',    state.gloss.join(','));
+    if (state.category.length)  p.set('cat',      state.category.join(','));
+    if (state.featured)         p.set('featured', '1');
     if (state.page > 1)         p.set('page',     String(state.page));
     const qs = p.toString();
     history.pushState(null, '', qs ? `?${qs}` : window.location.pathname);
@@ -84,22 +94,32 @@ function updateURL() {
 // ── Controls ──────────────────────────────────────────────────────────────────
 
 function bindFilterControls() {
-    // Surface checkboxes
-    document.querySelectorAll('[data-filter-surface]').forEach((el) => {
+    // Multi-checkbox binding helper — syncs checkboxes across desktop/mobile panels
+    function bindCheckboxGroup(attr, stateKey) {
+        document.querySelectorAll(`[${attr}]`).forEach((el) => {
+            el.addEventListener('change', () => {
+                document.querySelectorAll(`[${attr}][value="${el.value}"]`).forEach((s) => { s.checked = el.checked; });
+                state[stateKey] = [...new Set(
+                    [...document.querySelectorAll(`[${attr}]:checked`)].map((e) => e.value)
+                )];
+                onFilterChange();
+            });
+        });
+    }
+
+    bindCheckboxGroup('data-filter-surface',  'surface');
+    bindCheckboxGroup('data-filter-system',   'system');
+    bindCheckboxGroup('data-filter-gloss',    'gloss');
+    bindCheckboxGroup('data-filter-category', 'category');
+
+    // Featured toggle — sync across panels
+    document.querySelectorAll('[data-filter-featured]').forEach((el) => {
         el.addEventListener('change', () => {
-            state.surfaces = [...document.querySelectorAll('[data-filter-surface]:checked')]
-                .map((e) => e.value);
+            document.querySelectorAll('[data-filter-featured]').forEach((s) => { s.checked = el.checked; });
+            state.featured = el.checked;
             onFilterChange();
         });
     });
-
-    // Single-value selects / radios
-    document.querySelector('[data-filter-system]')
-        ?.addEventListener('change', (e) => { state.paint_system = e.target.value; onFilterChange(); });
-    document.querySelector('[data-filter-gloss]')
-        ?.addEventListener('change', (e) => { state.gloss = e.target.value; onFilterChange(); });
-    document.querySelector('[data-filter-category]')
-        ?.addEventListener('change', (e) => { state.category = e.target.value; onFilterChange(); });
 
     // Pagination — delegated to the pagination container
     document.querySelector('[data-filter-pagination]')
@@ -108,26 +128,46 @@ function bindFilterControls() {
             if (!btn) return;
             state.page = parseInt(btn.dataset.page, 10);
             runFilter();
-            // Scroll product area back into view
             grid?.scrollIntoView({ behavior: 'smooth', block: 'start' });
         });
 
-    // Active tag remove
-    document.querySelector('.active-tags')
+    // Active tag remove — delegated
+    document.getElementById('filter-active-tags')
         ?.addEventListener('click', (e) => {
             const btn = e.target.closest('[data-remove-filter]');
             if (!btn) return;
-            const { type, value } = btn.dataset;
-            if (type === 'surface') {
-                state.surfaces = state.surfaces.filter((s) => s !== value);
-                const cb = document.querySelector(`[data-filter-surface][value="${value}"]`);
-                if (cb) cb.checked = false;
-            } else if (type === 'system') { state.paint_system = ''; }
-            else if (type === 'gloss')    { state.gloss = ''; }
-            else if (type === 'category') { state.category = ''; }
+            removeFilter(btn.dataset.type, btn.dataset.value);
             state.page = 1;
             onFilterChange();
         });
+
+    // Reset buttons
+    document.getElementById('filter-reset')?.addEventListener('click', resetAllFilters);
+    document.addEventListener('click', (e) => {
+        if (e.target.closest('#filter-reset-empty')) resetAllFilters();
+    });
+}
+
+function removeFilter(type, value) {
+    const attrMap = { surface: 'data-filter-surface', system: 'data-filter-system', gloss: 'data-filter-gloss', category: 'data-filter-category' };
+    if (attrMap[type]) {
+        state[type] = state[type].filter((s) => s !== value);
+        document.querySelectorAll(`[${attrMap[type]}][value="${value}"]`).forEach((cb) => { cb.checked = false; });
+    } else if (type === 'featured') {
+        state.featured = false;
+        document.querySelectorAll('[data-filter-featured]').forEach((el) => { el.checked = false; });
+    }
+}
+
+function resetAllFilters() {
+    state.surface  = [];
+    state.system   = [];
+    state.gloss    = [];
+    state.category = [];
+    state.featured = false;
+    state.page     = 1;
+    document.querySelectorAll('.filter-option__checkbox').forEach((el) => { el.checked = false; });
+    onFilterChange();
 }
 
 function onFilterChange() {
@@ -147,14 +187,15 @@ async function runFilter() {
 
     try {
         const body = new URLSearchParams({
-            action:      'alkana_filter_products',
-            nonce:       AlkanaConfig.nonce,
-            page:        String(state.page),
-            paint_system: state.paint_system,
-            gloss_level: state.gloss,
+            action: 'alkana_filter_products',
+            nonce:  AlkanaConfig.nonce,
+            page:   String(state.page),
         });
-        state.surfaces.forEach((s) => body.append('surface[]', s));
-        state.category.split(',').filter(Boolean).forEach((c) => body.append('category[]', c));
+        state.surface.forEach((s)  => body.append('surface[]', s));
+        state.system.forEach((s)   => body.append('paint_system[]', s));
+        state.gloss.forEach((s)    => body.append('gloss_level[]', s));
+        state.category.forEach((s) => body.append('category[]', s));
+        if (state.featured) body.append('is_featured', '1');
 
         const res  = await fetch(AlkanaConfig.ajaxUrl, {
             method:  'POST',
@@ -167,6 +208,9 @@ async function runFilter() {
         grid.innerHTML = json.data.html;
         updateCounts(json.data.counts);
         renderPagination(json.data.page, json.data.pages, json.data.total);
+        // Update product count display
+        const countEl = document.getElementById('filter-count');
+        if (countEl) countEl.textContent = `${json.data.total} sản phẩm`;
     } catch (err) {
         console.error('[Alkana Filter]', err);
     } finally {
@@ -179,31 +223,20 @@ async function runFilter() {
 function updateCounts(counts) {
     if (!counts) return;
 
-    // surface_type → data-count-surface
-    Object.entries(counts.surface_type ?? {}).forEach(([slug, count]) => {
-        const el = document.querySelector(`[data-count-surface="${slug}"]`);
-        if (el) {
-            el.textContent = `(${count})`;
-            el.closest('.filter-option')?.classList.toggle('is-disabled', count === 0);
-        }
-    });
+    const groups = [
+        { taxonomy: 'surface_type',     attr: 'data-count-surface' },
+        { taxonomy: 'paint_system',     attr: 'data-count-system' },
+        { taxonomy: 'gloss_level',      attr: 'data-count-gloss' },
+        { taxonomy: 'product_category', attr: 'data-count-category' },
+    ];
 
-    // paint_system → data-count-system
-    Object.entries(counts.paint_system ?? {}).forEach(([slug, count]) => {
-        const el = document.querySelector(`[data-count-system="${slug}"]`);
-        if (el) el.textContent = `(${count})`;
-    });
-
-    // gloss_level → data-count-gloss
-    Object.entries(counts.gloss_level ?? {}).forEach(([slug, count]) => {
-        const el = document.querySelector(`[data-count-gloss="${slug}"]`);
-        if (el) el.textContent = `(${count})`;
-    });
-
-    // product_category → data-count-category
-    Object.entries(counts.product_category ?? {}).forEach(([slug, count]) => {
-        const el = document.querySelector(`[data-count-category="${slug}"]`);
-        if (el) el.textContent = `(${count})`;
+    groups.forEach(({ taxonomy, attr }) => {
+        Object.entries(counts[taxonomy] ?? {}).forEach(([slug, count]) => {
+            document.querySelectorAll(`[${attr}="${slug}"]`).forEach((el) => {
+                el.textContent = `(${count})`;
+                el.closest('.filter-option')?.classList.toggle('is-disabled', count === 0);
+            });
+        });
     });
 }
 
@@ -240,25 +273,34 @@ function renderPagination(page, pages, total) {
 }
 
 function renderActiveTags() {
-    const container = document.querySelector('.active-tags');
+    const container = document.getElementById('filter-active-tags');
     if (!container) return;
 
     const tags = [];
-    state.surfaces.forEach((s) => {
-        const label = document.querySelector(`[data-filter-surface][value="${s}"]`)
-            ?.closest('.filter-option')?.querySelector('.filter-option__label')?.textContent?.trim() ?? s;
-        tags.push(`<span class="active-tag">${label}<button class="active-tag__remove" data-remove-filter data-type="surface" data-value="${s}" aria-label="Remove ${label}">×</button></span>`);
+    const groups = [
+        { key: 'surface',  attr: 'data-filter-surface' },
+        { key: 'system',   attr: 'data-filter-system' },
+        { key: 'gloss',    attr: 'data-filter-gloss' },
+        { key: 'category', attr: 'data-filter-category' },
+    ];
+
+    groups.forEach(({ key, attr }) => {
+        state[key].forEach((slug) => {
+            const label = document.querySelector(`[${attr}][value="${slug}"]`)
+                ?.closest('.filter-option')?.querySelector('.filter-option__label')?.textContent?.trim() ?? slug;
+            tags.push(`<span class="active-tag">${label}<button class="active-tag__remove" data-remove-filter data-type="${key}" data-value="${slug}" aria-label="Remove ${label}">×</button></span>`);
+        });
     });
-    if (state.paint_system) {
-        const label = document.querySelector(`[data-filter-system] option[value="${state.paint_system}"]`)?.textContent?.trim() ?? state.paint_system;
-        tags.push(`<span class="active-tag">${label}<button class="active-tag__remove" data-remove-filter data-type="system" aria-label="Remove ${label}">×</button></span>`);
-    }
-    if (state.gloss) {
-        const label = document.querySelector(`[data-filter-gloss] option[value="${state.gloss}"]`)?.textContent?.trim() ?? state.gloss;
-        tags.push(`<span class="active-tag">${label}<button class="active-tag__remove" data-remove-filter data-type="gloss" aria-label="Remove ${label}">×</button></span>`);
+
+    if (state.featured) {
+        tags.push(`<span class="active-tag">Nổi bật<button class="active-tag__remove" data-remove-filter data-type="featured" aria-label="Remove featured">×</button></span>`);
     }
 
     container.innerHTML = tags.join('');
+
+    // Show/hide reset button
+    const resetBtn = document.getElementById('filter-reset');
+    if (resetBtn) resetBtn.classList.toggle('hidden', !hasActiveFilters());
 }
 
 // ── Accordion ────────────────────────────────────────────────────────────────

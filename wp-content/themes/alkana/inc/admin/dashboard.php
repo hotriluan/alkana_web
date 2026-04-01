@@ -60,6 +60,16 @@ function alkana_render_quick_links_widget(): void {
 			'icon'  => 'dashicons-portfolio',
 		],
 		[
+			'label' => __( 'Job Openings', 'alkana' ),
+			'url'   => admin_url( 'edit.php?post_type=alkana_job' ),
+			'icon'  => 'dashicons-businessman',
+		],
+		[
+			'label' => __( 'Applications', 'alkana' ),
+			'url'   => admin_url( 'edit.php?post_type=alkana_application' ),
+			'icon'  => 'dashicons-id-alt',
+		],
+		[
 			'label' => __( 'Media Library', 'alkana' ),
 			'url'   => admin_url( 'upload.php' ),
 			'icon'  => 'dashicons-format-image',

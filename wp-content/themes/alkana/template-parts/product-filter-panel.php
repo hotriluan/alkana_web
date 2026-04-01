@@ -14,6 +14,14 @@ $filter_taxonomies = [
 	'paint_system'     => __( 'Paint System', 'alkana' ),
 	'gloss_level'      => __( 'Gloss Level', 'alkana' ),
 ];
+
+// Map taxonomy → JS data attribute key (must match filter.js selectors)
+$filter_attr_map = [
+	'product_category' => 'category',
+	'surface_type'     => 'surface',
+	'paint_system'     => 'system',
+	'gloss_level'      => 'gloss',
+];
 ?>
 
 <div class="filter-panel" id="filter-panel" data-filter-panel>
@@ -58,12 +66,11 @@ $filter_taxonomies = [
 							name="<?php echo esc_attr( $taxonomy ); ?>[]"
 							value="<?php echo esc_attr( $term->slug ); ?>"
 							data-taxonomy="<?php echo esc_attr( $taxonomy ); ?>"
-							data-slug="<?php echo esc_attr( $term->slug ); ?>"
-						>
+							data-slug="<?php echo esc_attr( $term->slug ); ?>"						data-filter-<?php echo esc_attr( $filter_attr_map[ $taxonomy ] ); ?>						>
 						<span class="filter-option__label"><?php echo esc_html( $term->name ); ?></span>
 					</span>
 					<span class="filter-option__count bg-gray-100 text-gray-500 text-xs py-0.5 px-2 rounded-full"
-							  data-count-slug="<?php echo esc_attr( $term->slug ); ?>">
+							  data-count-<?php echo esc_attr( $filter_attr_map[ $taxonomy ] ); ?>="<?php echo esc_attr( $term->slug ); ?>">
 							<?php echo esc_html( (string) $term->count ); ?>
 						</span>
 					</label>
@@ -76,7 +83,7 @@ $filter_taxonomies = [
 	<?php // ── Featured toggle ────────────────────────────────────────────────── ?>
 	<div class="filter-group mt-4 pt-3 border-t border-gray-200">
 		<label class="filter-option flex items-center gap-2 text-sm text-gray-600 hover:text-gray-900 cursor-pointer">
-			<input type="checkbox" class="filter-option__checkbox w-4 h-4 rounded border-gray-300 text-[#E8611A] focus:ring-[#E8611A] cursor-pointer" name="is_featured" value="1" data-taxonomy="is_featured">
+			<input type="checkbox" class="filter-option__checkbox w-4 h-4 rounded border-gray-300 text-[#E8611A] focus:ring-[#E8611A] cursor-pointer" name="is_featured" value="1" data-taxonomy="is_featured" data-filter-featured>
 			<span class="filter-option__label font-medium">
 				<?php esc_html_e( 'Featured only', 'alkana' ); ?>
 			</span>

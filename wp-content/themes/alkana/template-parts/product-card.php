@@ -13,13 +13,24 @@ $cats     = get_the_terms( $post_id, 'product_category' );
 $cat_name = ( $cats && ! is_wp_error( $cats ) ) ? $cats[0]->name : '';
 $sku      = get_field( '_alkana_sku', $post_id );
 $thumb_id = get_post_thumbnail_id( $post_id );
+$is_featured = get_field( '_alkana_featured', $post_id );
+$is_new      = ( strtotime( get_the_date( 'Y-m-d' ) ) > strtotime( '-30 days' ) );
 ?>
 
 <article <?php post_class( 'product-card group flex flex-col bg-white rounded-xl border border-gray-100 shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-2 overflow-hidden relative' ); ?> data-post-id="<?php echo esc_attr( (string) $post_id ); ?>">
 
 	<a href="<?php the_permalink(); ?>" class="block"
 	   aria-label="<?php echo esc_attr( get_the_title() ); ?>">
-		<div class="aspect-[4/3] w-full overflow-hidden bg-gray-100">
+		<div class="aspect-[4/3] w-full overflow-hidden bg-gray-100 relative">
+			<?php if ( $is_featured ) : ?>
+				<span class="absolute top-3 left-3 z-10 bg-[--color-primary] text-white text-xs font-bold px-2 py-1 rounded">
+					<?php esc_html_e( 'Featured', 'alkana' ); ?>
+				</span>
+			<?php elseif ( $is_new ) : ?>
+				<span class="absolute top-3 left-3 z-10 bg-emerald-500 text-white text-xs font-bold px-2 py-1 rounded">
+					<?php esc_html_e( 'New', 'alkana' ); ?>
+				</span>
+			<?php endif; ?>
 			<?php if ( $thumb_id ) : ?>
 				<?php echo wp_get_attachment_image( $thumb_id, 'alkana-product-card', false, [
 					'class'   => 'product-card__img w-full h-full object-cover group-hover:scale-105 transition-transform duration-500',

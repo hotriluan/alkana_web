@@ -10,7 +10,7 @@
 defined( 'ABSPATH' ) || exit;
 
 $is_archive = is_post_type_archive( 'alkana_product' );
-$contact_url = get_permalink( get_page_by_path( 'contact' ) );
+$contact_url = alkana_get_contact_url();
 ?>
 
 <div class="sticky-cta" id="sticky-cta" role="toolbar" aria-label="<?php esc_attr_e( 'Quick actions', 'alkana' ); ?>">

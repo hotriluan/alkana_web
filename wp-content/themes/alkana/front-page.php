@@ -6,7 +6,8 @@
  * is set to display a static front page (Reading Settings → Show on front = A
  * static page). This file must be at the theme root.
  *
- * Layout: Hero Banner → Featured Products → Recent Projects.
+ * Layout: Hero Banner → USP Section → Trust Badges → Featured Products → 
+ *         Recent Projects → Testimonials
  *
  * @package Alkana
  */
@@ -19,6 +20,10 @@ get_header();
 <main id="main-content" class="site-main">
 
 	<?php get_template_part( 'template-parts/hero-banner' ); ?>
+
+	<?php get_template_part( 'template-parts/usp-section' ); ?>
+
+	<?php get_template_part( 'template-parts/trust-badges' ); ?>
 
 	<?php // ── Featured Products ──────────────────────────────────────────────── ?>
 	<section class="section section--products py-20 bg-gray-50">
@@ -94,6 +99,8 @@ get_header();
 			</div>
 		</div>
 	</section>
+
+	<?php get_template_part( 'template-parts/testimonials' ); ?>
 
 </main>
 

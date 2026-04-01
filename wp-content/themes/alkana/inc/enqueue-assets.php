@@ -106,4 +106,59 @@ function alkana_dequeue_bloat(): void {
 	// Remove jQuery from front-end (all JS is vanilla)
 	wp_dequeue_script( 'jquery' );
 	wp_deregister_script( 'jquery' );
+	
+	// Remove emoji scripts
+	remove_action( 'wp_head', 'print_emoji_detection_script', 7 );
+	remove_action( 'wp_print_styles', 'print_emoji_styles' );
+	remove_action( 'admin_print_scripts', 'print_emoji_detection_script' );
+	remove_action( 'admin_print_styles', 'print_emoji_styles' );
+	
+	// Remove REST API link
+	remove_action( 'wp_head', 'rest_output_link_wp_head', 10 );
+	remove_action( 'wp_head', 'wp_oembed_add_discovery_links', 10 );
+	
+	// Remove WP version
+	remove_action( 'wp_head', 'wp_generator' );
+	
+	// Remove wlwmanifest + RSD links
+	remove_action( 'wp_head', 'wlwmanifest_link' );
+	remove_action( 'wp_head', 'rsd_link' );
+	
+	// Remove shortlink
+	remove_action( 'wp_head', 'wp_shortlink_wp_head', 10, 0 );
 }
+
+/**
+ * Google Tag Manager integration.
+ * Outputs GTM snippet in <head> when option is configured.
+ */
+add_action( 'wp_head', function(): void {
+	$gtm_id = get_option( 'alkana_gtm_id', '' );
+	if ( $gtm_id ) {
+		?>
+		<!-- Google Tag Manager -->
+		<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+		new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+		j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+		'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+		})(window,document,'script','dataLayer','<?php echo esc_attr( $gtm_id ); ?>');</script>
+		<!-- End Google Tag Manager -->
+		<?php
+	}
+}, 1 );
+
+/**
+ * Google Tag Manager noscript fallback.
+ * Outputs GTM iframe in <body> when option is configured.
+ */
+add_action( 'wp_body_open', function(): void {
+	$gtm_id = get_option( 'alkana_gtm_id', '' );
+	if ( $gtm_id ) {
+		?>
+		<!-- Google Tag Manager (noscript) -->
+		<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=<?php echo esc_attr( $gtm_id ); ?>"
+		height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+		<!-- End Google Tag Manager (noscript) -->
+		<?php
+	}
+} );

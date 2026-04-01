@@ -7,3 +7,7 @@ import './mobile-menu.js';
 import './bottom-sheet.js';
 import './filter.js';
 import './sticky-cta.js';
+import './search.js';
+import './back-to-top.js';
+import './form-validation.js';
+import './newsletter.js';

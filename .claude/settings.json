@@ -20,6 +20,17 @@
             "_origin": "engineer"
           }
         ]
+      },
+      {
+        "matcher": "startup|resume",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$CLAUDE_PROJECT_DIR/.claude/hooks/usage-quota-cache-refresh.cjs\"",
+            "timeout": 8,
+            "_origin": "engineer"
+          }
+        ]
       }
     ],
     "SubagentStart": [
@@ -63,11 +74,21 @@
           {
             "type": "command",
             "command": "node \"$CLAUDE_PROJECT_DIR/.claude/hooks/dev-rules-reminder.cjs\""
+          }
+        ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$CLAUDE_PROJECT_DIR/.claude/hooks/dev-rules-reminder.cjs\"",
+            "_origin": "engineer"
           },
           {
             "type": "command",
-            "command": "node \"$CLAUDE_PROJECT_DIR/.claude/hooks/usage-context-awareness.cjs\"",
-            "timeout": 30
+            "command": "node \"$CLAUDE_PROJECT_DIR/.claude/hooks/usage-quota-cache-refresh.cjs\"",
+            "timeout": 30,
+            "_origin": "engineer"
           }
         ]
       }
@@ -116,8 +137,9 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node \"$CLAUDE_PROJECT_DIR/.claude/hooks/usage-context-awareness.cjs\"",
-            "timeout": 10
+            "command": "node \"$CLAUDE_PROJECT_DIR/.claude/hooks/usage-quota-cache-refresh.cjs\"",
+            "timeout": 10,
+            "_origin": "engineer"
           }
         ]
       }

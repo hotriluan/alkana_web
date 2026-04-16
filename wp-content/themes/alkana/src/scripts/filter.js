@@ -24,6 +24,7 @@ const state = {
     gloss:    [],   // array of gloss level slugs
     category: [],   // array of category slugs
     featured: false,
+    sort:     'latest',
     page:     1,
 };
 
@@ -57,6 +58,7 @@ function readStateFromURL() {
     state.gloss    = p.get('gloss')?.split(',').filter(Boolean)    ?? [];
     state.category = p.get('cat')?.split(',').filter(Boolean)      ?? [];
     state.featured = p.get('featured') === '1';
+    state.sort     = p.get('sort') ?? 'latest';
     state.page     = parseInt(p.get('page') ?? '1', 10) || 1;
 }
 
@@ -86,6 +88,7 @@ function updateURL() {
     if (state.gloss.length)     p.set('gloss',    state.gloss.join(','));
     if (state.category.length)  p.set('cat',      state.category.join(','));
     if (state.featured)         p.set('featured', '1');
+    if (state.sort !== 'latest') p.set('sort',    state.sort);
     if (state.page > 1)         p.set('page',     String(state.page));
     const qs = p.toString();
     history.pushState(null, '', qs ? `?${qs}` : window.location.pathname);
@@ -130,6 +133,37 @@ function bindFilterControls() {
             runFilter();
             grid?.scrollIntoView({ behavior: 'smooth', block: 'start' });
         });
+
+    // Sort select
+    const sortSelect = document.getElementById('product-sort');
+    if (sortSelect) {
+        sortSelect.value = state.sort;
+        sortSelect.addEventListener('change', () => {
+            state.sort = sortSelect.value;
+            state.page = 1;
+            onFilterChange();
+        });
+    }
+
+    // View toggle — grid / list
+    const viewGrid = document.getElementById('view-grid');
+    const viewList = document.getElementById('view-list');
+    if (viewGrid && viewList && grid) {
+        viewGrid.addEventListener('click', () => {
+            grid.classList.remove('view-list');
+            viewGrid.classList.add('is-active');
+            viewGrid.setAttribute('aria-pressed', 'true');
+            viewList.classList.remove('is-active');
+            viewList.setAttribute('aria-pressed', 'false');
+        });
+        viewList.addEventListener('click', () => {
+            grid.classList.add('view-list');
+            viewList.classList.add('is-active');
+            viewList.setAttribute('aria-pressed', 'true');
+            viewGrid.classList.remove('is-active');
+            viewGrid.setAttribute('aria-pressed', 'false');
+        });
+    }
 
     // Active tag remove — delegated
     document.getElementById('filter-active-tags')
@@ -176,6 +210,24 @@ function onFilterChange() {
     debounceTimer = setTimeout(runFilter, DEBOUNCE_MS);
 }
 
+// ── Skeleton Loaders ──────────────────────────────────────────────────────────
+
+function skeletonCard() {
+    return '<div class="animate-pulse bg-white rounded-xl border border-gray-100 overflow-hidden">'
+        + '<div class="bg-gray-200 h-48 w-full"></div>'
+        + '<div class="p-6 space-y-3">'
+        + '<div class="h-3 bg-gray-200 rounded w-1/3"></div>'
+        + '<div class="h-4 bg-gray-300 rounded w-3/4"></div>'
+        + '<div class="h-3 bg-gray-200 rounded w-1/2"></div>'
+        + '<div class="h-9 bg-gray-200 rounded mt-2"></div>'
+        + '</div></div>';
+}
+
+function showSkeletons() {
+    if (!grid) return;
+    grid.innerHTML = Array(6).fill(skeletonCard()).join('');
+}
+
 // ── AJAX ──────────────────────────────────────────────────────────────────────
 
 async function runFilter() {
@@ -184,12 +236,14 @@ async function runFilter() {
     grid.classList.add('loading');
     updateURL();
     renderActiveTags();
+    showSkeletons();
 
     try {
         const body = new URLSearchParams({
             action: 'alkana_filter_products',
             nonce:  AlkanaConfig.nonce,
             page:   String(state.page),
+            sort:   state.sort,
         });
         state.surface.forEach((s)  => body.append('surface[]', s));
         state.system.forEach((s)   => body.append('paint_system[]', s));

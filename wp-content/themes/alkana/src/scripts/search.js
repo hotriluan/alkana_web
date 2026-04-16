@@ -1,5 +1,5 @@
 /**
- * Search Modal functionality
+ * Search Modal — full-screen purple predictive search
  *
  * @package Alkana
  */
@@ -34,7 +34,7 @@
 
 	closeBtn.addEventListener('click', closeModal);
 
-	// Close on backdrop click
+	// Close on backdrop click (only if clicking directly on modal backdrop)
 	modal.addEventListener('click', (e) => {
 		if (e.target === modal) closeModal();
 	});
@@ -68,17 +68,17 @@
 				renderResults(data.results);
 			} catch (error) {
 				console.error('Search error:', error);
-				results.innerHTML = '<p class="text-sm text-red-500 py-4">Đã xảy ra lỗi khi tìm kiếm.</p>';
+				results.innerHTML = '<p class="text-sm text-white/50 py-4 text-center">Đã xảy ra lỗi khi tìm kiếm.</p>';
 			} finally {
 				loading.classList.add('hidden');
 			}
 		}, 300);
 	});
 
-	// Render results
+	// Render results — purple-themed with thumbnails
 	function renderResults(items) {
 		if (!items || items.length === 0) {
-			results.innerHTML = '<p class="text-sm text-gray-500 py-4">Không tìm thấy kết quả</p>';
+			results.innerHTML = '<p class="text-sm text-white/40 py-6 text-center">Không tìm thấy kết quả</p>';
 			return;
 		}
 
@@ -88,21 +88,36 @@
 		let html = '';
 
 		if (products.length > 0) {
-			html += '<div class="mb-4"><h3 class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Sản phẩm</h3>';
-			html += '<ul class="space-y-1">';
+			html += '<div class="mb-6">';
+			html += '<h3 class="text-xs font-semibold text-white/40 uppercase tracking-widest mb-3">Sản phẩm</h3>';
+			html += '<div class="space-y-2">';
 			products.forEach((item) => {
-				html += `<li><a href="${escapeHtml(item.url)}" class="block px-3 py-2 rounded-lg hover:bg-gray-50 transition-colors text-sm text-[--color-secondary] hover:text-[--color-primary]">${escapeHtml(item.title)}</a></li>`;
+				const thumb = item.thumbnail
+					? `<img src="${escapeHtml(item.thumbnail)}" alt="" class="w-full h-full object-cover" loading="lazy">`
+					: '<div class="w-full h-full bg-white/10 flex items-center justify-center"><svg class="w-5 h-5 text-white/20" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg></div>';
+
+				html += `<a href="${escapeHtml(item.url)}" class="flex items-center gap-4 px-4 py-3 rounded-xl bg-white/5 hover:bg-white/10 transition-colors">`;
+				html += `<div class="w-12 h-12 rounded-lg overflow-hidden flex-shrink-0">${thumb}</div>`;
+				html += '<div class="flex-1 min-w-0">';
+				html += `<p class="text-sm font-medium text-white truncate">${escapeHtml(item.title)}</p>`;
+				if (item.slug) {
+					html += `<p class="text-xs text-white/40 font-mono">${escapeHtml(item.slug)}</p>`;
+				}
+				html += '</div>';
+				html += '<svg class="w-4 h-4 text-white/30 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>';
+				html += '</a>';
 			});
-			html += '</ul></div>';
+			html += '</div></div>';
 		}
 
 		if (posts.length > 0) {
-			html += '<div><h3 class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Trang & Bài viết</h3>';
-			html += '<ul class="space-y-1">';
+			html += '<div>';
+			html += '<h3 class="text-xs font-semibold text-white/40 uppercase tracking-widest mb-3">Trang & Bài viết</h3>';
+			html += '<div class="space-y-1">';
 			posts.forEach((item) => {
-				html += `<li><a href="${escapeHtml(item.url)}" class="block px-3 py-2 rounded-lg hover:bg-gray-50 transition-colors text-sm text-[--color-secondary] hover:text-[--color-primary]">${escapeHtml(item.title)}</a></li>`;
+				html += `<a href="${escapeHtml(item.url)}" class="block px-4 py-3 rounded-xl hover:bg-white/10 transition-colors text-sm text-white/80 hover:text-white">${escapeHtml(item.title)}</a>`;
 			});
-			html += '</ul></div>';
+			html += '</div></div>';
 		}
 
 		results.innerHTML = html;
@@ -110,6 +125,7 @@
 
 	// Escape HTML
 	function escapeHtml(text) {
+		if (!text) return '';
 		const map = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' };
 		return text.replace(/[&<>"']/g, (m) => map[m]);
 	}

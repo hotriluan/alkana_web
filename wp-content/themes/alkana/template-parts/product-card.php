@@ -17,13 +17,14 @@ $is_featured = get_field( '_alkana_featured', $post_id );
 $is_new      = ( strtotime( get_the_date( 'Y-m-d' ) ) > strtotime( '-30 days' ) );
 ?>
 
-<article <?php post_class( 'product-card group flex flex-col bg-white rounded-xl border border-gray-100 shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-2 overflow-hidden relative' ); ?> data-post-id="<?php echo esc_attr( (string) $post_id ); ?>">
+<article <?php post_class( 'product-card card card--elevated group flex flex-col bg-white rounded-xl overflow-hidden relative' ); ?> data-post-id="<?php echo esc_attr( (string) $post_id ); ?>" data-hover-physics>
 
 	<a href="<?php the_permalink(); ?>" class="block"
 	   aria-label="<?php echo esc_attr( get_the_title() ); ?>">
 		<div class="aspect-[4/3] w-full overflow-hidden bg-gray-100 relative">
+			<div class="product-card__overlay absolute inset-0 z-[1] bg-gradient-to-t from-alkana-purple-900/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
 			<?php if ( $is_featured ) : ?>
-				<span class="absolute top-3 left-3 z-10 bg-[--color-primary] text-white text-xs font-bold px-2 py-1 rounded">
+				<span class="absolute top-3 left-3 z-10 bg-alkana-purple-600 text-white text-xs font-bold px-2 py-1 rounded">
 					<?php esc_html_e( 'Featured', 'alkana' ); ?>
 				</span>
 			<?php elseif ( $is_new ) : ?>
@@ -68,7 +69,7 @@ $is_new      = ( strtotime( get_the_date( 'Y-m-d' ) ) > strtotime( '-30 days' ) 
 		<?php endif; ?>
 
 		<h3 class="product-card__title text-lg font-bold text-[#1A3A5C] mb-4">
-			<a href="<?php the_permalink(); ?>" class="hover:text-[#E8611A] transition-colors">
+			<a href="<?php the_permalink(); ?>" class="hover:text-alkana-purple-600 transition-colors">
 				<?php the_title(); ?>
 			</a>
 		</h3>
@@ -80,7 +81,7 @@ $is_new      = ( strtotime( get_the_date( 'Y-m-d' ) ) > strtotime( '-30 days' ) 
 		<?php endif; ?>
 
 		<a href="<?php the_permalink(); ?>"
-		   class="product-card__cta mt-auto w-full text-center border-2 border-[#E8611A] text-[#E8611A] px-4 py-2 rounded font-semibold hover:bg-[#E8611A] hover:text-white transition-colors">
+		   class="product-card__cta mt-auto w-full text-center border-2 border-alkana-purple-600 text-alkana-purple-600 px-4 py-2 rounded font-semibold hover:bg-alkana-purple-600 hover:text-white transition-colors">
 			<?php esc_html_e( 'View Details', 'alkana' ); ?>
 		</a>
 

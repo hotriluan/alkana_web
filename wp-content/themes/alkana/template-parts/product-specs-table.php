@@ -11,8 +11,8 @@ defined( 'ABSPATH' ) || exit;
 
 $post_id = get_the_ID();
 
-// ACF field groups: product_specs (Repeater)
-$specs = get_field( 'product_specs', $post_id );
+// Custom meta box helper (replaces ACF PRO repeater)
+$specs = alkana_get_product_specs( $post_id );
 
 if ( empty( $specs ) ) {
 	return;
@@ -21,7 +21,7 @@ if ( empty( $specs ) ) {
 
 <div class="specs-table-wrapper overflow-x-auto mt-6">
 	<table class="specs-table w-full text-sm border-collapse">
-		<thead class="specs-table__head bg-[--color-secondary] text-white">
+		<thead class="specs-table__head bg-alkana-navy text-white">
 			<tr>
 				<th class="specs-table__th text-left p-3 font-medium"><?php esc_html_e( 'Property', 'alkana' ); ?></th>
 				<th class="specs-table__th text-left p-3 font-medium"><?php esc_html_e( 'Value', 'alkana' ); ?></th>

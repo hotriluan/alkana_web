@@ -18,7 +18,7 @@ get_template_part( 'template-parts/header' );
 	</div>
 
 	<?php // ── Hero banner ─────────────────────────────────────────────── ?>
-	<section class="page-hero bg-[--color-secondary] text-white py-14">
+	<section class="page-hero bg-alkana-navy text-white py-14">
 		<div class="container mx-auto px-4">
 			<div class="flex items-center gap-2 text-sm text-white/60 mb-3">
 				<time datetime="<?php echo esc_attr( get_the_date( 'c' ) ); ?>">
@@ -68,7 +68,7 @@ get_template_part( 'template-parts/header' );
 		<div class="max-w-3xl mx-auto mt-8 flex flex-wrap gap-2">
 			<?php foreach ( $tags as $tag ) : ?>
 				<a href="<?php echo esc_url( get_tag_link( $tag->term_id ) ); ?>"
-				   class="text-xs px-3 py-1 rounded-full bg-gray-100 text-gray-600 hover:bg-[--color-primary] hover:text-white transition-colors">
+				   class="text-xs px-3 py-1 rounded-full bg-gray-100 text-gray-600 hover:bg-alkana-purple-600 hover:text-white transition-colors">
 					#<?php echo esc_html( $tag->name ); ?>
 				</a>
 			<?php endforeach; ?>

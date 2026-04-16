@@ -1,127 +1,157 @@
-<?php // ── Newsletter CTA ───────────────────────────────────────────────── ?>
-<section class="newsletter-cta bg-[--color-primary] py-12">
-	<div class="max-w-7xl mx-auto px-4 text-center">
-		<h2 class="text-2xl font-heading font-bold text-white mb-2">
-			Đăng ký nhận thông tin
-		</h2>
-		<p class="text-white/80 mb-6 max-w-xl mx-auto">
-			Nhận thông tin về sản phẩm mới, khuyến mãi và giải pháp sơn phủ từ Alkana
-		</p>
-		<form class="newsletter-form flex flex-col sm:flex-row gap-3 max-w-md mx-auto" id="newsletter-form" novalidate>
-			<?php wp_nonce_field( 'alkana_newsletter', 'newsletter_nonce' ); ?>
-			<input type="email" name="email" required
-				   class="flex-1 px-4 py-3 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-white"
-				   placeholder="Email của bạn..."
-				   aria-label="Email" />
-			<button type="submit" class="btn bg-[--color-secondary] text-white px-6 py-3 rounded-lg font-semibold hover:bg-[--color-secondary]/90 transition-colors whitespace-nowrap">
-				Đăng ký
-			</button>
-		</form>
-		<div id="newsletter-message" class="mt-3 text-sm text-white/90 hidden" aria-live="polite"></div>
-	</div>
-</section>
+﻿<?php
+/**
+ * Site footer — 5-column dark layout.
+ * Columns: About | Products | Resources | Contact | Newsletter
+ *
+ * @package Alkana
+ */
 
-<footer class="site-footer bg-[#1A3A5C] text-white pt-16 pb-8 border-t-4 border-[#E8611A]">
+defined( 'ABSPATH' ) || exit;
+
+$phone    = get_theme_mod( 'alkana_phone', '' );
+$email    = get_theme_mod( 'alkana_email', '' );
+$address  = get_theme_mod( 'alkana_address', '' );
+$facebook = get_theme_mod( 'alkana_facebook', 'https://facebook.com/alkanacoating' );
+$linkedin = get_theme_mod( 'alkana_linkedin', '#' );
+$zalo     = get_theme_mod( 'alkana_zalo', 'https://zalo.me/' );
+$logo_id  = get_theme_mod( 'custom_logo' );
+?>
+
+<footer class="site-footer bg-[#1A1A2E] text-white pt-16 pb-0 border-t-4 border-alkana-purple-600">
 	<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
-		<div class="footer-grid grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
+		<div class="footer-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 mb-12">
 
-			<?php // ── Brand column ──────────────────────────────────────────────── ?>
-			<div class="footer-brand">
-				<?php
-				$logo_id = get_theme_mod( 'custom_logo' );
-				if ( $logo_id ) {
-					echo wp_get_attachment_image( $logo_id, [ 140, 44 ], false, [ 'class' => 'h-10 w-auto mb-3 brightness-0 invert' ] );
-				} else {
-					echo '<p class="font-heading font-bold text-lg mb-3">' . esc_html( get_bloginfo( 'name' ) ) . '</p>';
-				}
-				?>
-				<p class="text-sm text-gray-300"><?php esc_html_e( 'Professional paint and coating solutions for construction.', 'alkana' ); ?></p>
-			</div>
-
-			<?php // ── Quick links ───────────────────────────────────────────────── ?>
-			<div class="footer-links">
-				<h3 class="font-heading font-semibold mb-3"><?php esc_html_e( 'Quick Links', 'alkana' ); ?></h3>
-				<?php
-				wp_nav_menu( [
-					'theme_location' => 'footer',
-					'menu_class'     => 'flex flex-col gap-2',
-					'container'      => false,
-					'fallback_cb'    => false,
-				] );
-				?>
-			</div>
-
-			<?php // ── Contact info ──────────────────────────────────────────────── ?>
-			<div class="footer-contact">
-				<h3 class="font-heading font-semibold mb-3"><?php esc_html_e( 'Contact', 'alkana' ); ?></h3>
-				<address class="not-italic text-sm text-gray-300 space-y-2">
-					<p><?php echo wp_kses_post( get_theme_mod( 'alkana_address', '' ) ); ?></p>
-					<?php $phone = get_theme_mod( 'alkana_phone', '' ); if ( $phone ) : ?>
-						<p><a href="tel:<?php echo esc_attr( preg_replace( '/[^0-9+]/', '', $phone ) ); ?>" class="hover:text-white"><?php echo esc_html( $phone ); ?></a></p>
-					<?php endif; ?>
-					<?php $email = get_theme_mod( 'alkana_email', '' ); if ( $email ) : ?>
-						<p><a href="mailto:<?php echo esc_attr( antispambot( $email ) ); ?>" class="hover:text-white"><?php echo esc_html( antispambot( $email ) ); ?></a></p>
-					<?php endif; ?>
-				</address>
-			</div>
-
-			<?php // ── Social links ──────────────────────────────────────────────── ?>
-			<div class="footer-social">
-				<h3 class="font-heading font-semibold mb-3">Kết nối</h3>
-				<div class="flex gap-3">
-					<?php
-					$facebook = get_theme_mod( 'alkana_facebook', 'https://facebook.com/alkanacoating' );
-					$linkedin = get_theme_mod( 'alkana_linkedin', '#' );
-					$zalo     = get_theme_mod( 'alkana_zalo', 'https://zalo.me/' );
-					?>
-					
+			<?php // ── Column 1: About / Brand ──────────────────────────────────── ?>
+			<div class="lg:col-span-2 footer-brand">
+				<?php if ( $logo_id ) : ?>
+					<a href="<?php echo esc_url( home_url( '/' ) ); ?>" class="inline-block mb-4" rel="home">
+						<?php echo wp_get_attachment_image( $logo_id, [ 140, 44 ], false, [ 'class' => 'h-10 w-auto brightness-0 invert' ] ); ?>
+					</a>
+				<?php else : ?>
+					<a href="<?php echo esc_url( home_url( '/' ) ); ?>" class="inline-block mb-4 font-heading font-bold text-xl text-white" rel="home">
+						<?php echo esc_html( get_bloginfo( 'name' ) ); ?>
+					</a>
+				<?php endif; ?>
+				<p class="text-sm text-gray-400 leading-relaxed mb-5 max-w-xs">
+					<?php esc_html_e( 'Giải pháp sơn và phủ công nghiệp chuyên nghiệp cho mọi công trình — từ dân dụng đến công nghiệp nặng.', 'alkana' ); ?>
+				</p>
+				<div class="flex gap-2">
 					<?php if ( $facebook ) : ?>
-						<a href="<?php echo esc_url( $facebook ); ?>" 
-						   target="_blank" 
-						   rel="noopener noreferrer"
-						   class="w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-colors"
-						   aria-label="Facebook">
-							<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-								<path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+						<a href="<?php echo esc_url( $facebook ); ?>" target="_blank" rel="noopener noreferrer"
+						   class="footer-social-link" aria-label="Facebook">
+							<svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+								<path d="M24 12.073C24 5.445 18.627 0 12 0S0 5.445 0 12.073c0 6.032 4.388 10.997 10.125 11.893v-8.413H7.078v-3.48h3.047V9.43c0-3.022 1.792-4.69 4.533-4.69 1.312 0 2.686.235 2.686.235v2.953h-1.514c-1.49 0-1.955.926-1.955 1.875v2.255h3.328l-.532 3.48h-2.796v8.413C19.612 23.07 24 18.105 24 12.073z"/>
 							</svg>
 						</a>
 					<?php endif; ?>
-					
 					<?php if ( $linkedin ) : ?>
-						<a href="<?php echo esc_url( $linkedin ); ?>" 
-						   target="_blank" 
-						   rel="noopener noreferrer"
-						   class="w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-colors"
-						   aria-label="LinkedIn">
-							<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+						<a href="<?php echo esc_url( $linkedin ); ?>" target="_blank" rel="noopener noreferrer"
+						   class="footer-social-link" aria-label="LinkedIn">
+							<svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
 								<path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
 							</svg>
 						</a>
 					<?php endif; ?>
-					
 					<?php if ( $zalo ) : ?>
-						<a href="<?php echo esc_url( $zalo ); ?>" 
-						   target="_blank" 
-						   rel="noopener noreferrer"
-						   class="w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-colors"
-						   aria-label="Zalo">
-							<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-								<path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 14.52c-.194.425-.564.768-1.015.943l-.016.006c-.447.178-.947.28-1.47.28-.11 0-.22-.005-.328-.014l.014.001c-3.083-.232-6.036-1.57-8.36-3.774-.116-.11-.188-.265-.188-.436 0-.331.268-.6.6-.6.162 0 .309.064.416.168l-.001-.001c1.983 1.88 4.548 3.041 7.386 3.212l.038.002c.082.007.177.011.274.011.286 0 .563-.048.819-.137l-.019.006c.258-.091.452-.312.497-.581l.001-.005c.016-.097.026-.209.026-.323 0-.486-.176-.932-.468-1.276l.002.003c-.281-.33-.641-.583-1.049-.737l-.019-.006c-2.435-.918-5.074-2.128-5.074-5.188 0-1.844 1.495-3.338 3.338-3.338 1.844 0 3.338 1.495 3.338 3.338 0 .73-.234 1.405-.631 1.956l.006-.009c-.116.161-.188.363-.188.581 0 .552.448 1 1 1 .257 0 .49-.097.667-.256l-.001.001c.581-.731.929-1.667.929-2.686 0-2.395-1.943-4.338-4.338-4.338s-4.338 1.943-4.338 4.338c0 3.784 2.794 5.238 5.532 6.278.247.093.429.297.472.545l.001.005z"/>
+						<a href="<?php echo esc_url( $zalo ); ?>" target="_blank" rel="noopener noreferrer"
+						   class="footer-social-link" aria-label="Zalo">
+							<svg class="w-4 h-4" fill="currentColor" viewBox="0 0 32 32">
+								<path d="M16 1.333A14.667 14.667 0 1 1 1.333 16 14.667 14.667 0 0 1 16 1.333zm4.667 8.334H11.333a2 2 0 0 0-2 2v8.666a2 2 0 0 0 2 2h9.334a2 2 0 0 0 2-2v-8.666a2 2 0 0 0-2-2zm-9.334 2h9.334v8.666h-9.334v-8.666zm2 2v1.333h2.667v-1.333h-2.667zm0 2.666v1.334h5.334v-1.334h-5.334z"/>
 							</svg>
 						</a>
 					<?php endif; ?>
 				</div>
 			</div>
 
+			<?php // ── Column 2: Products ──────────────────────────────────────── ?>
+			<div class="footer-col">
+				<h3 class="footer-col__title"><?php esc_html_e( 'Sản phẩm', 'alkana' ); ?></h3>
+				<?php
+				wp_nav_menu( [
+					'theme_location' => 'footer',
+					'menu_class'     => 'footer-links',
+					'container'      => false,
+					'fallback_cb'    => false,
+					'depth'          => 1,
+				] );
+				?>
+			</div>
+
+			<?php // ── Column 3: Resources ─────────────────────────────────────── ?>
+			<div class="footer-col">
+				<h3 class="footer-col__title"><?php esc_html_e( 'Tài nguyên', 'alkana' ); ?></h3>
+				<ul class="footer-links">
+					<li><a href="<?php echo esc_url( home_url( '/du-an/' ) ); ?>"><?php esc_html_e( 'Dự án tiêu biểu', 'alkana' ); ?></a></li>
+					<li><a href="<?php echo esc_url( home_url( '/tin-tuc/' ) ); ?>"><?php esc_html_e( 'Tin tức', 'alkana' ); ?></a></li>
+					<li><a href="<?php echo esc_url( home_url( '/tuyen-dung/' ) ); ?>"><?php esc_html_e( 'Tuyển dụng', 'alkana' ); ?></a></li>
+					<li><a href="<?php echo esc_url( home_url( '/ve-chung-toi/' ) ); ?>"><?php esc_html_e( 'Về chúng tôi', 'alkana' ); ?></a></li>
+				</ul>
+			</div>
+
+			<?php // ── Column 4: Contact ───────────────────────────────────────── ?>
+			<div class="footer-col">
+				<h3 class="footer-col__title"><?php esc_html_e( 'Liên hệ', 'alkana' ); ?></h3>
+				<address class="not-italic space-y-3 text-sm text-gray-400">
+					<?php if ( $address ) : ?>
+						<p class="flex gap-2 leading-relaxed">
+							<svg class="w-4 h-4 mt-0.5 text-alkana-purple-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+							</svg>
+							<?php echo wp_kses_post( $address ); ?>
+						</p>
+					<?php endif; ?>
+					<?php if ( $phone ) : ?>
+						<a href="tel:<?php echo esc_attr( preg_replace( '/[^0-9+]/', '', $phone ) ); ?>"
+						   class="flex gap-2 items-center hover:text-alkana-purple-300 transition-colors">
+							<svg class="w-4 h-4 text-alkana-purple-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/>
+							</svg>
+							<?php echo esc_html( $phone ); ?>
+						</a>
+					<?php endif; ?>
+					<?php if ( $email ) : ?>
+						<a href="mailto:<?php echo esc_attr( antispambot( $email ) ); ?>"
+						   class="flex gap-2 items-center hover:text-alkana-purple-300 transition-colors">
+							<svg class="w-4 h-4 text-alkana-purple-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+							</svg>
+							<?php echo esc_html( antispambot( $email ) ); ?>
+						</a>
+					<?php endif; ?>
+				</address>
+			</div>
+
 		</div>
 
-		<div class="footer-bottom border-t border-white/20 pt-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 text-sm text-gray-300">
-			<p>
-				&copy; <?php echo esc_html( gmdate( 'Y' ) ); ?>
-				<?php echo esc_html( get_bloginfo( 'name' ) ); ?>.
-				<?php esc_html_e( 'All rights reserved.', 'alkana' ); ?>
-			</p>
+		<?php // ── Newsletter strip ──────────────────────────────────────────── ?>
+		<div class="border-t border-white/10 py-8 flex flex-col md:flex-row items-center gap-5 justify-between">
+			<div class="text-sm text-gray-400 md:max-w-xs">
+				<p class="font-semibold text-white mb-1"><?php esc_html_e( 'Đăng ký nhận tin', 'alkana' ); ?></p>
+				<p><?php esc_html_e( 'Cập nhật sản phẩm, khuyến mãi và giải pháp sơn phủ từ Alkana.', 'alkana' ); ?></p>
+			</div>
+			<form class="newsletter-form flex w-full md:w-auto max-w-sm" id="newsletter-form" novalidate>
+				<?php wp_nonce_field( 'alkana_newsletter', 'newsletter_nonce' ); ?>
+				<input type="email" name="email" required
+					   class="flex-1 px-4 py-2.5 bg-white/10 border border-white/20 rounded-l-lg focus:outline-none focus:ring-2 focus:ring-alkana-purple-400 text-white placeholder-gray-400 text-sm"
+					   placeholder="<?php esc_attr_e( 'Email của bạn...', 'alkana' ); ?>"
+					   aria-label="<?php esc_attr_e( 'Email đăng ký', 'alkana' ); ?>" />
+				<button type="submit"
+				        class="bg-alkana-purple-600 hover:bg-alkana-purple-500 text-white font-semibold px-5 py-2.5 rounded-r-lg transition-colors text-sm whitespace-nowrap">
+					<?php esc_html_e( 'Đăng ký', 'alkana' ); ?>
+				</button>
+			</form>
+			<div id="newsletter-message" class="hidden text-sm font-medium text-alkana-purple-300" aria-live="polite"></div>
+		</div>
+
+		<?php // ── Bottom bar ────────────────────────────────────────────────── ?>
+		<div class="border-t border-white/10 py-6 flex flex-col sm:flex-row justify-between items-center gap-3 text-xs text-gray-500">
+			<p>&copy; <?php echo esc_html( gmdate( 'Y' ) ); ?> <strong class="text-gray-400"><?php echo esc_html( get_bloginfo( 'name' ) ); ?></strong>. <?php esc_html_e( 'Bảo lưu mọi quyền.', 'alkana' ); ?></p>
+			<nav aria-label="<?php esc_attr_e( 'Footer bottom', 'alkana' ); ?>" class="flex gap-4">
+				<a href="<?php echo esc_url( home_url( '/chinh-sach-bao-mat/' ) ); ?>" class="hover:text-gray-300 transition-colors"><?php esc_html_e( 'Chính sách bảo mật', 'alkana' ); ?></a>
+				<a href="<?php echo esc_url( home_url( '/dieu-khoan-su-dung/' ) ); ?>" class="hover:text-gray-300 transition-colors"><?php esc_html_e( 'Điều khoản sử dụng', 'alkana' ); ?></a>
+			</nav>
 		</div>
 
 	</div>

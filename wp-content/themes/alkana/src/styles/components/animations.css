@@ -1,0 +1,164 @@
+/* =============================================================================
+   Animations — Keyframes, reveal classes, View Transition styles, loading bar
+   Phase 07 — Alkana Master Revamp
+   ============================================================================= */
+
+/* ── Easing variables ─────────────────────────────────────────────────────── */
+:root {
+  --ease-spring:     cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-smooth:     cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-out-expo:   cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-expo:    cubic-bezier(0.7, 0, 0.84, 0);
+  --duration-fast:   150ms;
+  --duration-normal: 300ms;
+  --duration-slow:   500ms;
+}
+
+/* ── @keyframes ───────────────────────────────────────────────────────────── */
+@keyframes fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes fade-out {
+  from { opacity: 1; }
+  to   { opacity: 0; }
+}
+
+@keyframes slide-up {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slide-down {
+  from { opacity: 0; transform: translateY(-20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slide-left {
+  from { opacity: 0; transform: translateX(32px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes slide-right {
+  from { opacity: 0; transform: translateX(-32px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes loading-progress {
+  0%   { width: 0%; opacity: 1; }
+  70%  { width: 85%; opacity: 1; }
+  100% { width: 100%; opacity: 0; }
+}
+
+@keyframes pulse-ring {
+  0%   { transform: scale(1); opacity: 0.5; }
+  100% { transform: scale(2.2); opacity: 0; }
+}
+
+/* ── Loading bar (View Transitions) ───────────────────────────────────────── */
+#vt-loading-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 3px;
+  width: 0;
+  background: linear-gradient(
+    to right,
+    var(--color-alkana-purple-400, #9F5ACC),
+    var(--color-alkana-purple-600, #6E2BAE),
+    var(--color-alkana-purple-300, #B87EDD)
+  );
+  z-index: 9999;
+  transform-origin: left center;
+  animation: loading-progress 1.8s var(--ease-out-expo) forwards;
+  pointer-events: none;
+}
+
+#vt-loading-bar.vt-loading-bar--done {
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+/* ── View Transition animations ───────────────────────────────────────────── */
+::view-transition-old(root) {
+  animation: fade-out var(--duration-fast) var(--ease-smooth) both;
+}
+
+::view-transition-new(root) {
+  animation: fade-in var(--duration-normal) var(--ease-smooth) both;
+}
+
+/* Slide for product detail pages */
+::view-transition-old(product-hero) {
+  animation: slide-left 280ms var(--ease-out-expo) both;
+}
+::view-transition-new(product-hero) {
+  animation: slide-right 280ms var(--ease-out-expo) both;
+}
+
+/* ── Scroll Reveal — single element ──────────────────────────────────────── */
+.reveal-hidden {
+  opacity: 0;
+  transform: translateY(28px);
+  transition:
+    opacity var(--duration-slow) var(--ease-smooth),
+    transform var(--duration-slow) var(--ease-out-expo);
+}
+
+.reveal-hidden.is-revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ── Scroll Reveal — stagger children ────────────────────────────────────── */
+[data-reveal-stagger] > * {
+  opacity: 0;
+  transform: translateY(20px);
+  transition:
+    opacity var(--duration-slow) var(--ease-smooth),
+    transform var(--duration-slow) var(--ease-out-expo);
+}
+
+[data-reveal-stagger].is-revealed > *:nth-child(1)  { transition-delay:   0ms; }
+[data-reveal-stagger].is-revealed > *:nth-child(2)  { transition-delay:  80ms; }
+[data-reveal-stagger].is-revealed > *:nth-child(3)  { transition-delay: 160ms; }
+[data-reveal-stagger].is-revealed > *:nth-child(4)  { transition-delay: 240ms; }
+[data-reveal-stagger].is-revealed > *:nth-child(5)  { transition-delay: 320ms; }
+[data-reveal-stagger].is-revealed > *:nth-child(6)  { transition-delay: 400ms; }
+[data-reveal-stagger].is-revealed > *:nth-child(7)  { transition-delay: 480ms; }
+[data-reveal-stagger].is-revealed > *:nth-child(8)  { transition-delay: 560ms; }
+[data-reveal-stagger].is-revealed > *:nth-child(9)  { transition-delay: 640ms; }
+[data-reveal-stagger].is-revealed > *:nth-child(10) { transition-delay: 720ms; }
+[data-reveal-stagger].is-revealed > *:nth-child(11) { transition-delay: 800ms; }
+[data-reveal-stagger].is-revealed > *:nth-child(12) { transition-delay: 880ms; }
+
+[data-reveal-stagger].is-revealed > * {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ── Reduced motion: disable ALL animations ──────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  .reveal-hidden,
+  [data-reveal-stagger] > * {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation: none !important;
+  }
+
+  #vt-loading-bar {
+    animation: none !important;
+    display: none;
+  }
+}
+
+/* ── Utility animation classes ───────────────────────────────────────────── */
+.animate-fade-in   { animation: fade-in   var(--duration-normal) var(--ease-smooth) both; }
+.animate-slide-up  { animation: slide-up  var(--duration-slow)   var(--ease-out-expo) both; }
+.animate-slide-down{ animation: slide-down var(--duration-slow)  var(--ease-out-expo) both; }

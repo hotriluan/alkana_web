@@ -36,17 +36,19 @@ if ( is_singular( 'alkana_product' ) ) {
 ?>
 
 <nav aria-label="<?php esc_attr_e( 'Breadcrumb', 'alkana' ); ?>" class="breadcrumb py-4">
-	<ol class="flex items-center gap-2 text-sm text-gray-500" itemscope itemtype="https://schema.org/BreadcrumbList">
+	<ol class="flex items-center flex-wrap gap-1.5 text-sm text-gray-500" itemscope itemtype="https://schema.org/BreadcrumbList">
 		<?php foreach ( $items as $i => $item ) : ?>
-			<li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem" class="flex items-center gap-2">
+			<li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem" class="flex items-center gap-1.5">
 				<?php if ( $item['url'] ) : ?>
-					<a href="<?php echo esc_url( $item['url'] ); ?>" itemprop="item" class="hover:text-[--color-primary] transition-colors">
+					<a href="<?php echo esc_url( $item['url'] ); ?>" itemprop="item" class="hover:text-alkana-purple-600 transition-colors">
 						<span itemprop="name"><?php echo esc_html( $item['label'] ); ?></span>
 					</a>
 					<meta itemprop="position" content="<?php echo esc_attr( (string) ( $i + 1 ) ); ?>" />
-					<span class="text-gray-300" aria-hidden="true">›</span>
+					<svg class="w-3.5 h-3.5 text-gray-300 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+					</svg>
 				<?php else : ?>
-					<span itemprop="name" aria-current="page" class="text-gray-700"><?php echo esc_html( $item['label'] ); ?></span>
+					<span itemprop="name" aria-current="page" class="text-amber-500 font-medium"><?php echo esc_html( $item['label'] ); ?></span>
 					<meta itemprop="position" content="<?php echo esc_attr( (string) ( $i + 1 ) ); ?>" />
 				<?php endif; ?>
 			</li>

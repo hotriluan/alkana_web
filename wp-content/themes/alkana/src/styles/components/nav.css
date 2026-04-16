@@ -5,9 +5,75 @@
     position: sticky;
     top: 0;
     z-index: var(--z-nav);
-    background: var(--color-bg);
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
     border-bottom: 1px solid var(--color-border);
     box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+    transition: background 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+}
+
+/* ── Transparent header (homepage only) ────────────────────────────────── */
+.site-header.is-transparent {
+    background: transparent !important;
+    border-bottom-color: transparent !important;
+    box-shadow: none !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+}
+
+/* Force white text with strong shadow for readability on any hero image */
+.site-header.is-transparent .nav-link,
+.site-header.is-transparent .nav-menu > li > a,
+.site-header.is-transparent .nav-menu a {
+    color: #FFFFFF !important;
+    text-shadow: 0 1px 4px rgba(26, 26, 46, 0.6), 0 0 1px rgba(0, 0, 0, 0.3);
+}
+.site-header.is-transparent .site-logo__img {
+    filter: brightness(0) invert(1);
+}
+
+/* Search toggle - force white */
+.site-header.is-transparent .search-toggle,
+.site-header.is-transparent .search-toggle svg {
+    color: #FFFFFF !important;
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.4));
+}
+
+/* Mobile hamburger - force white bars */
+.site-header.is-transparent .nav-toggle span {
+    background-color: #FFFFFF !important;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+/* Header CTA button - glassmorphism white */
+.site-header.is-transparent .header-cta {
+    background: rgba(255, 255, 255, 0.2) !important;
+    border: 1px solid rgba(255, 255, 255, 0.5) !important;
+    color: #FFFFFF !important;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+}
+.site-header.is-transparent .header-cta:hover {
+    background: rgba(255, 255, 255, 0.35) !important;
+}
+
+/* ── Topbar ─────────────────────────────────────────────────────────────── */
+#topbar {
+    overflow: hidden;
+    max-height: 40px;
+    transition: max-height 0.3s ease, opacity 0.3s ease;
+}
+#topbar.topbar--hidden {
+    max-height: 0;
+    opacity: 0;
+    pointer-events: none;
+}
+
+/* ── Mega menu panel (viewport-width, fixed positioning) ────────────────── */
+.mega-panel {
+    width: 100vw;
 }
 
 .site-header__inner {
@@ -38,15 +104,40 @@
 /* Target WordPress-generated nav links in desktop menu */
 .nav-menu a {
     display: block;
-    padding: 0.25rem 0;
+    padding: 0.375rem 0.75rem;
     font-size: 0.875rem;
     font-weight: 600;
     color: #374151;
     text-decoration: none;
-    transition: color 0.2s ease;
+    border-radius: 0.375rem;
+    transition: color 0.2s ease, background-color 0.2s ease;
 }
 .nav-menu a:hover,
-.nav-menu .current-menu-item > a { color: #E8611A; background-color: transparent; }
+.nav-menu .current-menu-item > a {
+    color: var(--color-primary);
+    background-color: #f3e8ff;
+}
+
+/* Nav link underline indicator */
+.nav-link {
+    position: relative;
+}
+.nav-link::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 50%;
+    right: 50%;
+    height: 2px;
+    background: var(--color-primary);
+    border-radius: 2px;
+    transition: left 0.2s ease, right 0.2s ease;
+}
+.nav-menu li:hover > .nav-link::after,
+.nav-menu .current-menu-item > .nav-link::after {
+    left: 0.75rem;
+    right: 0.75rem;
+}
 
 /* Mobile hamburger button */
 .nav-toggle {
@@ -72,26 +163,19 @@
     text-decoration: none;
     transition: color 0.2s ease;
 }
-.site-footer .flex.flex-col a:hover { color: #ffffff; }
+.site-footer .flex.flex-col a:hover { color: var(--color-primary); }
 
-/* Mobile drawer */
+/* ── Mobile drawer (slide-from-right) ───────────────────────────────────── */
 .nav-drawer {
-    display: none;
-    position: fixed;
-    top: 64px;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: var(--color-bg);
-    z-index: calc(var(--z-nav) - 1);
-    overflow-y: auto;
-    padding: 1rem;
+    display: flex;
     flex-direction: column;
 }
-.nav-drawer.is-open { display: flex; }
-@media (min-width: 1024px) { .nav-drawer { display: none !important; } }
+@media (min-width: 768px) { .nav-drawer { display: none !important; } }
 
-/* Accordion nav items (mobile) */
+/* Body scroll lock when drawer open */
+body.nav-open { overflow: hidden; }
+
+/* ── Accordion nav items (mobile) ───────────────────────────────────────── */
 .nav-accordion { list-style: none; margin: 0; padding: 0; width: 100%; }
 .nav-accordion__item { border-bottom: 1px solid var(--color-border); }
 .nav-accordion__toggle {

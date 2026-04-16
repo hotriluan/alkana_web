@@ -36,9 +36,3 @@
 
 /* Add bottom padding to body so content isn't hidden under CTA bar */
 body.has-sticky-cta { padding-bottom: 72px; }
-
-/* Hide on desktop — desktop has header CTAs */
-@media (min-width: 1024px) {
-    .sticky-cta { display: none; }
-    body.has-sticky-cta { padding-bottom: 0; }
-}

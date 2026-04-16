@@ -1,0 +1,88 @@
+/**
+ * Paint System Builder — wizard UI styles.
+ *
+ * @package Alkana
+ */
+
+/* Option buttons (Step 2) */
+.option-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    justify-content: center;
+    padding: 0.75rem 1rem;
+    border: 2px solid var(--color-border);
+    border-radius: var(--radius-card);
+    background: var(--color-bg);
+    color: var(--color-text);
+    font-size: 0.9375rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: border-color 0.2s, background-color 0.2s, color 0.2s;
+    width: 100%;
+}
+
+.option-btn:hover {
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+}
+
+.option-btn.is-selected {
+    border-color: var(--color-primary);
+    background-color: var(--color-alkana-purple-50);
+    color: var(--color-primary);
+}
+
+.option-btn svg {
+    flex-shrink: 0;
+}
+
+/* Product result card */
+.builder-card {
+    transition: transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275),
+                box-shadow 0.25s ease;
+}
+
+.builder-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-card-hover);
+}
+
+.builder-card__role {
+    color: var(--color-primary);
+    border-bottom: 2px solid var(--color-alkana-purple-100);
+    padding-bottom: 0.375rem;
+}
+
+/* Step reveal animation */
+.builder-step {
+    animation: fadeInUp 0.35s ease both;
+}
+
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Surface card icon size */
+.surface-card__icon svg {
+    width: 1.5rem;
+    height: 1.5rem;
+}
+
+/* Print: show only results, hide wizard chrome */
+@media print {
+    .site-header,
+    .site-footer,
+    #step-1,
+    #step-2,
+    #builder-reset-wrap,
+    .builder-print-btn,
+    [aria-label="Wizard steps"] { display: none !important; }
+
+    .builder-card { break-inside: avoid; page-break-inside: avoid; }
+
+    #step-3 { display: block !important; }
+
+    body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+}

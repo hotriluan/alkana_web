@@ -1,7 +1,32 @@
 @import 'tailwindcss';
 @import './variables.css';
+
+@theme {
+  /* Brand Purple Scale — Alkana Identity */
+  --color-alkana-purple-50:  #F3EAFC;
+  --color-alkana-purple-100: #E8D5F5;
+  --color-alkana-purple-200: #D4AEE9;
+  --color-alkana-purple-300: #B87EDD;  /* BRAND LIGHT  */
+  --color-alkana-purple-400: #9F5ACC;
+  --color-alkana-purple-500: #8236BC;  /* BRAND MEDIUM */
+  --color-alkana-purple-600: #6E2BAE;
+  --color-alkana-purple-700: #67219D;  /* BRAND PRIMARY */
+  --color-alkana-purple-800: #5A1A8F;
+  --color-alkana-purple-900: #4C0682;  /* BRAND DARK   */
+  /* Surface Palette */
+  --color-surface-warm: #FAF8F5;
+  --color-surface-cool: #F3EAFC;
+  --color-surface-dark: #1A1A2E;
+  /* Gold Accent */
+  --color-gold-300: #DDB892;
+  --color-gold-400: #C49A6C;
+  --color-gold-500: #A67C52;
+}
+
 @import './components/buttons.css';
 @import './components/cards.css';
+@import './components/typography.css';
+@import './components/sections.css';
 @import './components/forms.css';
 @import './components/specs-table.css';
 @import './components/bottom-sheet.css';
@@ -11,3 +36,6 @@
 @import './components/search.css';
 @import './components/accessibility.css';
 @import './components/pagination.css';
+@import './components/paint-builder.css';
+@import './components/homepage.css';
+@import './components/animations.css';

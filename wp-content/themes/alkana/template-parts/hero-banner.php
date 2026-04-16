@@ -70,7 +70,7 @@ $img_id = is_array( $hero_image ) ? ( $hero_image['ID'] ?? 0 ) : (int) $hero_ima
 		<?php endif; ?>
 
 		<?php if ( $hero_cta_url ) : ?>
-			<a href="<?php echo esc_url( $hero_cta_url ); ?>" class="inline-block bg-[#E8611A] text-white px-8 py-4 rounded-md font-bold hover:bg-orange-600 transition-all duration-300 shadow-lg hover:shadow-orange-500/30 hover:-translate-y-1">
+			<a href="<?php echo esc_url( $hero_cta_url ); ?>" class="inline-block bg-gradient-to-r from-alkana-purple-400 to-alkana-purple-600 text-white px-8 py-4 rounded-md font-bold hover:from-alkana-purple-500 hover:to-alkana-purple-700 transition-all duration-300 shadow-lg hover:-translate-y-1">
 				<?php echo esc_html( $hero_cta_label ); ?>
 			</a>
 		<?php endif; ?>

@@ -1,44 +1,108 @@
 /**
  * Alkana Theme — CSS Custom Properties (Brand Tokens)
- * Source of truth for all colors, typography, and spacing.
- * Used by Tailwind extend + raw CSS components.
+ * Source of truth for all colors, typography, spacing, and animation.
+ * Design System 2.0 — updated 2026-04-14
+ * Brand Identity: #4C0682 (dark) · #67219D (primary) · #8236BC (medium) · #B87EDD (light)
  */
 :root {
-    /* Brand colors — extracted from Alkana logo */
-    --color-primary:     #E8611A;   /* Alkana orange */
-    --color-primary-dark:#C4501A;
-    --color-secondary:   #1A3A5C;   /* Navy blue */
-    --color-text:        #1A1A1A;   /* Dark charcoal */
-    --color-text-muted:  #666666;
-    --color-bg:          #FFFFFF;
-    --color-bg-light:    #F5F5F5;
-    --color-border:      #E0E0E0;
-    --color-success:     #2E7D32;
-    --color-error:       #C62828;
+    /* ── Legacy aliases (backward compat) ─────────────────── */
+    --color-primary:      #67219D;
+    --color-primary-dark: #4C0682;
+    --color-secondary:    #4C0682;
+    --color-text:         #374151;
+    --color-text-muted:   #9CA3AF;
+    --color-bg:           #FFFFFF;
+    --color-bg-light:     #FAF8F5;
+    --color-border:       #E5E7EB;
 
-    /* Typography */
-    --font-heading: 'Montserrat', sans-serif;
-    --font-body:    'Inter', sans-serif;
-    --font-size-base: 16px;
+    /* ── Brand Purple Scale (Alkana Identity) ──────────────── */
+    --color-alkana-purple-50:  #F3EAFC;  /* ultra-light — tinted sections     */
+    --color-alkana-purple-100: #E8D5F5;  /* lightest solid                    */
+    --color-alkana-purple-200: #D4AEE9;  /* light hover background            */
+    --color-alkana-purple-300: #B87EDD;  /* BRAND LIGHT                       */
+    --color-alkana-purple-400: #9F5ACC;  /* mid-light                         */
+    --color-alkana-purple-500: #8236BC;  /* BRAND MEDIUM                      */
+    --color-alkana-purple-600: #6E2BAE;  /* mid-dark                          */
+    --color-alkana-purple-700: #67219D;  /* BRAND PRIMARY — CTAs, links       */
+    --color-alkana-purple-800: #5A1A8F;  /* dark-mid                          */
+    --color-alkana-purple-900: #4C0682;  /* BRAND DARK — overlays, footer     */
+
+    /* ── Semantic color shortcuts ─────────────────────────── */
+    --color-purple-900: var(--color-alkana-purple-900);
+    --color-purple-700: var(--color-alkana-purple-700);
+    --color-purple-500: var(--color-alkana-purple-500);
+    --color-purple-300: var(--color-alkana-purple-300);
+    --color-purple-100: var(--color-alkana-purple-100);
+    --color-purple-50:  var(--color-alkana-purple-50);
+
+    /* ── Surface Palette ───────────────────────────────────── */
+    --color-surface-white: #FFFFFF;
+    --color-surface-warm:  #FAF8F5;  /* cream white          */
+    --color-surface-cool:  #F3EAFC;  /* purple-tinted white  */
+    --color-surface-dark:  #1A1A2E;  /* hero / footer dark   */
+
+    /* ── Gold Accent ───────────────────────────────────────── */
+    --color-gold-300: #DDB892;
+    --color-gold-400: #C49A6C;  /* primary gold */
+    --color-gold-500: #A67C52;
+
+    /* ── Text Hierarchy ────────────────────────────────────── */
+    --color-text-heading: #1A1A2E;
+    --color-text-body:    #374151;
+    --color-text-inverse: #FFFFFF;
+
+    /* ── Feedback Colors ───────────────────────────────────── */
+    --color-success: #059669;
+    --color-warning: #D97706;
+    --color-error:   #DC2626;
+    --color-info:    #2563EB;
+
+    /* ── Typography ────────────────────────────────────────── */
+    --font-heading:     'Montserrat', sans-serif;
+    --font-body:        'Inter', sans-serif;
+    --font-size-base:   16px;
     --line-height-body: 1.6;
 
-    /* Spacing */
-    --radius-btn:   5px;
-    --radius-card:  8px;
-    --radius-input: 4px;
+    /* ── Border Radius Scale ───────────────────────────────── */
+    --radius-xs:   4px;
+    --radius-sm:   6px;
+    --radius-btn:  8px;
+    --radius-card: 12px;
+    --radius-input: 6px;
+    --radius-lg:   16px;
+    --radius-xl:   24px;
+    --radius-full: 9999px;
 
-    /* Shadows */
-    --shadow-card:       0 2px 8px rgba(0, 0, 0, 0.08);
-    --shadow-card-hover: 0 6px 20px rgba(0, 0, 0, 0.12);
-    --shadow-modal:      0 16px 48px rgba(0, 0, 0, 0.24);
+    /* ── Shadow System (5 levels + brand) ──────────────────── */
+    --shadow-xs:     0 1px 2px rgba(0, 0, 0, 0.05);
+    --shadow-sm:     0 2px 4px rgba(0, 0, 0, 0.06);
+    --shadow-md:     0 4px 12px rgba(0, 0, 0, 0.08);
+    --shadow-lg:     0 8px 24px rgba(0, 0, 0, 0.10);
+    --shadow-xl:     0 16px 48px rgba(0, 0, 0, 0.12);
+    --shadow-2xl:    0 24px 64px rgba(0, 0, 0, 0.15);
+    --shadow-purple: 0 8px 24px rgba(103, 33, 157, 0.15);
+    /* Legacy aliases */
+    --shadow-card:       var(--shadow-sm);
+    --shadow-card-hover: var(--shadow-md);
+    --shadow-modal:      var(--shadow-xl);
 
-    /* Layout */
+    /* ── Animation Tokens ──────────────────────────────────── */
+    --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+    --ease-spring:   cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    --ease-smooth:   cubic-bezier(0.4, 0, 0.2, 1);
+    --duration-fast:   150ms;
+    --duration-normal: 300ms;
+    --duration-slow:   500ms;
+    --duration-slide:  700ms;
+
+    /* ── Layout ─────────────────────────────────────────────── */
     --container-max: 1280px;
     --container-pad: 1.5rem;
 
-    /* Z-index scale */
-    --z-sticky-cta:    100;
-    --z-bottom-sheet:  200;
-    --z-nav:           300;
-    --z-modal:         400;
+    /* ── Z-index Scale ──────────────────────────────────────── */
+    --z-sticky-cta:   100;
+    --z-bottom-sheet: 200;
+    --z-nav:          300;
+    --z-drawer:       350;
+    --z-modal:        400;
 }

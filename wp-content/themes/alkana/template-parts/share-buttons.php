@@ -43,7 +43,7 @@ $encoded_title = rawurlencode( $title );
 
 	<!-- Copy Link -->
 	<button type="button"
-	        class="share-btn share-btn--copy w-9 h-9 rounded-full bg-gray-100 hover:bg-[--color-primary] hover:text-white text-gray-500 flex items-center justify-center transition-colors duration-300"
+	        class="share-btn share-btn--copy w-9 h-9 rounded-full bg-gray-100 hover:bg-alkana-purple-600 hover:text-white text-gray-500 flex items-center justify-center transition-colors duration-300"
 	        data-url="<?php echo esc_attr( $permalink ); ?>"
 	        aria-label="Sao chép liên kết"
 	        title="Sao chép liên kết">

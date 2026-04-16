@@ -1,5 +1,5 @@
 /**
- * Product specification table — auto-hides empty rows (handled in PHP template)
+ * Product specification table — zebra striping, purple accent headers
  */
 .specs-table {
     width: 100%;
@@ -15,10 +15,16 @@
 }
 .specs-table th {
     width: 40%;
-    font-weight: 500;
-    color: var(--color-text-muted);
-    background-color: var(--color-bg-light);
+    font-weight: 600;
+    color: var(--color-alkana-purple-700, #6D28D9);
+    background-color: #F5EDFF;
 }
+
+/* Zebra striping */
+.specs-table tbody tr:nth-child(odd) td  { background-color: #fff; }
+.specs-table tbody tr:nth-child(even) td { background-color: #FAFAFA; }
+.specs-table tbody tr:nth-child(even) th { background-color: #EDE9F8; }
+
 .specs-table td { color: var(--color-text); }
 .specs-table tr:last-child th,
 .specs-table tr:last-child td { border-bottom: none; }

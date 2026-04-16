@@ -24,13 +24,13 @@ $filter_attr_map = [
 ];
 ?>
 
-<div class="filter-panel" id="filter-panel" data-filter-panel>
+<div class="filter-panel filter-panel--pills" id="filter-panel" data-filter-panel>
 
-	<div class="filter-panel__header flex items-center justify-between mb-4 pb-2 border-b-2 border-[#E8611A]">
+	<div class="filter-panel__header flex items-center justify-between mb-4 pb-2 border-b-2 border-alkana-purple-600">
 		<h2 class="text-lg font-extrabold text-[#1A3A5C]">
 			Bộ lọc sản phẩm
 		</h2>
-		<button class="filter-panel__reset text-xs text-[#E8611A] hover:underline hidden" id="filter-reset">
+		<button class="filter-panel__reset text-xs text-alkana-purple-600 hover:underline hidden" id="filter-reset">
 			<?php esc_html_e( 'Clear all', 'alkana' ); ?>
 		</button>
 	</div>
@@ -49,33 +49,34 @@ $filter_attr_map = [
 
 		<div class="filter-group mb-6" data-taxonomy="<?php echo esc_attr( $taxonomy ); ?>">
 
-<button class="filter-group__title flex justify-between items-center w-full py-3 font-bold text-sm text-[#1A3A5C] uppercase tracking-wider cursor-pointer border-b border-gray-200 hover:text-[#E8611A] transition-colors"
+<button class="filter-group__title flex justify-between items-center w-full py-3 font-bold text-sm text-[#1A3A5C] uppercase tracking-wider cursor-pointer border-b border-gray-200 hover:text-alkana-purple-600 transition-colors"
 				data-accordion-trigger
 				aria-expanded="true">
 			<?php echo esc_html( $label ); ?>
 			<span class="filter-group__icon text-lg leading-none select-none" aria-hidden="true" data-accordion-icon>−</span>
 		</button>
 
-		<div class="filter-group__options py-2 space-y-2" data-accordion-content>
+		<div class="filter-group__options py-2" data-accordion-content>
 			<?php foreach ( $terms as $term ) : ?>
-				<label class="filter-option flex items-center justify-between text-sm text-gray-600 hover:text-gray-900 cursor-pointer">
-					<span class="flex items-center gap-2">
-						<input
-							type="checkbox"
-							class="filter-option__checkbox w-4 h-4 rounded border-gray-300 text-[#E8611A] focus:ring-[#E8611A] cursor-pointer"
-							name="<?php echo esc_attr( $taxonomy ); ?>[]"
-							value="<?php echo esc_attr( $term->slug ); ?>"
-							data-taxonomy="<?php echo esc_attr( $taxonomy ); ?>"
-							data-slug="<?php echo esc_attr( $term->slug ); ?>"						data-filter-<?php echo esc_attr( $filter_attr_map[ $taxonomy ] ); ?>						>
+				<label class="filter-option">
+					<input
+						type="checkbox"
+						name="<?php echo esc_attr( $taxonomy ); ?>[]"
+						value="<?php echo esc_attr( $term->slug ); ?>"
+						data-taxonomy="<?php echo esc_attr( $taxonomy ); ?>"
+						data-slug="<?php echo esc_attr( $term->slug ); ?>"
+						data-filter-<?php echo esc_attr( $filter_attr_map[ $taxonomy ] ); ?>
+						>
+					<span class="filter-option__pill">
 						<span class="filter-option__label"><?php echo esc_html( $term->name ); ?></span>
-					</span>
-					<span class="filter-option__count bg-gray-100 text-gray-500 text-xs py-0.5 px-2 rounded-full"
-							  data-count-<?php echo esc_attr( $filter_attr_map[ $taxonomy ] ); ?>="<?php echo esc_attr( $term->slug ); ?>">
+						<span class="filter-option__count"
+							data-count-<?php echo esc_attr( $filter_attr_map[ $taxonomy ] ); ?>="<?php echo esc_attr( $term->slug ); ?>">
 							<?php echo esc_html( (string) $term->count ); ?>
 						</span>
-					</label>
-				<?php endforeach; ?>
-			</div>
+					</span>
+				</label>
+			<?php endforeach; ?>
+		</div>
 
 		</div>
 	<?php endforeach; ?>
@@ -83,7 +84,7 @@ $filter_attr_map = [
 	<?php // ── Featured toggle ────────────────────────────────────────────────── ?>
 	<div class="filter-group mt-4 pt-3 border-t border-gray-200">
 		<label class="filter-option flex items-center gap-2 text-sm text-gray-600 hover:text-gray-900 cursor-pointer">
-			<input type="checkbox" class="filter-option__checkbox w-4 h-4 rounded border-gray-300 text-[#E8611A] focus:ring-[#E8611A] cursor-pointer" name="is_featured" value="1" data-taxonomy="is_featured" data-filter-featured>
+			<input type="checkbox" class="filter-option__checkbox w-4 h-4 rounded border-gray-300 text-alkana-purple-600 focus:ring-alkana-purple-600 cursor-pointer" name="is_featured" value="1" data-taxonomy="is_featured" data-filter-featured>
 			<span class="filter-option__label font-medium">
 				<?php esc_html_e( 'Featured only', 'alkana' ); ?>
 			</span>

@@ -13,7 +13,7 @@ $location = get_field( 'project_location', $post_id );
 $year     = get_field( 'project_year', $post_id );
 ?>
 
-<article <?php post_class( 'project-card card group' ); ?>>
+<article <?php post_class( 'project-card card group' ); ?> data-hover-physics>
 
 	<a href="<?php the_permalink(); ?>" class="project-card__image-link block overflow-hidden aspect-[3/2]">
 		<?php if ( has_post_thumbnail() ) : ?>

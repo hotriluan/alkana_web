@@ -9,7 +9,19 @@
 defined( 'ABSPATH' ) || exit;
 
 add_action( 'add_meta_boxes_alkana_product', 'alkana_add_product_meta_box' );
+add_action( 'add_meta_boxes_alkana_product', 'alkana_remove_product_default_meta_boxes', 20 );
 add_action( 'save_post_alkana_product', 'alkana_save_product_meta_box', 10, 2 );
+
+/**
+ * Remove default WP meta boxes that clutter the product editor.
+ * Runs at priority 20 (after core registers them at priority 10).
+ */
+function alkana_remove_product_default_meta_boxes(): void {
+	remove_meta_box( 'slugdiv',          'alkana_product', 'normal' );
+	remove_meta_box( 'postcustom',       'alkana_product', 'normal' );
+	remove_meta_box( 'trackbacksdiv',    'alkana_product', 'normal' );
+	remove_meta_box( 'commentstatusdiv', 'alkana_product', 'normal' );
+}
 
 /**
  * Register the product settings meta box.

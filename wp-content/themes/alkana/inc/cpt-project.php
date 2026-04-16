@@ -37,7 +37,7 @@ function alkana_register_cpt_project(): void {
 		'has_archive'         => 'projects',
 		'hierarchical'        => false,
 		'menu_position'       => 6,
-		'menu_icon'           => 'dashicons-portfolio',
+		'menu_icon'           => 'dashicons-building',
 		'supports'            => [ 'title', 'editor', 'thumbnail', 'excerpt', 'revisions' ],
 		'show_in_rest'        => true,
 		'rest_base'           => 'alkana-projects',

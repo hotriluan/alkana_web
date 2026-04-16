@@ -1,0 +1,384 @@
+/*
+ * Alkana Admin Theme — Global Visual Branding
+ * Inter font | Purple #4C0682 sidebar | #67219D accents
+ * No fixed widths — preserves native WP responsive grid.
+ */
+
+/* Typography ---------------------------------------------------------------- */
+body,
+#wpcontent,
+#wpbody,
+.wrap,
+#adminmenu,
+.wp-list-table,
+.postbox .hndle span {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+/* Sidebar background -------------------------------------------------------- */
+#adminmenuback,
+#adminmenuwrap,
+#adminmenu {
+    background: #4C0682 !important;
+}
+
+#adminmenu .wp-menu-separator {
+    border-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+/* Sidebar text -------------------------------------------------------------- */
+#adminmenu a,
+#adminmenu .wp-menu-name {
+    color: rgba(220, 190, 248, 0.9) !important;
+}
+
+#adminmenu .wp-menu-image.dashicons-before::before {
+    opacity: 0.75;
+}
+
+/* Sidebar hover & focus ---------------------------------------------------- */
+#adminmenu li:hover > a,
+#adminmenu .wp-submenu a:hover {
+    background: linear-gradient(135deg, #67219D, #4C0682) !important;
+    color: #fff !important;
+}
+
+#adminmenu li > a:focus,
+#adminmenu .wp-submenu a:focus {
+    background: rgba(103, 33, 157, 0.7) !important;
+    color: #fff !important;
+    box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.4) !important;
+    outline: none !important;
+}
+
+/* Sidebar active state ------------------------------------------------------ */
+#adminmenu .current > a.menu-top,
+#adminmenu .wp-has-current-submenu > a.menu-top {
+    background: #67219D !important;
+    color: #fff !important;
+}
+
+#adminmenu .current > a.menu-top .wp-menu-name {
+    color: #fff !important;
+}
+
+/* Submenu ------------------------------------------------------------------- */
+#adminmenu .wp-submenu {
+    background: #2D0352 !important;
+}
+
+#adminmenu .wp-submenu a {
+    color: rgba(216, 180, 254, 0.85) !important;
+}
+
+#adminmenu .wp-submenu .current a,
+#adminmenu .wp-submenu a:hover {
+    color: #fff !important;
+    background: rgba(103, 33, 157, 0.7) !important;
+}
+
+/* Admin top bar ------------------------------------------------------------- */
+#wpadminbar {
+    background: #1A0330 !important;
+}
+
+#wpadminbar .ab-item,
+#wpadminbar .ab-top-menu > li > .ab-item {
+    color: rgba(216, 180, 254, 0.9) !important;
+}
+
+#wpadminbar .ab-top-menu > li.hover > .ab-item,
+#wpadminbar .ab-top-menu > li > .ab-item:focus {
+    background: #4C0682 !important;
+    color: #fff !important;
+}
+
+/* Post list table ----------------------------------------------------------- */
+.wp-list-table tr td {
+    padding: 10px 12px !important;
+    vertical-align: middle !important;
+}
+
+.wp-list-table tr th {
+    padding: 8px 12px !important;
+}
+
+.wp-list-table .column-thumbnail {
+    width: 70px !important;
+}
+
+.wp-list-table .column-alkana_sku {
+    width: 120px !important;
+}
+
+.wp-list-table .column-alkana_docs {
+    width: 70px !important;
+    text-align: center !important;
+}
+
+/* Inputs -------------------------------------------------------------------- */
+.wp-admin input[type="text"],
+.wp-admin input[type="password"],
+.wp-admin input[type="email"],
+.wp-admin input[type="url"],
+.wp-admin input[type="number"],
+.wp-admin input[type="search"],
+.wp-admin select,
+.wp-admin textarea {
+    border-radius: 6px !important;
+    font-family: 'Inter', sans-serif !important;
+}
+
+.wp-admin input[type="text"]:focus,
+.wp-admin input[type="password"]:focus,
+.wp-admin input[type="email"]:focus,
+.wp-admin input[type="url"]:focus,
+.wp-admin input[type="number"]:focus,
+.wp-admin input[type="search"]:focus,
+.wp-admin select:focus,
+.wp-admin textarea:focus {
+    border-color: #67219D !important;
+    box-shadow: 0 0 0 1px #67219D !important;
+    outline: none !important;
+}
+
+/* Primary buttons ----------------------------------------------------------- */
+.wp-core-ui .button-primary {
+    background: #67219D !important;
+    border-color: #4C0682 !important;
+    color: #fff !important;
+    font-family: 'Inter', sans-serif !important;
+    font-weight: 600 !important;
+    border-radius: 6px !important;
+    text-shadow: none !important;
+    box-shadow: none !important;
+    transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.wp-core-ui .button-primary:hover {
+    background: #4C0682 !important;
+    border-color: #3B0670 !important;
+    color: #fff !important;
+}
+
+.wp-core-ui .button-primary:focus {
+    box-shadow: 0 0 0 2px rgba(103, 33, 157, 0.35) !important;
+    outline: none !important;
+}
+
+/* Secondary buttons --------------------------------------------------------- */
+.wp-core-ui .button {
+    font-family: 'Inter', sans-serif !important;
+    border-radius: 6px !important;
+}
+
+/* Meta box headings --------------------------------------------------------- */
+.postbox .hndle {
+    font-size: 12px !important;
+    font-weight: 600 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.4px !important;
+    color: #4C0682 !important;
+    border-bottom: 2px solid #e8d5f5 !important;
+}
+
+/* ACF field groups ---------------------------------------------------------- */
+.acf-postbox > .hndle {
+    border-bottom-color: #67219D !important;
+}
+
+/* Postbox border accents ---------------------------------------------------- */
+.postbox {
+    border-radius: 8px !important;
+    overflow: hidden;
+    border: 1px solid #e8d5f5 !important;
+}
+
+/* Dashboard widgets — container -------------------------------------------- */
+#dashboard-widgets .postbox-container .meta-box-sortables {
+    gap: 16px;
+}
+
+#alkana_welcome .inside,
+#alkana_stats .inside,
+#alkana_actions .inside,
+#alkana_charts .inside,
+#alkana_activity .inside,
+#alkana_health .inside {
+    padding: 12px 16px 16px;
+}
+
+/* Stat card hover ----------------------------------------------------------- */
+#alkana_stats .inside a:hover {
+    box-shadow: 0 4px 12px rgba(103, 33, 157, 0.12);
+    transform: translateY(-1px);
+    transition: box-shadow 0.15s, transform 0.15s;
+}
+
+/* Action card hover --------------------------------------------------------- */
+#alkana_actions .inside a:hover {
+    background: #efe6fb !important;
+    box-shadow: 0 4px 8px rgba(103, 33, 157, 0.08);
+}
+
+/* Charts canvas min-height -------------------------------------------------- */
+#alk-donut-chart,
+#alk-line-chart {
+    max-height: 200px;
+}
+
+/* Responsive: preserve WP native mobile layout ------------------------------ */
+@media (max-width: 782px) {
+    .wp-list-table tr td {
+        padding: 8px !important;
+    }
+
+    #alkana_stats .inside > div,
+    #alkana_actions .inside > div {
+        grid-template-columns: repeat(2, 1fr) !important;
+    }
+}
+
+/* ── Inline Grid Editing ──────────────────────────────────────────────────── */
+.inline-editable {
+    cursor: pointer;
+    display: inline-block;
+    border-bottom: 1px dashed transparent;
+    transition: border-color 0.2s, background 0.2s;
+    border-radius: 3px;
+    padding: 1px 4px;
+}
+
+.inline-editable:hover {
+    border-bottom-color: #67219D;
+    background: rgba(103, 33, 157, 0.05);
+}
+
+.inline-editable__empty {
+    color: #aaa;
+}
+
+.inline-edit-input {
+    width: 100%;
+    min-width: 80px;
+    padding: 3px 6px;
+    border: 2px solid #67219D;
+    border-radius: 4px;
+    outline: none;
+    font-size: inherit;
+    font-family: inherit;
+    background: #fff;
+    color: #1a1a1a;
+    box-shadow: 0 0 0 3px rgba(103, 33, 157, 0.15);
+}
+
+.flash-success {
+    animation: alkana-flash-green 1s ease;
+}
+
+.flash-error {
+    animation: alkana-flash-red 1s ease;
+}
+
+@keyframes alkana-flash-green {
+    0%, 100% { background: transparent; }
+    40%       { background: #D1FAE5; }
+}
+
+@keyframes alkana-flash-red {
+    0%, 100% { background: transparent; }
+    25%       { background: #FEE2E2; transform: translateX(-3px); }
+    50%       { background: #FEE2E2; transform: translateX(3px); }
+    75%       { background: #FEE2E2; transform: translateX(-2px); }
+}
+
+/* ── Focus Mode ───────────────────────────────────────────────────────────── */
+/* Toggle button (fixed bottom-right on post editor) */
+.alkana-focus-btn {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    z-index: 99999;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: #67219D;
+    color: #fff;
+    border: none;
+    border-radius: 50px;
+    padding: 10px 18px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 500;
+    box-shadow: 0 4px 12px rgba(103, 33, 157, 0.35);
+    transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
+}
+
+.alkana-focus-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(103, 33, 157, 0.45);
+}
+
+.alkana-focus-btn.is-active {
+    background: #B87EDD;
+    color: #4C0682;
+}
+
+/* Focus Mode active state — hide non-essential UI */
+.alkana-focus-mode #adminmenumain,
+.alkana-focus-mode #adminmenuwrap,
+.alkana-focus-mode #wpadminbar,
+.alkana-focus-mode #postbox-container-1,
+.alkana-focus-mode #screen-meta,
+.alkana-focus-mode #screen-meta-links,
+.alkana-focus-mode .edit-post-header {
+    display: none !important;
+}
+
+.alkana-focus-mode #wpcontent {
+    margin-left: 0 !important;
+    padding: 0 !important;
+}
+
+.alkana-focus-mode #wpbody-content {
+    background: #0F0F1A;
+    min-height: 100vh;
+    padding: 2rem;
+    display: flex;
+    justify-content: center;
+}
+
+.alkana-focus-mode #post-body {
+    width: 100%;
+    max-width: 48rem;
+}
+
+.alkana-focus-mode #post-body-content {
+    background: #1A1A2E;
+    border-radius: 12px;
+    padding: 2.5rem 3rem;
+    color: #E5E7EB;
+    min-height: 75vh;
+    box-shadow: 0 0 80px rgba(103, 33, 157, 0.12);
+    border: 1px solid rgba(103, 33, 157, 0.2);
+}
+
+.alkana-focus-mode .wp-editor-area,
+.alkana-focus-mode #content {
+    background: transparent !important;
+    color: #E5E7EB !important;
+    font-size: 1.1rem !important;
+    line-height: 1.8 !important;
+    min-height: 400px !important;
+}
+
+.alkana-focus-mode #titlediv #title {
+    background: transparent !important;
+    color: #F3F4F6 !important;
+    border-bottom-color: rgba(103, 33, 157, 0.4) !important;
+    font-size: 1.6rem !important;
+}
+
+.alkana-focus-mode #titlediv #title-prompt-text {
+    color: rgba(255, 255, 255, 0.25) !important;
+}

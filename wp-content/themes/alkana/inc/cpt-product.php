@@ -37,7 +37,7 @@ function alkana_register_cpt_product(): void {
 		'has_archive'         => 'products',
 		'hierarchical'        => false,
 		'menu_position'       => 5,
-		'menu_icon'           => 'dashicons-products',
+		'menu_icon'           => 'dashicons-archive',
 		'supports'            => [ 'title', 'editor', 'thumbnail', 'excerpt', 'revisions' ],
 		'show_in_rest'        => true,
 		'rest_base'           => 'alkana-products',

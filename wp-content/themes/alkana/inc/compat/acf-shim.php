@@ -22,10 +22,20 @@
 
 defined( 'ABSPATH' ) || exit;
 
-if ( function_exists( 'get_field' ) ) {
-	// ACF is active — nothing to shim.
-	return;
+// Defer shim registration until plugins_loaded so the real ACF plugin
+// (if active) defines its functions first. The shim only kicks in when
+// ACF is genuinely absent.
+add_action( 'plugins_loaded', 'alkana_register_acf_shim', 1 );
+
+function alkana_register_acf_shim(): void {
+	if ( function_exists( 'get_field' ) ) {
+		// Real ACF is active — nothing to shim.
+		return;
+	}
+	alkana_define_acf_stubs();
 }
+
+function alkana_define_acf_stubs(): void {
 
 /**
  * Stub for ACF get_field().
@@ -92,3 +102,5 @@ function have_rows( string $field_name, $post_id = false ): bool {
  * Stub for ACF the_row() — no-op.
  */
 function the_row(): void {}
+
+} // end alkana_define_acf_stubs()

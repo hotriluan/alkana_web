@@ -32,7 +32,7 @@ function alkana_ajax_search_handler() {
 
 	$products = $wpdb->get_results(
 		$wpdb->prepare(
-			"SELECT DISTINCT post_id, product_name FROM {$product_table} WHERE product_name LIKE %s OR product_slug LIKE %s LIMIT 8",
+			"SELECT DISTINCT post_id, product_name, product_slug FROM {$product_table} WHERE product_name LIKE %s OR product_slug LIKE %s LIMIT 8",
 			$like_term,
 			$like_term
 		)
@@ -41,9 +41,11 @@ function alkana_ajax_search_handler() {
 	if ( $products ) {
 		foreach ( $products as $product ) {
 			$results[] = [
-				'title' => $product->product_name,
-				'url'   => get_permalink( $product->post_id ),
-				'type'  => 'product',
+				'title'     => $product->product_name,
+				'slug'      => $product->product_slug ?? '',
+				'url'       => get_permalink( $product->post_id ),
+				'thumbnail' => get_the_post_thumbnail_url( $product->post_id, 'thumbnail' ) ?: '',
+				'type'      => 'product',
 			];
 		}
 	}

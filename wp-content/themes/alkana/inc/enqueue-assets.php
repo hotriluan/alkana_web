@@ -17,8 +17,12 @@ add_action( 'wp_head',               'alkana_preconnect_fonts', 1 );
  * Emit preconnect hints for Google Fonts before any enqueued styles.
  */
 function alkana_preconnect_fonts(): void {
+	// Preconnects for Google Fonts (reduces TTFB for font CSS + WOFF2)
 	echo '<link rel="preconnect" href="https://fonts.googleapis.com">' . "\n";
 	echo '<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>' . "\n";
+
+	// Preload hint for Montserrat 700 — primary heading font, likely LCP contributor
+	echo '<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Inter:wght@400;500;600&display=swap">' . "\n";
 }
 
 /**
@@ -77,13 +81,73 @@ function alkana_enqueue_assets(): void {
 			'version' => ALKANA_VERSION,
 		] );
 	}
+
+	// Alpine.js — required for product tabs and interactive components
+	wp_enqueue_script(
+		'alpinejs',
+		'https://cdn.jsdelivr.net/npm/alpinejs@3.14.1/dist/cdn.min.js',
+		[],
+		'3.14.1',
+		true
+	);
+	add_filter(
+		'script_loader_tag',
+		function ( string $tag, string $handle ): string {
+			if ( 'alpinejs' === $handle ) {
+				return str_replace( ' src=', ' defer src=', $tag );
+			}
+			return $tag;
+		},
+		10,
+		2
+	);
+	// Paint System Builder JS — only on that page template
+	if ( is_page_template( 'templates/page-paint-builder.php' ) ) {
+		$pb_key  = 'src/scripts/paint-builder.js';
+		$pb_file = $manifest[ $pb_key ]['file'] ?? null;
+		if ( $pb_file ) {
+			wp_enqueue_script(
+				'alkana-paint-builder',
+				get_template_directory_uri() . '/dist/' . $pb_file,
+				[],
+				null,
+				true
+			);
+			wp_localize_script( 'alkana-paint-builder', 'AlkanaPaintBuilderConfig', [
+				'ajaxUrl' => admin_url( 'admin-ajax.php' ),
+				'nonce'   => wp_create_nonce( 'alkana_paint_builder' ),
+			] );
+		}
+	}
 }
 
 /**
- * Admin-only assets (minified ACF override styles, dashboard widget CSS).
+ * Admin-only assets (admin command palette JS + ACF override styles).
  */
 function alkana_admin_enqueue_assets(): void {
-	// Reserved for future admin stylesheet additions
+	$manifest_path = get_template_directory() . '/dist/.vite/manifest.json';
+	if ( ! file_exists( $manifest_path ) ) {
+		return;
+	}
+
+	$manifest = (array) json_decode( (string) file_get_contents( $manifest_path ), true );
+
+	$admin_key  = 'src/scripts/admin.js';
+	$admin_file = $manifest[ $admin_key ]['file'] ?? null;
+	if ( $admin_file ) {
+		wp_enqueue_script(
+			'alkana-admin-palette',
+			get_template_directory_uri() . '/dist/' . $admin_file,
+			[],
+			null,
+			true
+		);
+
+		// Localize nonce for inline grid editing
+		wp_localize_script( 'alkana-admin-palette', 'alkanaInlineEdit', [
+			'nonce' => wp_create_nonce( 'alkana_inline_edit_nonce' ),
+		] );
+	}
 }
 
 /**

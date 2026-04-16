@@ -3,6 +3,18 @@
     "title": "Alkana \u2014 Color Variants & Packaging",
     "fields": [
         {
+            "key": "field_tab_bien_the_mau_sac",
+            "label": "Bi\u1ebfn th\u1ec3 m\u00e0u s\u1eafc",
+            "name": "",
+            "aria-label": "",
+            "type": "tab",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "placement": "top",
+            "endpoint": 0
+        },
+        {
             "key": "field_alkana_variants",
             "label": "Color Variants",
             "name": "_alkana_variants",
@@ -156,8 +168,8 @@
     "label_placement": "top",
     "instruction_placement": "label",
     "hide_on_screen": "",
-    "active": true,
+    "active": false,
     "description": "Color variants + packaging sizes (ACF Repeater — requires ACF Pro)",
     "show_in_rest": 0,
-    "modified": 1741168800
+    "modified": 1743465600
 }

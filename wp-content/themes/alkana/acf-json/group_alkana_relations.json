@@ -3,6 +3,18 @@
     "title": "Alkana \u2014 Relations",
     "fields": [
         {
+            "key": "field_tab_lien_ket",
+            "label": "Li\u00ean k\u1ebft",
+            "name": "",
+            "aria-label": "",
+            "type": "tab",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "placement": "top",
+            "endpoint": 0
+        },
+        {
             "key": "field_alkana_crosssell",
             "label": "Cross-sell Products",
             "name": "_alkana_crosssell",
@@ -78,5 +90,5 @@
     "active": true,
     "description": "Cross-sell products and related project references",
     "show_in_rest": 0,
-    "modified": 1741168800
+    "modified": 1743465600
 }

@@ -3,6 +3,18 @@
     "title": "Alkana \u2014 Identification",
     "fields": [
         {
+            "key": "field_tab_thong_tin_chung",
+            "label": "Th\u00f4ng tin chung",
+            "name": "",
+            "aria-label": "",
+            "type": "tab",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "placement": "top",
+            "endpoint": 0
+        },
+        {
             "key": "field_alkana_sku",
             "label": "SKU",
             "name": "_alkana_sku",
@@ -134,5 +146,5 @@
     "active": true,
     "description": "Core product identification fields",
     "show_in_rest": 0,
-    "modified": 1741168800
+    "modified": 1743811800
 }

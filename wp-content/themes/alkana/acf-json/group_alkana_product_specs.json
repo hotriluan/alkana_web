@@ -3,6 +3,18 @@
     "title": "Alkana \u2014 Technical Specifications",
     "fields": [
         {
+            "key": "field_tab_thong_so_ky_thuat",
+            "label": "Th\u00f4ng s\u1ed1 k\u1ef9 thu\u1eadt",
+            "name": "",
+            "aria-label": "",
+            "type": "tab",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "placement": "top",
+            "endpoint": 0
+        },
+        {
             "key": "field_alkana_coverage",
             "label": "Theoretical Coverage",
             "name": "_alkana_coverage",
@@ -150,91 +162,6 @@
             "placeholder": "4\u20166 hrs",
             "prepend": "",
             "append": ""
-        },
-        {
-            "key": "field_alkana_product_specs",
-            "label": "Additional Specifications",
-            "name": "product_specs",
-            "aria-label": "",
-            "type": "repeater",
-            "instructions": "Extra spec rows shown in the specs table on product detail page",
-            "required": 0,
-            "conditional_logic": 0,
-            "wrapper": {
-                "width": "",
-                "class": "",
-                "id": ""
-            },
-            "layout": "table",
-            "min": 0,
-            "max": 20,
-            "collapsed": "",
-            "button_label": "Add Specification Row",
-            "sub_fields": [
-                {
-                    "key": "field_alkana_spec_label",
-                    "label": "Property",
-                    "name": "spec_label",
-                    "aria-label": "",
-                    "type": "text",
-                    "instructions": "",
-                    "required": 1,
-                    "conditional_logic": 0,
-                    "wrapper": {
-                        "width": "40",
-                        "class": "",
-                        "id": ""
-                    },
-                    "default_value": "",
-                    "maxlength": 100,
-                    "placeholder": "e.g. VOC Content",
-                    "prepend": "",
-                    "append": "",
-                    "parent_repeater": "field_alkana_product_specs"
-                },
-                {
-                    "key": "field_alkana_spec_value",
-                    "label": "Value",
-                    "name": "spec_value",
-                    "aria-label": "",
-                    "type": "text",
-                    "instructions": "",
-                    "required": 1,
-                    "conditional_logic": 0,
-                    "wrapper": {
-                        "width": "40",
-                        "class": "",
-                        "id": ""
-                    },
-                    "default_value": "",
-                    "maxlength": 200,
-                    "placeholder": "e.g. < 50 g/L",
-                    "prepend": "",
-                    "append": "",
-                    "parent_repeater": "field_alkana_product_specs"
-                },
-                {
-                    "key": "field_alkana_spec_unit",
-                    "label": "Unit (optional)",
-                    "name": "spec_unit",
-                    "aria-label": "",
-                    "type": "text",
-                    "instructions": "",
-                    "required": 0,
-                    "conditional_logic": 0,
-                    "wrapper": {
-                        "width": "20",
-                        "class": "",
-                        "id": ""
-                    },
-                    "default_value": "",
-                    "maxlength": 30,
-                    "placeholder": "g/L",
-                    "prepend": "",
-                    "append": "",
-                    "parent_repeater": "field_alkana_product_specs"
-                }
-            ]
         }
     ],
     "location": [
@@ -255,5 +182,5 @@
     "active": true,
     "description": "Technical specifications shown in product detail specs table",
     "show_in_rest": 0,
-    "modified": 1741168800
+    "modified": 1743465600
 }

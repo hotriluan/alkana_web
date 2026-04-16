@@ -1,12 +1,24 @@
 {
+  "src/scripts/admin.js": {
+    "file": "assets/admin-DfdPTZmz.js",
+    "name": "admin",
+    "src": "src/scripts/admin.js",
+    "isEntry": true
+  },
   "src/scripts/app.js": {
-    "file": "assets/app-1rB_O2YF.js",
+    "file": "assets/app-BDBnLmV-.js",
     "name": "app",
     "src": "src/scripts/app.js",
     "isEntry": true
   },
+  "src/scripts/paint-builder.js": {
+    "file": "assets/paint-builder-CKB14yI5.js",
+    "name": "paint-builder",
+    "src": "src/scripts/paint-builder.js",
+    "isEntry": true
+  },
   "src/styles/app.css": {
-    "file": "assets/src/styles/app-AF-zWIL2.css",
+    "file": "assets/src/styles/app--LFQmkGK.css",
     "src": "src/styles/app.css",
     "isEntry": true
   }

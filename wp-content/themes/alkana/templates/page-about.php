@@ -13,14 +13,17 @@ get_template_part( 'template-parts/header' );
 $hero_image    = get_field( 'hero_image' );
 $page_subtitle = get_field( 'page_subtitle' ) ?: 'Đơn vị tiên phong trong giải pháp sơn công nghiệp tại Việt Nam';
 $factory_image = get_field( 'factory_image' );
+
+// Get About settings
+$about = alkana_get_about_settings();
 ?>
 
 <main id="main-content" class="site-main">
 <?php if ( have_posts() ) : while ( have_posts() ) : the_post(); ?>
 
 	<?php // ── Hero Section ─────────────────────────────────────────────── ?>
-	<section class="page-hero relative min-h-[40vh] flex items-center overflow-hidden bg-[--color-secondary]">
-		<?php 
+	<section class="page-hero relative min-h-[52vh] flex items-end overflow-hidden bg-alkana-navy">
+		<?php
 		$img_id = is_array( $hero_image ) ? ( $hero_image['ID'] ?? 0 ) : (int) $hero_image;
 		if ( $img_id ) : ?>
 			<?php echo wp_get_attachment_image( $img_id, 'full', false, [
@@ -28,29 +31,56 @@ $factory_image = get_field( 'factory_image' );
 				'alt'           => '',
 				'fetchpriority' => 'high',
 				'loading'       => 'eager',
+				'decoding'      => 'async',
+				'sizes'         => '100vw',
 			] ); ?>
-			<div class="absolute inset-0 bg-gradient-to-r from-black/60 via-black/40 to-black/20 z-10" aria-hidden="true"></div>
+			<div class="absolute inset-0 bg-gradient-to-r from-alkana-purple-950/80 via-black/50 to-black/20 z-10" aria-hidden="true"></div>
+		<?php else : ?>
+			<div class="absolute inset-0 bg-gradient-to-br from-alkana-purple-950 to-alkana-purple-800"></div>
 		<?php endif; ?>
-		
-		<div class="relative z-20 container mx-auto px-4 py-16">
-			<h1 class="text-3xl md:text-5xl font-heading font-bold text-white mb-4"><?php the_title(); ?></h1>
-			<p class="text-lg md:text-xl text-white/90 max-w-2xl"><?php echo esc_html( $page_subtitle ); ?></p>
+		<div class="relative z-20 container mx-auto px-4 pb-16 pt-32">
+			<p class="text-alkana-purple-300 text-xs font-semibold uppercase tracking-widest mb-3"><?php esc_html_e( 'Về chúng tôi', 'alkana' ); ?></p>
+			<h1 class="text-4xl md:text-6xl font-heading font-bold text-white mb-4 max-w-2xl leading-tight"><?php the_title(); ?></h1>
+			<p class="text-lg md:text-xl text-white/80 max-w-xl"><?php echo esc_html( $page_subtitle ); ?></p>
 		</div>
 	</section>
 
 	<?php // ── Company Introduction ──────────────────────────────────────── ?>
-	<section class="py-16 bg-white">
-		<div class="container mx-auto px-4">
-			<div class="prose prose-lg max-w-4xl mx-auto">
-				<?php the_content(); ?>
+	<section class="py-20 bg-white" data-reveal>
+		<div class="max-w-7xl mx-auto px-4">
+			<div class="lg:grid lg:grid-cols-2 lg:gap-16 items-center">
+				<div class="mb-10 lg:mb-0">
+					<span class="inline-block px-3 py-1 text-xs font-semibold text-alkana-purple-700 bg-alkana-purple-50 rounded-full uppercase tracking-wider mb-4"><?php esc_html_e( 'Câu chuyện Alkana', 'alkana' ); ?></span>
+					<div class="prose prose-lg prose-headings:font-heading prose-headings:text-alkana-purple-900 prose-a:text-alkana-purple-600 max-w-none">
+						<?php the_content(); ?>
+					</div>
+				</div>
+				<?php
+				$factory_id_intro = absint( $about['factory_image_id'] ?? 0 );
+				if ( ! $factory_id_intro ) {
+					$factory_id_intro = is_array( $factory_image ) ? ( $factory_image['ID'] ?? 0 ) : (int) $factory_image;
+				}
+				if ( $factory_id_intro ) : ?>
+					<div class="relative">
+						<?php echo wp_get_attachment_image( $factory_id_intro, 'large', false, [
+							'class'   => 'w-full h-auto rounded-2xl shadow-2xl',
+							'alt'     => 'Alkana Coating factory',
+							'loading' => 'lazy',
+							'decoding' => 'async',
+						] ); ?>
+						<div class="absolute -bottom-4 -right-4 w-28 h-28 bg-alkana-purple-100 rounded-2xl -z-10" aria-hidden="true"></div>
+					</div>
+				<?php endif; ?>
 			</div>
 		</div>
 	</section>
 
 	<?php // ── Company Timeline ──────────────────────────────────────────── ?>
-	<section class="py-20 bg-gray-50">
+	<section class="py-20 bg-[#F8F4FF]" data-reveal>
 		<div class="container mx-auto px-4">
-			<h2 class="text-3xl md:text-4xl font-heading font-bold text-[--color-secondary] text-center mb-16">Hành trình phát triển</h2>
+			<p class="text-xs font-semibold uppercase tracking-widest text-alkana-purple-500 text-center mb-2"><?php esc_html_e( 'Lịch sử phát triển', 'alkana' ); ?></p>
+			<h2 class="text-3xl md:text-4xl font-heading font-bold text-[--color-secondary] text-center mb-4"><?php echo esc_html( $about['timeline_title'] ); ?></h2>
+			<p class="text-gray-500 text-center mb-16 max-w-xl mx-auto"><?php esc_html_e( 'Những cột mốc quan trọng hình thành nên Alkana Coating ngày hôm nay.', 'alkana' ); ?></p>
 			
 			<div class="timeline relative max-w-3xl mx-auto">
 				<!-- Vertical line -->
@@ -58,21 +88,14 @@ $factory_image = get_field( 'factory_image' );
 				
 				<!-- Timeline items -->
 				<?php 
-				$milestones = [
-					[ 'year' => '2008', 'desc' => 'Thành lập công ty với sứ mệnh mang đến giải pháp sơn chất lượng cao' ],
-					[ 'year' => '2012', 'desc' => 'Đạt chứng nhận ISO 9001:2015 về quản lý chất lượng' ],
-					[ 'year' => '2016', 'desc' => 'Mở rộng nhà máy sản xuất, nâng công suất lên 5,000 tấn/năm' ],
-					[ 'year' => '2019', 'desc' => 'Hoàn thành hơn 300 dự án công nghiệp lớn trên toàn quốc' ],
-					[ 'year' => '2023', 'desc' => 'Phủ sóng 63/63 tỉnh thành với mạng lưới đại lý và đối tác' ],
-					[ 'year' => '2024', 'desc' => 'Ra mắt phòng R&D hiện đại, nghiên cứu công nghệ sơn thế hệ mới' ]
-				];
-				
-				foreach ( $milestones as $index => $m ) :
+				foreach ( $about['timeline_milestones'] as $index => $m ) :
 					$position_class = ( $index % 2 === 0 ) ? 'md:pr-12 md:text-right' : 'md:ml-auto md:pl-12';
 				?>
 					<div class="timeline-item relative pl-12 md:pl-0 mb-12 <?php echo esc_attr( $position_class ); ?> md:w-1/2">
 						<!-- Dot -->
-						<div class="absolute left-4 md:left-1/2 top-0 w-4 h-4 rounded-full bg-[--color-primary] border-4 border-white shadow-lg -translate-x-1/2 z-10"></div>
+						<div class="absolute left-4 md:left-1/2 top-0 w-4 h-4 rounded-full bg-alkana-purple-600 border-4 border-white shadow-lg -translate-x-1/2 z-10">
+							<span class="absolute inset-0 rounded-full bg-alkana-purple-400 animate-ping opacity-50" aria-hidden="true"></span>
+						</div>
 						
 						<!-- Content -->
 						<div class="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
@@ -86,13 +109,17 @@ $factory_image = get_field( 'factory_image' );
 	</section>
 
 	<?php // ── Factory / Facility ─────────────────────────────────────────── ?>
-	<section class="py-20 bg-white">
+	<section class="py-20 bg-white" data-reveal>
 		<div class="max-w-7xl mx-auto px-4">
 			<div class="lg:grid lg:grid-cols-2 lg:gap-12 items-center">
 				<!-- Image -->
 				<div class="mb-8 lg:mb-0">
-					<?php 
-					$factory_id = is_array( $factory_image ) ? ( $factory_image['ID'] ?? 0 ) : (int) $factory_image;
+					<?php
+					// Settings option takes priority; fall back to ACF field.
+					$factory_id = absint( $about['factory_image_id'] ?? 0 );
+					if ( ! $factory_id ) {
+						$factory_id = is_array( $factory_image ) ? ( $factory_image['ID'] ?? 0 ) : (int) $factory_image;
+					}
 					if ( $factory_id ) {
 						echo wp_get_attachment_image( $factory_id, 'large', false, [
 							'class'   => 'w-full h-auto rounded-lg shadow-xl',
@@ -109,29 +136,18 @@ $factory_image = get_field( 'factory_image' );
 				
 				<!-- Text -->
 				<div>
-					<h2 class="text-3xl md:text-4xl font-heading font-bold text-[--color-secondary] mb-6">Nhà máy sản xuất</h2>
+					<h2 class="text-3xl md:text-4xl font-heading font-bold text-[--color-secondary] mb-6"><?php echo esc_html( $about['factory_title'] ); ?></h2>
 					<p class="text-gray-700 text-lg leading-relaxed mb-6">
-						Nhà máy sản xuất của Alkana được trang bị hệ thống công nghệ hiện đại, đạt tiêu chuẩn quốc tế.
-						Chúng tôi cam kết mang đến những sản phẩm sơn chất lượng cao, đáp ứng mọi nhu cầu của khách hàng trong và ngoài nước.
+						<?php echo nl2br( esc_html( $about['factory_intro'] ) ); ?>
 					</p>
 					
 					<ul class="space-y-3">
+						<?php foreach ( $about['factory_specs'] as $spec ) : ?>
 						<li class="flex items-start">
 							<svg class="w-6 h-6 text-[--color-primary] mr-3 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-							<span class="text-gray-700"><strong class="text-[--color-secondary]">Diện tích:</strong> 10,000m² khu vực sản xuất và kho bãi</span>
+							<span class="text-gray-700"><strong class="text-[--color-secondary]"><?php echo esc_html( $spec['label'] ); ?>:</strong> <?php echo esc_html( $spec['value'] ); ?></span>
 						</li>
-						<li class="flex items-start">
-							<svg class="w-6 h-6 text-[--color-primary] mr-3 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-							<span class="text-gray-700"><strong class="text-[--color-secondary]">Công suất:</strong> 5,000 tấn sản phẩm mỗi năm</span>
-						</li>
-						<li class="flex items-start">
-							<svg class="w-6 h-6 text-[--color-primary] mr-3 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-							<span class="text-gray-700"><strong class="text-[--color-secondary]">Công nghệ:</strong> Hệ thống tự động hóa và kiểm soát chất lượng</span>
-						</li>
-						<li class="flex items-start">
-							<svg class="w-6 h-6 text-[--color-primary] mr-3 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-							<span class="text-gray-700"><strong class="text-[--color-secondary]">Chất lượng:</strong> Chứng nhận ISO 9001:2015</span>
-						</li>
+						<?php endforeach; ?>
 					</ul>
 				</div>
 			</div>
@@ -139,19 +155,12 @@ $factory_image = get_field( 'factory_image' );
 	</section>
 
 	<?php // ── Team / Leadership ──────────────────────────────────────────── ?>
-	<section class="py-20 bg-gray-50">
+	<section class="py-20 bg-white" data-reveal>
 		<div class="container mx-auto px-4">
-			<h2 class="text-3xl md:text-4xl font-heading font-bold text-[--color-secondary] text-center mb-12">Đội ngũ lãnh đạo</h2>
+			<h2 class="text-3xl md:text-4xl font-heading font-bold text-[--color-secondary] text-center mb-12"><?php echo esc_html( $about['team_title'] ); ?></h2>
 			
-			<div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
-				<?php 
-				$team = [
-					[ 'name' => 'Nguyễn Văn Minh', 'position' => 'Giám đốc điều hành' ],
-					[ 'name' => 'Trần Thị Hương', 'position' => 'Giám đốc kỹ thuật' ],
-					[ 'name' => 'Lê Hoàng Nam', 'position' => 'Giám đốc kinh doanh' ]
-				];
-				
-				foreach ( $team as $member ) : ?>
+			<div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto" data-reveal-stagger>
+				<?php foreach ( $about['team_members'] as $member ) : ?>
 					<div class="text-center bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
 						<!-- Avatar placeholder -->
 						<div class="w-32 h-32 mx-auto mb-4 rounded-full bg-gradient-to-br from-[--color-primary]/20 to-[--color-secondary]/20 flex items-center justify-center">
@@ -160,27 +169,33 @@ $factory_image = get_field( 'factory_image' );
 							</svg>
 						</div>
 						<h3 class="text-xl font-heading font-semibold text-[--color-secondary] mb-1"><?php echo esc_html( $member['name'] ); ?></h3>
-						<p class="text-sm text-gray-500"><?php echo esc_html( $member['position'] ); ?></p>
-					</div>
+						<p class="text-sm text-gray-500"><?php echo esc_html( $member['position'] ); ?></p>							<?php if ( ! empty( $member['bio'] ) ) : ?>
+							<p class="text-sm text-gray-600 mt-2"><?php echo esc_html( $member['bio'] ); ?></p>
+							<?php endif; ?>					</div>
 				<?php endforeach; ?>
 			</div>
 		</div>
 	</section>
 
 	<?php // ── CTA Section ────────────────────────────────────────────────── ?>
-	<section class="bg-[--color-secondary] py-16 text-center">
-		<div class="container mx-auto px-4">
-			<h2 class="text-3xl md:text-4xl font-heading font-bold text-white mb-4">Sẵn sàng hợp tác cùng Alkana?</h2>
-			<p class="text-lg text-white/80 mb-8 max-w-2xl mx-auto">
-				Liên hệ với chúng tôi ngay hôm nay để nhận tư vấn chi tiết về giải pháp sơn công nghiệp phù hợp nhất cho dự án của bạn.
+	<section class="py-20 section-cta" style="background: linear-gradient(135deg, #2E0049 0%, #5B21B6 100%);">
+		<div class="max-w-4xl mx-auto text-center px-4">
+			<p class="text-xs font-bold tracking-widest uppercase mb-4 text-alkana-purple-300"><?php esc_html_e( 'Hợp tác cùng chúng tôi', 'alkana' ); ?></p>
+			<h2 class="text-3xl md:text-4xl font-extrabold text-white mb-4 leading-snug">
+				<?php esc_html_e( 'Sẵn sàng đưa dự án của bạn', 'alkana' ); ?><br class="hidden md:block">
+				<?php esc_html_e( 'lên tầm cao mới?', 'alkana' ); ?>
+			</h2>
+			<p class="text-lg text-white/80 mb-10 max-w-xl mx-auto">
+				<?php esc_html_e( 'Liên hệ ngay để nhận tư vấn miễn phí về giải pháp sơn công nghiệp phù hợp nhất cho dự án của bạn.', 'alkana' ); ?>
 			</p>
-			
-			<div class="flex flex-col sm:flex-row gap-4 justify-center">
-				<a href="<?php echo esc_url( get_permalink( get_page_by_path( 'contact' ) ) ); ?>" class="inline-block bg-[--color-primary] text-white px-8 py-4 rounded-md font-bold hover:bg-orange-600 transition-all duration-300 shadow-lg hover:shadow-orange-500/30 hover:-translate-y-1">
-					Liên hệ ngay
+			<div class="flex flex-col sm:flex-row justify-center items-center gap-4">
+				<a href="<?php echo esc_url( get_permalink( get_page_by_path( 'contact' ) ) ); ?>"
+				   class="bg-white text-alkana-purple-700 px-8 py-3 rounded-full font-bold hover:bg-alkana-purple-50 transition-all shadow-md hover:shadow-lg">
+					<?php esc_html_e( 'Liên hệ ngay', 'alkana' ); ?>
 				</a>
-				<a href="<?php echo esc_url( get_post_type_archive_link( 'alkana_product' ) ); ?>" class="inline-block bg-transparent border-2 border-white text-white px-8 py-4 rounded-md font-bold hover:bg-white hover:text-[--color-secondary] transition-all duration-300">
-					Xem sản phẩm
+				<a href="<?php echo esc_url( get_post_type_archive_link( 'alkana_product' ) ); ?>"
+				   class="border-2 border-white/40 text-white px-8 py-3 rounded-full font-bold hover:bg-white/10 transition-all">
+					<?php esc_html_e( 'Xem sản phẩm', 'alkana' ); ?>
 				</a>
 			</div>
 		</div>

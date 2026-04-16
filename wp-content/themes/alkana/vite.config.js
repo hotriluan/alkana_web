@@ -12,6 +12,8 @@ export default defineConfig({
     rollupOptions: {
       input: {
         app: resolve(__dirname, 'src/scripts/app.js'),
+        admin: resolve(__dirname, 'src/scripts/admin.js'),
+        'paint-builder': resolve(__dirname, 'src/scripts/paint-builder.js'),
         // CSS entry — emits separate file tracked in manifest as 'src/styles/app.css'
         'src/styles/app.css': resolve(__dirname, 'src/styles/app.css'),
       },

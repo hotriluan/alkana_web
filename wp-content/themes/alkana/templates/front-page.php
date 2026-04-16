@@ -16,12 +16,12 @@ get_template_part( 'template-parts/header' );
 	<?php get_template_part( 'template-parts/hero-banner' ); ?>
 
 	<?php // ── Featured Products ──────────────────────────────────────────────── ?>
-	<section class="section section--products py-16 bg-gray-50">
+	<section class="section section--products py-16 bg-gray-50" data-reveal>
 		<div class="container mx-auto px-4">
 			<h2 class="section__title text-2xl font-heading font-bold text-[--color-secondary] mb-8">
 				<?php esc_html_e( 'Featured Products', 'alkana' ); ?>
 			</h2>
-			<div class="product-grid grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6" id="product-grid">
+				<div class="product-grid grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6" id="product-grid" data-reveal-stagger>
 				<?php
 				$featured_query = new WP_Query( [
 					'post_type'      => 'alkana_product',
@@ -44,12 +44,12 @@ get_template_part( 'template-parts/header' );
 	</section>
 
 	<?php // ── Recent Projects ────────────────────────────────────────────────── ?>
-	<section class="section section--projects py-16">
+	<section class="section section--projects py-16" data-reveal>
 		<div class="container mx-auto px-4">
 			<h2 class="section__title text-2xl font-heading font-bold text-[--color-secondary] mb-8">
 				<?php esc_html_e( 'Recent Projects', 'alkana' ); ?>
 			</h2>
-			<div class="project-grid grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+				<div class="project-grid grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6" data-reveal-stagger>
 				<?php
 				$project_query = new WP_Query( [
 					'post_type'      => 'alkana_project',

@@ -96,6 +96,126 @@ $thumb_id = get_post_thumbnail_id( $post_id );
 		</div>
 		<?php endif; ?>
 
+		<?php // ── Products Used ─────────────────────────────────────────── ?>
+		<?php
+		$products_used = get_field( 'project_products_used', $post_id );
+		if ( $products_used && is_array( $products_used ) ) :
+		?>
+		<div class="project-products-used mb-12">
+			<h2 class="text-2xl font-bold text-[#1A3A5C] mb-6"><?php esc_html_e( 'Products Used', 'alkana' ); ?></h2>
+			<div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+				<?php foreach ( $products_used as $product_id ) :
+					$product_thumb_id = get_post_thumbnail_id( $product_id );
+					$product_title    = get_the_title( $product_id );
+					$product_url      = get_permalink( $product_id );
+					$cats             = get_the_terms( $product_id, 'product_category' );
+					$cat_name         = ( $cats && ! is_wp_error( $cats ) ) ? $cats[0]->name : '';
+				?>
+				<a href="<?php echo esc_url( (string) $product_url ); ?>"
+				   class="group flex flex-col bg-white rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition-all overflow-hidden">
+					<div class="aspect-[4/3] bg-gray-100 overflow-hidden">
+						<?php if ( $product_thumb_id ) : ?>
+							<?php echo wp_get_attachment_image( $product_thumb_id, 'alkana-product-card', false, [
+								'class'   => 'w-full h-full object-cover group-hover:scale-105 transition-transform duration-300',
+								'alt'     => esc_attr( (string) $product_title ),
+								'loading' => 'lazy',
+								'decoding' => 'async',
+							] ); ?>
+						<?php else : ?>
+							<div class="w-full h-full flex items-center justify-center bg-gray-200">
+								<span class="text-gray-400 text-sm"><?php esc_html_e( 'No image', 'alkana' ); ?></span>
+							</div>
+						<?php endif; ?>
+					</div>
+					<div class="p-3">
+						<?php if ( $cat_name ) : ?>
+							<p class="text-xs text-[--color-primary] font-medium uppercase tracking-wide mb-1"><?php echo esc_html( $cat_name ); ?></p>
+						<?php endif; ?>
+							<p class="text-sm font-semibold text-[#1A3A5C] group-hover:text-alkana-purple-600 transition-colors line-clamp-2"><?php echo esc_html( (string) $product_title ); ?></p>
+					</div>
+				</a>
+				<?php endforeach; ?>
+			</div>
+		</div>
+		<?php endif; ?>
+
+		<?php // ── Project Gallery ───────────────────────────────────────── ?>
+		<?php
+		$gallery_raw = get_post_meta( $post_id, '_alkana_project_gallery', true );
+		if ( is_array( $gallery_raw ) ) {
+			$gallery_ids = array_map( 'intval', $gallery_raw );
+		} elseif ( is_string( $gallery_raw ) && strpos( $gallery_raw, '[' ) === 0 ) {
+			$gallery_ids = array_map( 'intval', json_decode( $gallery_raw, true ) ?: [] );
+		} else {
+			$gallery_ids = [];
+		}
+		if ( ! empty( $gallery_ids ) ) :
+		?>
+		<div class="project-gallery mb-12">
+			<h2 class="text-2xl font-bold text-[#1A3A5C] mb-6"><?php esc_html_e( 'Project Gallery', 'alkana' ); ?></h2>
+			<div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+				<?php foreach ( $gallery_ids as $img_id ) :
+					$full_url  = wp_get_attachment_image_url( $img_id, 'large' );
+					$img_alt   = (string) get_post_meta( $img_id, '_wp_attachment_image_alt', true );
+					if ( ! $full_url ) continue;
+				?>
+				<a href="<?php echo esc_url( $full_url ); ?>"
+				   class="project-gallery__item block aspect-square overflow-hidden rounded-lg bg-gray-100 cursor-zoom-in"
+				   data-lightbox-src="<?php echo esc_url( $full_url ); ?>"
+				   aria-label="<?php echo $img_alt ? esc_attr( $img_alt ) : esc_attr__( 'Project photo', 'alkana' ); ?>">
+					<?php echo wp_get_attachment_image( $img_id, 'medium', false, [
+						'class'   => 'w-full h-full object-cover hover:scale-110 transition-transform duration-300',
+						'loading' => 'lazy',
+						'decoding' => 'async',
+					] ); ?>
+				</a>
+				<?php endforeach; ?>
+			</div>
+		</div>
+
+		<div id="alkana-lightbox"
+		     class="fixed inset-0 z-[9999] bg-black/90 hidden items-center justify-center p-4"
+		     aria-modal="true" role="dialog"
+		     aria-label="<?php esc_attr_e( 'Image lightbox', 'alkana' ); ?>">
+			<button id="alkana-lightbox-close"
+			        class="absolute top-4 right-4 text-white text-3xl leading-none w-10 h-10 flex items-center justify-center rounded-full hover:bg-white/20 transition"
+			        aria-label="<?php esc_attr_e( 'Close', 'alkana' ); ?>">&times;</button>
+			<img id="alkana-lightbox-img" src="" alt=""
+			     class="max-w-full max-h-full object-contain rounded-lg shadow-2xl" />
+		</div>
+		<script>
+		(function(){
+			var lb  = document.getElementById('alkana-lightbox');
+			var img = document.getElementById('alkana-lightbox-img');
+			var cls = document.getElementById('alkana-lightbox-close');
+
+			function openLb(src, alt) {
+				img.src = src;
+				img.alt = alt || '';
+				lb.classList.remove('hidden');
+				lb.classList.add('flex');
+				document.body.style.overflow = 'hidden';
+			}
+			function closeLb() {
+				lb.classList.add('hidden');
+				lb.classList.remove('flex');
+				img.src = '';
+				document.body.style.overflow = '';
+			}
+
+			document.querySelectorAll('.project-gallery__item').forEach(function(el) {
+				el.addEventListener('click', function(e) {
+					e.preventDefault();
+					openLb(this.dataset.lightboxSrc, this.getAttribute('aria-label'));
+				});
+			});
+			cls.addEventListener('click', closeLb);
+			lb.addEventListener('click', function(e) { if (e.target === lb) closeLb(); });
+			document.addEventListener('keydown', function(e) { if (e.key === 'Escape') closeLb(); });
+		})();
+		</script>
+		<?php endif; ?>
+
 		<?php // ── CTA ─────────────────────────────────────────────────────── ?>
 		<div class="flex gap-4 mt-8">
 			<a href="<?php echo esc_url( get_post_type_archive_link( 'alkana_project' ) ); ?>"

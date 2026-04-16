@@ -18,15 +18,47 @@ get_template_part( 'template-parts/header' );
 	</div>
 
 <?php
-$post_id  = get_the_ID();
-$sku      = get_field( '_alkana_sku',      $post_id );
-$tds      = get_field( '_alkana_tds',      $post_id );
-$msds     = get_field( '_alkana_msds',     $post_id );
-$variants = get_field( '_alkana_variants', $post_id ); // Repeater
-$certs    = get_field( '_alkana_certs',    $post_id ); // Repeater
-$video    = get_field( '_alkana_video',    $post_id );
-$specs    = get_field( 'product_specs',    $post_id ); // Repeater: spec_label + spec_value
-$thumb_id = get_post_thumbnail_id( $post_id );
+$post_id     = get_the_ID();
+$sku         = get_field( '_alkana_sku',             $post_id );
+$tds         = get_field( '_alkana_tds',             $post_id );
+$msds        = get_field( '_alkana_msds',            $post_id );
+$variants    = alkana_get_product_variants( $post_id ); // Custom meta box helper
+$certs       = alkana_get_product_certs( $post_id ); // Custom meta box helper
+$video       = get_field( '_alkana_video',           $post_id );
+$specs       = alkana_get_product_specs( $post_id );    // Custom meta box helper
+// Hero Image is an ACF custom field (NOT the WordPress featured image)
+$hero        = get_field( 'hero_image', $post_id ); // returns array with 'ID'
+$hero_id     = isset( $hero['ID'] ) ? (int) $hero['ID'] : 0;
+
+$gallery_raw = get_post_meta( $post_id, '_alkana_product_gallery', true );
+// Accept JSON array (custom metabox format) or ACF array format
+if ( is_array( $gallery_raw ) ) {
+	$gallery_ids = array_map( 'intval', $gallery_raw );
+} elseif ( is_string( $gallery_raw ) && strpos( $gallery_raw, '[' ) === 0 ) {
+	$gallery_ids = array_map( 'intval', json_decode( $gallery_raw, true ) ?: [] );
+} else {
+	$gallery_ids = [];
+}
+
+// Build full image list: hero first, then additional gallery images (deduplicated)
+$all_image_ids = [];
+if ( $hero_id ) {
+	$all_image_ids[] = $hero_id;
+}
+foreach ( $gallery_ids as $gid ) {
+	$gid = (int) $gid;
+	if ( $gid && ! in_array( $gid, $all_image_ids, true ) ) {
+		$all_image_ids[] = $gid;
+	}
+}
+// Final fallback: WordPress featured image
+if ( empty( $all_image_ids ) ) {
+	$thumb_id = get_post_thumbnail_id( $post_id );
+	if ( $thumb_id ) {
+		$all_image_ids[] = (int) $thumb_id;
+	}
+}
+$primary_id = $all_image_ids[0] ?? 0;
 
 // Decide which tabs to show
 $has_specs    = $specs || get_field( '_alkana_coverage', $post_id ) || get_field( '_alkana_mix_ratio', $post_id );
@@ -49,19 +81,51 @@ if ( get_the_content() ) $tabs[] = [ 'id' => 'details', 'label' => __( 'Details'
 
 			<?php // ── Gallery ───────────────────────────────────────────────── ?>
 			<div class="product-detail__gallery lg:w-1/2">
-				<?php if ( $thumb_id ) : ?>
-					<?php echo wp_get_attachment_image( $thumb_id, 'alkana-product-hero', false, [
-						'class'   => 'w-full rounded-xl shadow object-cover',
-						'alt'     => get_the_title(),
-						'loading' => 'eager',
-						'decoding' => 'async',
-						'sizes'   => '(max-width: 1024px) 100vw, 50vw',
-					] ); ?>
-				<?php else : ?>
-					<div class="w-full aspect-video rounded-xl bg-gray-100 flex items-center justify-center">
-						<span class="dashicons dashicons-products text-gray-300 text-6xl"></span>
-					</div>
+
+				<?php // ── Main image viewport ──────────────────────────────── ?>
+				<div class="aspect-[4/3] w-full bg-gray-50 rounded-lg overflow-hidden border border-gray-100 relative">
+					<?php if ( $primary_id ) : ?>
+						<?php echo wp_get_attachment_image( $primary_id, 'alkana-product-hero', false, [
+							'id'             => 'main-product-image',
+							'class'          => 'w-full h-full object-cover',
+							'alt'            => get_the_title(),
+							'loading'        => 'eager',
+							'fetchpriority'  => 'high',
+							'decoding'       => 'async',
+							'sizes'          => '(max-width: 1024px) 100vw, 50vw',
+						] ); ?>
+					<?php else : ?>
+						<div class="w-full h-full flex items-center justify-center">
+							<span class="dashicons dashicons-products text-gray-300 text-6xl"></span>
+						</div>
+					<?php endif; ?>
+				</div>
+
+				<?php // ── Thumbnail strip (only when >1 image) ────────────── ?>
+				<?php if ( count( $all_image_ids ) > 1 ) : ?>
+				<div class="gallery-thumbnail-strip flex gap-2 overflow-x-auto snap-x snap-mandatory mt-4 custom-scrollbar" role="list" aria-label="<?php esc_attr_e( 'Product images', 'alkana' ); ?>">
+					<?php foreach ( $all_image_ids as $idx => $img_id ) :
+						$full_src    = wp_get_attachment_image_url( $img_id, 'large' );
+						$full_srcset = wp_get_attachment_image_srcset( $img_id, 'large' );
+						if ( ! $full_src ) continue;
+					?>
+					<button
+						type="button"
+						class="gallery-thumb w-20 h-20 flex-shrink-0 snap-start rounded-md overflow-hidden transition-opacity cursor-pointer border-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-alkana-purple-600 <?php echo $idx === 0 ? 'opacity-100 border-alkana-purple-600' : 'opacity-70 border-transparent hover:opacity-100'; ?>"
+						data-image-url="<?php echo esc_attr( $full_src ); ?>"
+						data-image-srcset="<?php echo esc_attr( $full_srcset ?: '' ); ?>"
+						aria-label="<?php echo esc_attr( sprintf( __( 'View image %d', 'alkana' ), $idx + 1 ) ); ?>"
+						role="listitem">
+						<?php echo wp_get_attachment_image( $img_id, 'thumbnail', false, [
+							'class'   => 'w-full h-full object-cover pointer-events-none',
+							'alt'     => '',
+							'loading' => 'lazy',
+						] ); ?>
+					</button>
+					<?php endforeach; ?>
+				</div>
 				<?php endif; ?>
+
 			</div>
 
 			<?php // ── Product Info ──────────────────────────────────────────── ?>
@@ -90,7 +154,7 @@ if ( get_the_content() ) $tabs[] = [ 'id' => 'details', 'label' => __( 'Details'
 				</div>
 
 				<?php // ── Quick-access CTA row ────────────────────────────────── ?>
-				<div class="product-detail__cta flex flex-wrap gap-3 mt-4">
+				<div class="product-detail__cta flex flex-wrap gap-3 mt-4" id="product-cta-main">
 					<a href="<?php echo esc_url( alkana_get_contact_url() ); ?>"
 					   class="btn btn--primary">
 						<?php esc_html_e( 'Request Quote', 'alkana' ); ?>
@@ -223,7 +287,7 @@ if ( get_the_content() ) $tabs[] = [ 'id' => 'details', 'label' => __( 'Details'
 
 					<?php if ( $msds ) : ?>
 						<li class="resource-item flex items-center gap-3 p-4 rounded-lg border border-[--color-border] bg-white hover:bg-gray-50">
-							<svg class="w-8 h-8 text-orange-500 shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z" clip-rule="evenodd"/></svg>
+							<svg class="w-8 h-8 text-alkana-purple-500 shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z" clip-rule="evenodd"/></svg>
 							<div class="flex-1">
 								<p class="font-medium text-sm"><?php esc_html_e( 'Safety Data Sheet (MSDS/SDS)', 'alkana' ); ?></p>
 								<p class="text-xs text-gray-400"><?php echo esc_html( $msds['filename'] ?? 'PDF' ); ?></p>

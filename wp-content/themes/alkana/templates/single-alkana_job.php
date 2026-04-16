@@ -21,7 +21,7 @@ if ( have_posts() ) :
 				<?php get_template_part( 'template-parts/breadcrumb' ); ?>
 			</div>
 
-			<section class="job-hero bg-[--color-secondary] text-white py-14">
+			<section class="job-hero bg-alkana-navy text-white py-14">
 				<div class="container mx-auto px-4">
 					<div class="max-w-3xl">
 						<h1 class="text-3xl font-heading font-bold mb-3"><?php the_title(); ?></h1>
@@ -101,7 +101,7 @@ if ( have_posts() ) :
 									<?php esc_html_e( 'CV/Resume', 'alkana' ); ?> <span class="text-red-500">*</span>
 								</label>
 								<input type="file" id="app_cv" name="cv" required accept=".pdf,.doc,.docx"
-									class="form-input w-full file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-[--color-primary] file:text-white hover:file:bg-[--color-primary]/90">
+									class="form-input w-full file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-alkana-purple-600 file:text-white hover:file:bg-alkana-purple-700">
 								<p class="text-xs text-gray-500 mt-1">
 									<?php esc_html_e( 'PDF, DOC, or DOCX (max 5MB)', 'alkana' ); ?>
 								</p>

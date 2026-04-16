@@ -16,7 +16,7 @@ $term = get_queried_object();
 <main id="main-content" class="site-main">
 
 	<?php // ── Category Hero ──────────────────────────────────────────────────── ?>
-	<section class="page-hero bg-[--color-secondary] text-white py-14">
+	<section class="page-hero bg-alkana-navy text-white py-14">
 		<div class="container mx-auto px-4">
 			<p class="text-sm text-[--color-primary] mb-1 uppercase tracking-wide">
 				<?php esc_html_e( 'Product Category', 'alkana' ); ?>
@@ -42,7 +42,7 @@ $term = get_queried_object();
 			<div class="category-children flex flex-wrap gap-2 mb-8">
 				<?php foreach ( $children as $child ) : ?>
 					<a href="<?php echo esc_url( get_term_link( $child ) ); ?>"
-					   class="badge bg-[--color-bg-light] border border-[--color-border] px-3 py-1 rounded-full text-sm hover:bg-[--color-primary] hover:text-white hover:border-[--color-primary] transition-colors">
+					   class="badge bg-[--color-bg-light] border border-[--color-border] px-3 py-1 rounded-full text-sm hover:bg-alkana-purple-600 hover:text-white hover:border-alkana-purple-600 transition-colors">
 						<?php echo esc_html( $child->name ); ?>
 						<span class="text-gray-400 ml-1">(<?php echo (int) $child->count; ?>)</span>
 					</a>

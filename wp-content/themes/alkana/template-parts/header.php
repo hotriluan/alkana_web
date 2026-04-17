@@ -32,7 +32,7 @@
 			</a>
 
 			<?php // ── Desktop Nav ───────────────────────────────────────────────── ?>
-			<nav class="site-nav hidden md:flex items-center gap-1" aria-label="<?php esc_attr_e( 'Primary', 'alkana' ); ?>">
+			<nav class="site-nav hidden lg:flex items-center gap-1" aria-label="<?php esc_attr_e( 'Primary', 'alkana' ); ?>">
 				<?php
 				wp_nav_menu( [
 					'theme_location' => 'primary',
@@ -54,12 +54,12 @@
 				</button>
 
 				<a href="<?php echo esc_url( home_url( '/lien-he/' ) ); ?>"
-				   class="header-cta btn btn--gradient hidden sm:inline-flex text-sm py-2 px-4">
+				   class="header-cta btn btn--gradient hidden lg:inline-flex text-sm py-2 px-4">
 					<?php esc_html_e( 'Nhận báo giá', 'alkana' ); ?>
 				</a>
 
 				<button
-					class="nav-toggle md:hidden flex flex-col gap-1.5 p-2 ml-1"
+					class="nav-toggle lg:hidden flex flex-col gap-1.5 p-2 ml-1"
 					id="nav-toggle"
 					aria-label="<?php esc_attr_e( 'Open menu', 'alkana' ); ?>"
 					aria-expanded="false"

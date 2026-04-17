@@ -22,12 +22,14 @@
 	// Open modal
 	toggleBtn.addEventListener('click', () => {
 		modal.classList.remove('hidden');
+		document.body.style.overflow = 'hidden';
 		input.focus();
 	});
 
 	// Close modal
 	const closeModal = () => {
 		modal.classList.add('hidden');
+		document.body.style.overflow = '';
 		input.value = '';
 		results.innerHTML = '';
 	};

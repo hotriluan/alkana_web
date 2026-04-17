@@ -50,7 +50,7 @@ if ( ! $testimonial_query->have_posts() ) {
 						</svg>
 
 						<!-- Stars -->
-						<div class="flex gap-1 mb-4" aria-label="<?php echo esc_attr( $rating . '/5 sao' ); ?>">
+						<div class="flex gap-1 mb-4" role="img" aria-label="<?php echo esc_attr( $rating . '/5 sao' ); ?>">
 							<?php for ( $i = 1; $i <= 5; $i++ ) : ?>
 								<svg class="w-4 h-4 <?php echo $i <= $rating ? 'text-amber-400' : 'text-gray-200'; ?>"
 								     fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
@@ -102,17 +102,22 @@ add_action( 'wp_footer', function () {
 	?>
 	<script>
 	(function(){
-		var el = document.querySelector('.testimonials-swiper');
-		if( !el || typeof Swiper === 'undefined' ) return;
-		new Swiper('.testimonials-swiper',{
-			slidesPerView: 1,
-			spaceBetween: 24,
-			loop: true,
-			autoplay: { delay: 5500, disableOnInteraction: false, pauseOnMouseEnter: true },
-			pagination: { el: '.testimonials-swiper__pagination', clickable: true },
-			breakpoints: { 640: { slidesPerView: 2 }, 1024: { slidesPerView: 3 } },
-			a11y: { prevSlideMessage: 'Đánh giá trước', nextSlideMessage: 'Đánh giá tiếp theo' }
-		});
+		function initTestimonialsSwiper(){
+			var el = document.querySelector('.testimonials-swiper');
+			if( !el || typeof Swiper === 'undefined' ) return;
+			if( el.classList.contains('swiper-initialized') ) return;
+			new Swiper('.testimonials-swiper',{
+				slidesPerView: 1,
+				spaceBetween: 24,
+				loop: true,
+				autoplay: { delay: 5500, disableOnInteraction: false, pauseOnMouseEnter: true },
+				pagination: { el: '.testimonials-swiper__pagination', clickable: true },
+				breakpoints: { 640: { slidesPerView: 2 }, 1024: { slidesPerView: 3 } },
+				a11y: { prevSlideMessage: 'Đánh giá trước', nextSlideMessage: 'Đánh giá tiếp theo' }
+			});
+		}
+		document.addEventListener('DOMContentLoaded', initTestimonialsSwiper);
+		document.addEventListener('alkana:pageChanged', initTestimonialsSwiper);
 	}());
 	</script>
 	<?php

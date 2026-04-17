@@ -12,19 +12,19 @@
 	 * @param {string} email - Email address
 	 * @returns {boolean}
 	 */
-	window.validateEmail = function (email) {
+	function validateEmail(email) {
 		return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-	};
+	}
 
 	/**
 	 * Basic phone validation (Vietnamese format)
 	 * @param {string} phone - Phone number
 	 * @returns {boolean}
 	 */
-	window.validatePhone = function (phone) {
+	function validatePhone(phone) {
 		// Vietnamese phone: starts with 0, 10-11 digits
 		return /^0[0-9]{9,10}$/.test(phone.replace(/[\s\-]/g, ''));
-	};
+	}
 
 	/**
 	 * Add required field validation to forms

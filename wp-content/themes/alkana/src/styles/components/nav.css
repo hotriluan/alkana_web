@@ -172,6 +172,9 @@
 }
 @media (min-width: 768px) { .nav-drawer { display: none !important; } }
 
+/* Prevent off-canvas drawer (translate-x-full) from causing horizontal document scroll */
+body { overflow-x: hidden; }
+
 /* Body scroll lock when drawer open */
 body.nav-open { overflow: hidden; }
 

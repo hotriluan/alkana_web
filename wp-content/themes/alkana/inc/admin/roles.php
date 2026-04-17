@@ -36,18 +36,25 @@ function alkana_register_admin_roles(): void {
 		'delete_alkana_projects'      => true,
 	];
 
+	// Guard: only register roles when not already present to avoid wiping
+	// user role assignments during theme switches or background tasks.
+	// To change capabilities in future: bump ALKANA_ROLE_VERSION and add
+	// remove_role() + add_role() inside the version-bump block only.
+
 	// Content editor: full access to products + projects + posts (news)
-	remove_role( 'alkana_content_editor' ); // idempotent re-registration
-	add_role( 'alkana_content_editor', __( 'Alkana Content Editor', 'alkana' ), array_merge( $base_caps, [
-		'edit_posts'             => true,
-		'edit_published_posts'   => true,
-		'publish_posts'          => true,
-		'delete_posts'           => true,
-		'edit_pages'             => true,
-		'edit_published_pages'   => true,
-	] ) );
+	if ( ! get_role( 'alkana_content_editor' ) ) {
+		add_role( 'alkana_content_editor', __( 'Alkana Content Editor', 'alkana' ), array_merge( $base_caps, [
+			'edit_posts'             => true,
+			'edit_published_posts'   => true,
+			'publish_posts'          => true,
+			'delete_posts'           => true,
+			'edit_pages'             => true,
+			'edit_published_pages'   => true,
+		] ) );
+	}
 
 	// Tech editor: products/specs only, no blog posts or pages
-	remove_role( 'alkana_tech_editor' );
-	add_role( 'alkana_tech_editor', __( 'Alkana Tech Editor', 'alkana' ), $base_caps );
+	if ( ! get_role( 'alkana_tech_editor' ) ) {
+		add_role( 'alkana_tech_editor', __( 'Alkana Tech Editor', 'alkana' ), $base_caps );
+	}
 }

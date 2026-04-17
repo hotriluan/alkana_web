@@ -24,7 +24,7 @@ function alkana_ajax_submit_contact(): void {
 	}
 
 	// Rate limiting: max 5 contact messages per hour per IP
-	$ip_key = 'alkana_contact_' . md5( $_SERVER['REMOTE_ADDR'] ?? '' );
+	$ip_key = 'alkana_contact_' . md5( alkana_get_client_ip() );
 	$count  = (int) get_transient( $ip_key );
 	if ( $count >= 5 ) {
 		wp_send_json_error( [ 'message' => __( 'Too many submissions. Please try again later.', 'alkana' ) ], 429 );

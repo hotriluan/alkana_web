@@ -18,7 +18,7 @@ add_action( 'wp_ajax_alkana_inline_edit', 'alkana_handle_inline_edit' );
 function alkana_handle_inline_edit(): void {
 	check_ajax_referer( 'alkana_inline_edit_nonce' );
 
-	if ( ! current_user_can( 'edit_posts' ) ) {
+	if ( ! current_user_can( 'edit_alkana_products' ) ) {
 		wp_send_json_error( __( 'Unauthorized', 'alkana' ), 403 );
 	}
 

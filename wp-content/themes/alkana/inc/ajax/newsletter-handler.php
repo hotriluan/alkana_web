@@ -19,7 +19,7 @@ function alkana_ajax_newsletter(): void {
 	}
 
 	// Rate limiting: max 3 newsletter subscriptions per hour per IP
-	$ip_key = 'alkana_newsletter_' . md5( $_SERVER['REMOTE_ADDR'] ?? '' );
+	$ip_key = 'alkana_newsletter_' . md5( alkana_get_client_ip() );
 	$count  = (int) get_transient( $ip_key );
 	if ( $count >= 3 ) {
 		wp_send_json_error( [ 'message' => __( 'Bạn đã đăng ký quá nhiều lần. Vui lòng thử lại sau.', 'alkana' ) ], 429 );
@@ -33,28 +33,34 @@ function alkana_ajax_newsletter(): void {
 		wp_send_json_error( [ 'message' => __( 'Vui lòng nhập địa chỉ email hợp lệ.', 'alkana' ) ], 400 );
 	}
 
-	// Get existing newsletter emails
-	$newsletter_emails = get_option( 'alkana_newsletter_emails', [] );
+	// INSERT IGNORE exploits the UNIQUE KEY on email — atomic, race-condition safe.
+	global $wpdb;
+	$table = $wpdb->prefix . 'alkana_newsletter';
 
-	// Check if email already exists
-	if ( in_array( $email, $newsletter_emails, true ) ) {
+	$rows = $wpdb->query(
+		$wpdb->prepare(
+			"INSERT IGNORE INTO {$table} (email) VALUES (%s)", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			$email
+		)
+	);
+
+	if ( $rows === 0 ) {
+		// Email already existed — IGNORE silently skipped the insert.
 		wp_send_json_success( [
 			'message' => __( 'Email này đã được đăng ký trước đó. Cảm ơn bạn!', 'alkana' ),
 		] );
+		return;
 	}
 
-	// Add new email to the list
-	$newsletter_emails[] = $email;
-	update_option( 'alkana_newsletter_emails', $newsletter_emails );
-
-	// Send notification to admin (optional)
+	// New subscriber — notify admin.
+	$count       = (int) $wpdb->get_var( "SELECT COUNT(*) FROM {$table}" ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 	$admin_email = get_option( 'admin_email' );
 	$subject     = sprintf( __( '[Alkana] Đăng ký nhận tin mới: %s', 'alkana' ), $email );
 	$body        = sprintf(
 		__( "Có người đăng ký nhận tin từ website:\n\nEmail: %s\nThời gian: %s\n\nTổng số email đăng ký: %d", 'alkana' ),
 		$email,
 		current_time( 'Y-m-d H:i:s' ),
-		count( $newsletter_emails )
+		$count
 	);
 
 	wp_mail( $admin_email, $subject, $body );

@@ -38,18 +38,56 @@ function reinitModules() {
 		window.Alpine.initTree( document.body );
 	}
 
-	// Re-init scroll-reveal
-	if ( window.alkanaScrollReveal ) {
-		window.alkanaScrollReveal.init();
-	}
+	// Re-init all registered modules (set by app.js after DOMContentLoaded)
+	if ( window.alkanaCounters )     window.alkanaCounters.init();
+	if ( window.alkanaParallax )     window.alkanaParallax.init();
+	if ( window.alkanaScrollReveal ) window.alkanaScrollReveal.init();
+	if ( window.alkanaHoverPhysics ) window.alkanaHoverPhysics.init();
 
-	// Re-init hover physics
-	if ( window.alkanaHoverPhysics ) {
-		window.alkanaHoverPhysics.init();
-	}
-
-	// Re-init header scroll state
+	// Re-init header scroll state + other event-driven modules
 	document.dispatchEvent( new Event( 'alkana:pageChanged' ) );
+}
+
+// ── Nav active state ─────────────────────────────────────────────────────────
+
+/**
+ * After a SPA swap the header stays from initial load, so WordPress's
+ * server-side `current-menu-item` class is stale. Re-compute it client-side
+ * by comparing nav link hrefs against the new URL (longest-prefix wins).
+ */
+function updateNavActiveState( url ) {
+	const navMenu = document.querySelector( '.nav-menu' );
+	if ( ! navMenu ) return;
+
+	const normalize = ( p ) => ( p.endsWith( '/' ) ? p : p + '/' );
+	const currentPath = normalize( new URL( url ).pathname );
+
+	// Strip active classes from all top-level nav items
+	navMenu.querySelectorAll( ':scope > li' ).forEach( ( li ) => {
+		li.classList.remove( 'current-menu-item', 'current-menu-ancestor', 'current-menu-parent' );
+	} );
+
+	// Pick the nav item whose href is the longest matching prefix of currentPath
+	let bestMatch = null;
+	let bestLength = 0;
+
+	navMenu.querySelectorAll( ':scope > li > a[href]' ).forEach( ( anchor ) => {
+		try {
+			const linkPath = normalize( new URL( anchor.href ).pathname );
+			if ( currentPath === linkPath || currentPath.startsWith( linkPath ) ) {
+				if ( linkPath.length > bestLength ) {
+					bestLength = linkPath.length;
+					bestMatch = anchor.parentElement;
+				}
+			}
+		} catch {
+			// Skip malformed hrefs
+		}
+	} );
+
+	if ( bestMatch ) {
+		bestMatch.classList.add( 'current-menu-item' );
+	}
 }
 
 // ── Navigation ───────────────────────────────────────────────────────────────
@@ -89,6 +127,7 @@ async function navigateTo( url ) {
 				document.title = doc.title;
 				curMain.replaceWith( newMain );
 				history.pushState( {}, '', url );
+				updateNavActiveState( url );
 				window.scrollTo( { top: 0, behavior: 'instant' } );
 				reinitModules();
 			} );
@@ -98,6 +137,7 @@ async function navigateTo( url ) {
 			document.title = doc.title;
 			curMain.replaceWith( newMain );
 			history.pushState( {}, '', url );
+			updateNavActiveState( url );
 			window.scrollTo( 0, 0 );
 			reinitModules();
 		}

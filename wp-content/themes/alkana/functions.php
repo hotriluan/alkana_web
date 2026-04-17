@@ -19,6 +19,7 @@ require_once ALKANA_DIR . '/inc/enqueue-assets.php';
 
 // ── Helpers ────────────────────────────────────────────────────────────────────
 require_once ALKANA_DIR . '/inc/helper-contact-url.php';
+require_once ALKANA_DIR . '/inc/helper-get-client-ip.php';
 require_once ALKANA_DIR . '/inc/class-alkana-mega-menu-walker.php';
 
 // ── Content types ──────────────────────────────────────────────────────────────
@@ -41,6 +42,7 @@ require_once ALKANA_DIR . '/inc/product-certs-metabox.php';
 
 // ── Database ───────────────────────────────────────────────────────────────────
 require_once ALKANA_DIR . '/inc/db/create-product-index-table.php';
+require_once ALKANA_DIR . '/inc/db/create-newsletter-table.php';
 
 // ── Hooks ──────────────────────────────────────────────────────────────────────
 require_once ALKANA_DIR . '/inc/hooks/sync-product-index.php';

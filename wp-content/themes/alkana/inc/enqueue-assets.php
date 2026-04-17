@@ -21,8 +21,16 @@ function alkana_preconnect_fonts(): void {
 	echo '<link rel="preconnect" href="https://fonts.googleapis.com">' . "\n";
 	echo '<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>' . "\n";
 
-	// Preload hint for Montserrat 700 — primary heading font, likely LCP contributor
-	echo '<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Inter:wght@400;500;600&display=swap">' . "\n";
+	// Preload Vite CSS bundle (LCP/render-blocking prevention)
+	$manifest_path = get_template_directory() . '/dist/.vite/manifest.json';
+	if ( file_exists( $manifest_path ) ) {
+		$manifest = (array) json_decode( (string) file_get_contents( $manifest_path ), true );
+		$css_file = $manifest['src/styles/app.css']['file'] ?? null;
+		if ( $css_file ) {
+			$css_url = esc_url( get_template_directory_uri() . '/dist/' . $css_file );
+			echo '<link rel="preload" as="style" href="' . $css_url . '">' . "\n";
+		}
+	}
 }
 
 /**

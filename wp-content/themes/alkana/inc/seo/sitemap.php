@@ -43,17 +43,25 @@ function alkana_has_seo_plugin(): bool {
  * Serve XML sitemap when /sitemap.xml is requested.
  */
 function alkana_serve_sitemap(): void {
-	if (!get_query_var('alkana_sitemap')) {
+	if ( ! get_query_var( 'alkana_sitemap' ) ) {
 		return;
 	}
-	
+
 	// Skip if SEO plugin is active
-	if (alkana_has_seo_plugin()) {
+	if ( alkana_has_seo_plugin() ) {
 		return;
 	}
-	
-	header('Content-Type: application/xml; charset=UTF-8');
-	echo alkana_generate_sitemap_xml();
+
+	$cache_key = 'alkana_sitemap_xml';
+	$xml       = get_transient( $cache_key );
+
+	if ( false === $xml ) {
+		$xml = alkana_generate_sitemap_xml();
+		set_transient( $cache_key, $xml, 12 * HOUR_IN_SECONDS );
+	}
+
+	header( 'Content-Type: application/xml; charset=UTF-8' );
+	echo $xml; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 	exit;
 }
 
@@ -177,4 +185,13 @@ function alkana_generate_sitemap_xml(): string {
 	$xml .= '</urlset>';
 	
 	return $xml;
+}
+
+add_action( 'save_post', 'alkana_bust_sitemap_cache' );
+
+/**
+ * Delete the sitemap transient when any post is saved.
+ */
+function alkana_bust_sitemap_cache(): void {
+	delete_transient( 'alkana_sitemap_xml' );
 }

@@ -59,10 +59,10 @@ function alkana_hero_slider_enqueue_frontend(): void {
 
 	$loop = count( alkana_get_hero_slides() ) > 1 ? 'true' : 'false';
 	wp_add_inline_script( 'swiper-js', "
-		document.addEventListener('DOMContentLoaded',function(){
+		function alkanaInitHeroSwiper(){
 			var el=document.querySelector('.hero-swiper');
-			if(!el) return;
-			var sw=new Swiper('.hero-swiper',{
+			if(!el||el.classList.contains('swiper-initialized')) return;
+			new Swiper('.hero-swiper',{
 				loop:{$loop},effect:'fade',fadeEffect:{crossFade:true},speed:1100,
 				autoplay:{delay:6000,disableOnInteraction:false,pauseOnMouseEnter:true},
 				pagination:{el:'.hero-swiper__pagination',clickable:true},
@@ -77,7 +77,9 @@ function alkana_hero_slider_enqueue_frontend(): void {
 					}
 				}
 			});
-		});
+		}
+		document.addEventListener('DOMContentLoaded',alkanaInitHeroSwiper);
+		document.addEventListener('alkana:pageChanged',alkanaInitHeroSwiper);
 	" );
 }
 

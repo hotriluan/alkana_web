@@ -55,6 +55,27 @@ function alkana_sync_product_index( $post_id ): void {
 	);
 }
 
+add_action( 'before_delete_post', 'alkana_remove_product_index_row' );
+add_action( 'wp_trash_post',      'alkana_remove_product_index_row' );
+
+/**
+ * Remove the index row when a product is permanently deleted or trashed.
+ *
+ * @param int $post_id
+ */
+function alkana_remove_product_index_row( int $post_id ): void {
+	if ( get_post_type( $post_id ) !== 'alkana_product' ) {
+		return;
+	}
+
+	global $wpdb;
+	$wpdb->delete(
+		$wpdb->prefix . 'alkana_product_index',
+		[ 'post_id' => $post_id ],
+		[ '%d' ]
+	);
+}
+
 /**
  * Return comma-separated term slugs for a given taxonomy.
  *

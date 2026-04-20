@@ -1,0 +1,80 @@
+version: '3.9'
+
+services:
+  db:
+    image: mariadb:10.11
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: alkana_wp
+      MYSQL_USER: wordpress
+      MYSQL_PASSWORD: wordpress
+    volumes:
+      - db_data:/var/lib/mysql
+      - ./fixtures/alkana-seed.sql:/docker-entrypoint-initdb.d/alkana-seed.sql:ro
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-u", "root", "-proot"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+
+  wordpress:
+    image: wordpress:php8.2-apache
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "8080:80"
+    environment:
+      WORDPRESS_DB_HOST: db
+      WORDPRESS_DB_USER: wordpress
+      WORDPRESS_DB_PASSWORD: wordpress
+      WORDPRESS_DB_NAME: alkana_wp
+      # Override siteurl/home stored in seed SQL (which points to XAMPP localhost/alkana-wp).
+      # NOTE: This fixes PHP-generated URLs only. Hardcoded media URLs stored in wp_posts
+      # content are fixed by the wpcli service below via search-replace on first startup.
+      WORDPRESS_CONFIG_EXTRA: |
+        define( 'WP_HOME',    'http://localhost:8080' );
+        define( 'WP_SITEURL', 'http://localhost:8080' );
+        define( 'WP_DEBUG',   true );
+    volumes:
+      - wp_data:/var/www/html
+      - ../wp-content/themes/alkana:/var/www/html/wp-content/themes/alkana:ro
+    healthcheck:
+      test: ["CMD-SHELL", "curl -sf http://localhost/wp-login.php || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 9
+      start_period: 30s
+
+  # One-shot WP-CLI service.
+  # Runs search-replace to fix hardcoded media/content URLs in wp_posts after the seed
+  # SQL is loaded. WORDPRESS_CONFIG_EXTRA patches PHP-level URL generation, but it
+  # cannot fix literal URL strings stored in post content and attachment metadata.
+  # restart: "no" — Docker marks this container as exited after completion;
+  # it will NOT restart on subsequent `docker compose up -d` calls.
+  wpcli:
+    image: wordpress:cli-php8.2
+    depends_on:
+      wordpress:
+        condition: service_healthy
+    volumes:
+      - wp_data:/var/www/html
+      - ../wp-content/themes/alkana:/var/www/html/wp-content/themes/alkana:ro
+    environment:
+      WORDPRESS_DB_HOST: db
+      WORDPRESS_DB_USER: wordpress
+      WORDPRESS_DB_PASSWORD: wordpress
+      WORDPRESS_DB_NAME: alkana_wp
+    command: >-
+      wp --allow-root --path=/var/www/html
+      search-replace 'http://localhost/alkana-wp' 'http://localhost:8080'
+      --skip-columns=guid
+      --precise
+      --report-changed-only
+    restart: "no"
+
+volumes:
+  db_data:
+  wp_data:

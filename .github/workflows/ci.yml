@@ -1,0 +1,185 @@
+name: CI
+# ═══════════════════════════════════════════════════════════════════════════════
+# SETUP REQUIRED — Configure these in GitHub before the first deploy to Mắt Bão
+# ═══════════════════════════════════════════════════════════════════════════════
+#
+# GitHub repository → Settings → Secrets and variables → Actions
+#
+# ── SECRETS (encrypted, never visible after entry) ───────────────────────────
+#   FTP_SERVER      → FTP hostname from Mắt Bão cPanel
+#                     (e.g. alkanacoating.com  or  ftp.alkanacoating.com)
+#   FTP_USERNAME    → FTP account username (shown in cPanel → FTP Accounts)
+#   FTP_PASSWORD    → FTP account password
+#
+# ── VARIABLES (plaintext, safe to inspect) ───────────────────────────────────
+#   FTP_SERVER_DIR  → Absolute server path to theme directory — MUST end with /
+#                     e.g. /public_html/wp-content/themes/alkana/
+#
+# NOTE: Until these are configured, `push` to main will run Playwright tests
+# but the "Deploy Theme via FTP" job will fail at the validation step (safe —
+# no partial upload). All other CI jobs (playwright) work without any secrets.
+# ═══════════════════════════════════════════════════════════════════════════════
+
+on:
+  push:
+    branches:
+      - main
+      - dev
+      - 'feat/**'
+      - 'fix/**'
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  playwright:
+    name: Playwright E2E (Chromium)
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Start Docker services
+        working-directory: docker
+        run: docker compose up -d
+
+      - name: Wait for WordPress to be healthy
+        run: |
+          echo "Waiting for WordPress at http://localhost:8080 ..."
+          timeout 90 bash -c \
+            'until curl -sf http://localhost:8080/wp-login.php > /dev/null 2>&1; do
+               echo "  Not ready yet, retrying in 5s..."
+               sleep 5
+             done'
+          echo "WordPress is up."
+
+      # Wait for WP-CLI search-replace to complete.
+      # This fixes hardcoded media/post content URLs that WORDPRESS_CONFIG_EXTRA cannot fix.
+      # wpcli service has restart: "no" — exits 0 after completion.
+      - name: Wait for WP-CLI URL fix (search-replace)
+        working-directory: docker
+        run: |
+          echo "Waiting for WP-CLI search-replace to complete..."
+          docker compose wait wpcli
+          echo "WP-CLI search-replace done (exit code: $?)."
+          docker compose logs wpcli
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install npm dependencies
+        run: npm ci
+
+      - name: Install Playwright browser (Chromium)
+        run: npx playwright install chromium --with-deps
+
+      - name: Run Playwright tests
+        env:
+          BASE_URL: http://localhost:8080
+          CI: 'true'
+          DOCKER_SEEDED: 'true'
+        run: npx playwright test --project=chromium
+
+      - name: Upload Playwright report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report-${{ github.run_id }}
+          path: plans/260416-comprehensive-testing/reports/playwright-report/
+          retention-days: 7
+
+      - name: Stop Docker services and remove volumes
+        if: always()
+        working-directory: docker
+        run: docker compose down -v
+
+  # ── Deploy to production (FTP) ──────────────────────────────────────────────
+  # Only runs on push to main (not PRs), only after all playwright tests pass.
+  # Uses SamKirkland/FTP-Deploy-Action to sync only the theme directory to cPanel.
+  #
+  # Required GitHub Secrets (Settings → Secrets and Variables → Actions):
+  #   FTP_SERVER    — FTP hostname from Mắt Bão cPanel, e.g. ftp.alkanacoating.com
+  #   FTP_USERNAME  — FTP account username
+  #   FTP_PASSWORD  — FTP account password
+  # Required GitHub Variable (Settings → Secrets and Variables → Variables):
+  #   FTP_SERVER_DIR — target path on server, e.g. /public_html/wp-content/themes/alkana/
+  deploy:
+    name: Deploy Theme via FTP
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    needs: [playwright]
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js (for Vite build)
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: wp-content/themes/alkana/package-lock.json
+
+      - name: Install theme dependencies
+        working-directory: wp-content/themes/alkana
+        run: npm ci
+
+      - name: Build theme assets (Vite)
+        working-directory: wp-content/themes/alkana
+        run: npm run build
+
+      # SAFETY: Validate FTP_SERVER_DIR before any file transfer.
+      # Prevents accidental overwrite of WordPress core or other domains on the shared host.
+      # Aborts the job (exit 1) if any of the three conditions fail:
+      #   1. Variable is not empty
+      #   2. Ends with trailing slash (required by FTP-Deploy-Action)
+      #   3. Path targets themes/alkana/ specifically
+      - name: Validate FTP target directory
+        env:
+          FTP_SERVER_DIR: ${{ vars.FTP_SERVER_DIR }}
+        run: |
+          echo "[deploy] FTP target: '${FTP_SERVER_DIR}'"
+          if [ -z "${FTP_SERVER_DIR}" ]; then
+            echo "ERROR: FTP_SERVER_DIR is empty. Set it in repo Settings → Variables."
+            exit 1
+          fi
+          if [[ "${FTP_SERVER_DIR}" != */ ]]; then
+            echo "ERROR: FTP_SERVER_DIR must end with a trailing slash. Got: '${FTP_SERVER_DIR}'"
+            exit 1
+          fi
+          if [[ "${FTP_SERVER_DIR}" != */themes/alkana/* ]] && \
+             [[ "${FTP_SERVER_DIR}" != */themes/alkana/ ]]; then
+            echo "ERROR: FTP_SERVER_DIR does not target themes/alkana/. Got: '${FTP_SERVER_DIR}'"
+            echo "Expected pattern: /public_html/wp-content/themes/alkana/"
+            exit 1
+          fi
+          echo "[deploy] Path validation passed."
+
+      - name: Deploy theme via FTP
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          local-dir: ./wp-content/themes/alkana/
+          server-dir: ${{ vars.FTP_SERVER_DIR }}
+          # Exclude development/build-system files — only ship production-ready theme assets
+          exclude: |
+            **/.git*
+            **/.git*/**
+            **/node_modules/**
+            **/src/**
+            **/*.md
+            **/*.lock
+            **/package.json
+            **/package-lock.json
+            **/vite.config.js
+            **/tailwind.config.js
+            **/.gitignore
+            **/gap-analysis-report.md

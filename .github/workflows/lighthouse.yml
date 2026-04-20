@@ -1,0 +1,32 @@
+name: Lighthouse CI
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  lighthouse:
+    name: Lighthouse Audit
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    # Skip the entire job when the staging URL variable is not yet configured.
+    # To activate: GitHub → Settings → Variables → Actions → New repository variable
+    #   Name:  LHCI_TARGET_URL
+    #   Value: https://staging.alkanacoating.com
+    if: vars.LHCI_TARGET_URL != ''
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Run Lighthouse CI
+        uses: treosh/lighthouse-ci-action@v12
+        with:
+          configPath: './.lighthouserc.js'
+          urls: ${{ vars.LHCI_TARGET_URL }}
+          # Optional: enables inline PR score annotations.
+          # Requires LHCI_GITHUB_APP_TOKEN secret from the Lighthouse CI GitHub App.
+          githubToken: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
+        env:
+          LHCI_TARGET_URL: ${{ vars.LHCI_TARGET_URL }}

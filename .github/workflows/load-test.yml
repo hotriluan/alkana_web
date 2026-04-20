@@ -1,0 +1,74 @@
+name: Load Test (k6)
+
+on:
+  workflow_dispatch:
+    inputs:
+      base_url:
+        description: 'Target base URL (default: Docker localhost:8080)'
+        required: false
+        default: 'http://localhost:8080'
+
+jobs:
+  k6-load-test:
+    name: k6 Load Test
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Start Docker services
+        working-directory: docker
+        run: docker compose up -d
+
+      - name: Wait for WordPress to be healthy
+        run: |
+          echo "Waiting for WordPress..."
+          timeout 90 bash -c \
+            'until curl -sf http://localhost:8080/wp-login.php > /dev/null 2>&1; do
+               sleep 5
+             done'
+          echo "WordPress ready."
+
+      - name: Wait for WP-CLI URL fix (search-replace)
+        working-directory: docker
+        run: |
+          echo "Waiting for WP-CLI search-replace to complete..."
+          docker compose wait wpcli
+          echo "WP-CLI done (exit code: $?)."
+          docker compose logs wpcli
+
+      - name: Install k6
+        run: |
+          sudo gpg -k
+          sudo gpg --no-default-keyring \
+            --keyring /usr/share/keyrings/k6-archive-keyring.gpg \
+            --keyserver hkp://keyserver.ubuntu.com:80 \
+            --recv-keys C5AD17C747E3415A3642D57D77C6C491D6AC1D69
+          echo "deb [signed-by=/usr/share/keyrings/k6-archive-keyring.gpg] https://dl.k6.io/deb stable main" \
+            | sudo tee /etc/apt/sources.list.d/k6.list
+          sudo apt-get update -qq
+          sudo apt-get install -y k6
+
+      - name: Run k6 load test
+        run: |
+          k6 run tests/load/k6-api-load.js \
+            --env BASE_URL=${{ github.event.inputs.base_url }} \
+            --out json=k6-results.json \
+            --summary-export=k6-summary.json
+
+      - name: Upload k6 results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: k6-load-test-results-${{ github.run_id }}
+          path: |
+            k6-results.json
+            k6-summary.json
+          retention-days: 14
+
+      - name: Stop Docker services and remove volumes
+        if: always()
+        working-directory: docker
+        run: docker compose down -v

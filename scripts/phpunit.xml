@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/10.5/phpunit.xsd" bootstrap="../tests/toolkit/bootstrap.php" colors="true" stopOnFailure="false" displayDetailsOnTestsThatTriggerWarnings="true" displayDetailsOnTestsThatTriggerErrors="true">
+  <testsuites>
+    <testsuite name="Unit">
+      <directory>../tests/toolkit/Unit</directory>
+    </testsuite>
+    <testsuite name="Integration">
+      <directory>../tests/toolkit/Integration</directory>
+    </testsuite>
+    <testsuite name="Security">
+      <directory>../tests/toolkit/Security</directory>
+    </testsuite>
+  </testsuites>
+  <coverage/>
+  <php>
+    <env name="ALKANA_TEST_MODE" value="1"/>
+    <env name="ALKANA_TEST_BASE_DIR" value=""/>
+  </php>
+  <source>
+    <include>
+      <file>alkana-toolkit.php</file>
+    </include>
+  </source>
+</phpunit>

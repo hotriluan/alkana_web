@@ -69,7 +69,6 @@ test('[6.3] Product catalog: no critical axe-core violations', async ({ page }) 
 
   const results = await new AxeBuilder({ page })
     .withTags(['wcag2a', 'wcag2aa'])
-    .disableRules(['color-contrast']) // Often fails with design-specific contrast ratios
     .analyze();
 
   const criticalViolations = results.violations.filter(v => v.impact === 'critical');

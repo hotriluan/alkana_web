@@ -1,0 +1,14 @@
+{
+    "backup_date": "2026-01-01T00:00:00Z",
+    "backup_mode": "full",
+    "site_url": "http://localhost/alkana",
+    "wp_version": "6.4",
+    "php_version": "8.2.0",
+    "php_extensions": ["pdo", "zip"],
+    "plugins": [],
+    "checksums": {
+        "database.sql": "INVALID_HASH_FOR_TESTING",
+        "__proto__": "prototype-pollution-attempt",
+        "../../../../etc/passwd": "path-traversal-attempt"
+    }
+}

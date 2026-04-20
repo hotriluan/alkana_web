@@ -1,0 +1,24 @@
+{
+  "name": "alkana-web-tests",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Alkana Web — Comprehensive QA Test Suite",
+  "scripts": {
+    "test": "playwright test",
+    "test:smoke": "playwright test tests/01-smoke/",
+    "test:ui": "playwright test tests/02-ui/",
+    "test:animations": "playwright test tests/03-animations/",
+    "test:features": "playwright test tests/04-features/",
+    "test:a11y": "playwright test tests/06-accessibility/",
+    "test:security": "playwright test tests/07-security/",
+    "test:data": "playwright test tests/08-data-integrity/",
+    "test:admin": "playwright test tests/09-admin/",
+    "test:scenario": "playwright test tests/07-security/ tests/08-data-integrity/ tests/09-admin/",
+    "test:all": "playwright test",
+    "test:report": "playwright show-report plans/260416-comprehensive-testing/reports/playwright-report"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "^4.10.1",
+    "@playwright/test": "^1.52.0"
+  }
+}

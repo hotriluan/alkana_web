@@ -39,3 +39,14 @@
 @import './components/paint-builder.css';
 @import './components/homepage.css';
 @import './components/animations.css';
+
+/* WCAG 2.1 AA — color-contrast fix
+ * .text-alkana-purple-300 uses #B87EDD (3.18:1 on white) — fails 4.5:1 for small/normal text.
+ * Override to purple-700 (#67219D, 8.12:1 on white) for all text utility uses.
+ * Border and background utilities (border-alkana-purple-300, bg-alkana-purple-300)
+ * are unaffected — they reference var(--color-alkana-purple-300) via separate CSS properties.
+ * hover:text-alkana-purple-300 is also unaffected (different selector, not matched here).
+ */
+.text-alkana-purple-300 {
+  color: var(--color-alkana-purple-700);
+}

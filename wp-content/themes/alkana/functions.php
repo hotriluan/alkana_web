@@ -46,6 +46,7 @@ require_once ALKANA_DIR . '/inc/db/create-newsletter-table.php';
 
 // ── Hooks ──────────────────────────────────────────────────────────────────────
 require_once ALKANA_DIR . '/inc/hooks/sync-product-index.php';
+require_once ALKANA_DIR . '/inc/hooks/backup-cron-hook.php';
 
 // ── AJAX endpoints ─────────────────────────────────────────────────────────
 require_once ALKANA_DIR . '/inc/ajax/filter-handler.php';
@@ -67,6 +68,9 @@ require_once ALKANA_DIR . '/inc/performance/lcp-preload.php';
 // ── SEO & Redirects ────────────────────────────────────────────────────────────
 require_once ALKANA_DIR . '/inc/seo/redirects.php';
 require_once ALKANA_DIR . '/inc/seo/sitemap.php';
+
+// ── Dev / CI utilities (WP_DEBUG guard inside — safe to load unconditionally) ──
+require_once ALKANA_DIR . '/inc/dev/test-nonce-endpoint.php';
 
 // ── Settings data helpers (must be available on front-end too) ─────────────────
 // alkana_get_usp_settings() is called by template-parts/usp-section.php
@@ -94,5 +98,6 @@ if (is_admin()) {
     require_once ALKANA_DIR . '/inc/admin/list-tables.php';
     require_once ALKANA_DIR . '/inc/admin/command-palette.php';
     require_once ALKANA_DIR . '/inc/admin/focus-mode.php';
+    require_once ALKANA_DIR . '/inc/admin/backup-admin-page.php';
 }
 

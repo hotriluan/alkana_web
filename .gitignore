@@ -86,3 +86,6 @@ external/
 
 # Git worktrees (local development only)
 worktrees/
+
+test-results/
+tests/screenshots/

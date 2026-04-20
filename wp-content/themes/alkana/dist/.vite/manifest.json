@@ -1,25 +1,25 @@
 {
-  "src/scripts/admin.js": {
+  "../../../../../../dev/alkana_web/wp-content/themes/alkana/src/scripts/admin.js": {
     "file": "assets/admin-DfdPTZmz.js",
     "name": "admin",
-    "src": "src/scripts/admin.js",
+    "src": "../../../../../../dev/alkana_web/wp-content/themes/alkana/src/scripts/admin.js",
     "isEntry": true
   },
-  "src/scripts/app.js": {
+  "../../../../../../dev/alkana_web/wp-content/themes/alkana/src/scripts/app.js": {
     "file": "assets/app-47A0JC41.js",
     "name": "app",
-    "src": "src/scripts/app.js",
+    "src": "../../../../../../dev/alkana_web/wp-content/themes/alkana/src/scripts/app.js",
     "isEntry": true
   },
-  "src/scripts/paint-builder.js": {
+  "../../../../../../dev/alkana_web/wp-content/themes/alkana/src/scripts/paint-builder.js": {
     "file": "assets/paint-builder-CKB14yI5.js",
     "name": "paint-builder",
-    "src": "src/scripts/paint-builder.js",
+    "src": "../../../../../../dev/alkana_web/wp-content/themes/alkana/src/scripts/paint-builder.js",
     "isEntry": true
   },
-  "src/styles/app.css": {
-    "file": "assets/src/styles/app-CJRRd_Nu.css",
-    "src": "src/styles/app.css",
+  "../../../../../../dev/alkana_web/wp-content/themes/alkana/src/styles/app.css": {
+    "file": "assets/src/styles/app-CMIAkczE.css",
+    "src": "../../../../../../dev/alkana_web/wp-content/themes/alkana/src/styles/app.css",
     "isEntry": true
   }
 }

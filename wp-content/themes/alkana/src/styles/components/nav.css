@@ -172,8 +172,19 @@
 }
 @media (min-width: 768px) { .nav-drawer { display: none !important; } }
 
-/* Prevent off-canvas drawer (translate-x-full) from causing horizontal document scroll */
+/* Prevent off-canvas drawer and any overflowing layout from causing horizontal document scroll.
+   Must be on BOTH html AND body: if only body has overflow-x:hidden, the CSS spec propagates
+   that value to the viewport (html) and body becomes overflow:visible again. */
+html { overflow-x: hidden; }
 body { overflow-x: hidden; }
+
+/* Prevent closed drawer from inflating document scrollWidth in Chrome.
+   visibility: hidden removes it from layout metrics; the 0.3s delay matches
+   the slide-out transform transition so the animation completes before hiding. */
+#nav-drawer[aria-hidden="true"] {
+    visibility: hidden;
+    transition: visibility 0s 0.3s;
+}
 
 /* Body scroll lock when drawer open */
 body.nav-open { overflow: hidden; }

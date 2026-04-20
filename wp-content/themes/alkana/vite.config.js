@@ -5,6 +5,12 @@ import { resolve } from 'path';
 export default defineConfig({
   plugins: [tailwindcss()],
 
+  // Prevent Vite from following symlinks when generating manifest keys.
+  // Without this, keys become absolute resolved paths (breaking enqueue-assets.php).
+  resolve: {
+    preserveSymlinks: true,
+  },
+
   build: {
     outDir: 'dist',
     emptyOutDir: true,

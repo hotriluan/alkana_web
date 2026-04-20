@@ -34,6 +34,34 @@ function alkana_preconnect_fonts(): void {
 }
 
 /**
+ * Find a manifest entry by suffix — handles both short keys ('src/styles/app.css')
+ * and symlink-resolved long keys produced when vite.config.js resolve.preserveSymlinks
+ * is unset and Vite resolves the symlink before writing manifest keys.
+ *
+ * @param array  $manifest Decoded manifest array.
+ * @param string $suffix   Expected key suffix (e.g. 'src/styles/app.css').
+ * @return array|null      Manifest entry or null.
+ */
+function alkana_find_manifest_entry( array $manifest, string $suffix ): ?array {
+	// Exact match first (normal case with preserveSymlinks:true in vite.config.js)
+	if ( isset( $manifest[ $suffix ] ) ) {
+		return (array) $manifest[ $suffix ];
+	}
+	// Fallback: symlink-resolved absolute path ends with the expected suffix
+	foreach ( $manifest as $key => $entry ) {
+		// PHP 8.0+ str_ends_with; PHP 7.4 compat substr fallback
+		$key_str = (string) $key;
+		$matches = function_exists( 'str_ends_with' )
+			? str_ends_with( $key_str, $suffix )
+			: ( substr( $key_str, -strlen( $suffix ) ) === $suffix );
+		if ( $matches ) {
+			return (array) $entry;
+		}
+	}
+	return null;
+}
+
+/**
  * Front-end: enqueue compiled Vite assets by reading dist/manifest.json.
  */
 function alkana_enqueue_assets(): void {
@@ -52,7 +80,8 @@ function alkana_enqueue_assets(): void {
 
 	// CSS
 	$css_key  = 'src/styles/app.css';
-	$css_file = $manifest[ $css_key ]['file'] ?? null;
+	$css_entry = alkana_find_manifest_entry( $manifest, $css_key );
+	$css_file = $css_entry['file'] ?? null;
 	if ( $css_file ) {
 		wp_enqueue_style(
 			'alkana-app',
@@ -72,7 +101,8 @@ function alkana_enqueue_assets(): void {
 
 	// JS
 	$js_key  = 'src/scripts/app.js';
-	$js_file = $manifest[ $js_key ]['file'] ?? null;
+	$js_entry = alkana_find_manifest_entry( $manifest, $js_key );
+	$js_file = $js_entry['file'] ?? null;
 	if ( $js_file ) {
 		wp_enqueue_script(
 			'alkana-app',
@@ -111,8 +141,9 @@ function alkana_enqueue_assets(): void {
 	);
 	// Paint System Builder JS — only on that page template
 	if ( is_page_template( 'templates/page-paint-builder.php' ) ) {
-		$pb_key  = 'src/scripts/paint-builder.js';
-		$pb_file = $manifest[ $pb_key ]['file'] ?? null;
+		$pb_key   = 'src/scripts/paint-builder.js';
+		$pb_entry = alkana_find_manifest_entry( $manifest, $pb_key );
+		$pb_file  = $pb_entry['file'] ?? null;
 		if ( $pb_file ) {
 			wp_enqueue_script(
 				'alkana-paint-builder',
@@ -140,8 +171,9 @@ function alkana_admin_enqueue_assets(): void {
 
 	$manifest = (array) json_decode( (string) file_get_contents( $manifest_path ), true );
 
-	$admin_key  = 'src/scripts/admin.js';
-	$admin_file = $manifest[ $admin_key ]['file'] ?? null;
+	$admin_key   = 'src/scripts/admin.js';
+	$admin_entry = alkana_find_manifest_entry( $manifest, $admin_key );
+	$admin_file  = $admin_entry['file'] ?? null;
 	if ( $admin_file ) {
 		wp_enqueue_script(
 			'alkana-admin-palette',
